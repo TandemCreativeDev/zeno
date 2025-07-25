@@ -1,299 +1,212 @@
-# Functional Requirements Specification
+# Zeno Framework: Functional Requirements Specification
 
-## Zeno Node Module
+## 1. Executive Summary
 
-### 1. Executive Summary
+Zeno is a standalone Node module that generates production-ready NextJS applications from JSON schema definitions. The framework eliminates boilerplate development by automatically generating database models, UI components, pages, navigation, and API routes directly into standard NextJS project structure. Built with accessibility-first principles and complete type safety using Drizzle ORM, Zod validation, and DaisyUI components.
 
-Transform the existing Next.js JSON schema generator into a standalone, framework-agnostic node module that enables rapid application development through JSON configuration. The module will provide a CLI tool and programmatic API for generating TypeScript types, database schemas, validation logic, and UI components from JSON definitions.
+**Technology Stack:** NextJS App Router + Drizzle ORM + Zod validation + DaisyUI styling + PostgreSQL
 
-### 2. Core Functionality
+## 2. Input/Output Architecture
 
-#### 2.1 Schema Definition System
-
-- **JSON Configuration Format**
-
-  - Support for table definitions with columns, constraints, validation rules
-  - Enum definitions with UI metadata (labels, colours, icons)
-  - Relationship definitions (one-to-one, one-to-many, many-to-many)
-  - Index specifications for performance optimisation
-  - Seed data configuration
-
-- **Schema Validation**
-  - Validate JSON configuration files against schema
-  - Provide clear error messages for invalid configurations
-  - Support for custom validation rules
-  - Schema versioning and migration paths
-
-#### 2.2 Code Generation Engine
-
-- **TypeScript Types**
-
-  - Generate base types from validation schemas
-  - Create insert/update/select type variants
-  - Generate API request/response types
-  - Support for relationship types
-
-- **Database Schemas**
-
-  - Pluggable ORM support (Drizzle, Prisma, TypeORM)
-  - Generate migration files
-  - Index and constraint generation
-  - Foreign key relationship mapping
-
-- **Validation Schemas**
-
-  - Pluggable validation library support (Zod, Yup, Joi)
-  - Client and server-side validation
-  - Custom validation rule support
-  - Error message customisation
-
-- **UI Components**
-  - Framework-agnostic component generation
-  - Support for React, Vue, Angular, Svelte
-  - Form components with validation
-  - Table/list components with sorting/filtering
-  - Customisable component templates
-
-#### 2.3 CLI Interface
-
-- **Commands**
-
-  - `zeno init` - Initialise new project
-  - `zeno generate` - Generate code from schemas
-  - `zeno validate` - Validate schema files
-  - `zeno watch` - Watch mode for development
-  - `zeno migrate` - Generate database migrations
-  - `zeno seed` - Generate and run seed scripts
-
-- **Options**
-  - `--config` - Custom configuration file path
-  - `--target` - Target framework (next, nuxt, sveltekit)
-  - `--orm` - ORM choice (drizzle, prisma, typeorm)
-  - `--ui` - UI framework (react, vue, angular, svelte)
-  - `--style` - Styling solution (tailwind, css-modules, styled-components)
-
-#### 2.4 Programmatic API
-
-```typescript
-interface ZenoFramework {
-  // Initialisation
-  create(config: FrameworkConfig): Framework;
-
-  // Schema operations
-  loadSchemas(path: string): Promise<SchemaSet>;
-  validateSchemas(schemas: SchemaSet): ValidationResult;
-
-  // Generation
-  generateTypes(schemas: SchemaSet, options: TypeOptions): Promise<void>;
-  generateDatabase(schemas: SchemaSet, options: DatabaseOptions): Promise<void>;
-  generateValidation(
-    schemas: SchemaSet,
-    options: ValidationOptions
-  ): Promise<void>;
-  generateComponents(
-    schemas: SchemaSet,
-    options: ComponentOptions
-  ): Promise<void>;
-
-  // Utilities
-  watch(path: string, callback: WatchCallback): Watcher;
-  migrate(options: MigrationOptions): Promise<void>;
-  seed(options: SeedOptions): Promise<void>;
-}
-```
-
-### 3. Configuration System
-
-#### 3.1 Framework Configuration
-
-```typescript
-interface FrameworkConfig {
-  // Project settings
-  projectRoot: string;
-  outputDir: string;
-  schemaDir: string;
-
-  // Framework targets
-  framework: "next" | "nuxt" | "sveltekit" | "remix" | "vanilla";
-  orm: "drizzle" | "prisma" | "typeorm" | "kysely";
-  validation: "zod" | "yup" | "joi" | "valibot";
-  ui: "react" | "vue" | "angular" | "svelte" | "solid";
-
-  // Styling
-  styling: {
-    solution: "tailwind" | "css-modules" | "styled-components" | "emotion";
-    componentLibrary?: "daisyui" | "shadcn" | "mantine" | "mui";
-  };
-
-  // Generation options
-  generation: {
-    types: boolean;
-    database: boolean;
-    validation: boolean;
-    components: boolean;
-    api?: boolean;
-    tests?: boolean;
-  };
-
-  // Custom templates
-  templates?: {
-    component?: string;
-    form?: string;
-    table?: string;
-    api?: string;
-  };
-}
-```
-
-#### 3.2 Schema Extensions
-
-- Plugin system for custom column types
-- Custom validation rule definitions
-- UI component mapping overrides
-- Database type mappings
-- Generation hooks and middleware
-
-### 4. Output Structure
-
-#### 4.1 Generated File Organisation
+**Input Structure:**
 
 ```
-generated/
-├── types/           # TypeScript type definitions
-├── database/        # ORM schemas and migrations
-├── validation/      # Validation schemas
-├── components/      # UI components
-├── api/            # API route handlers (optional)
-├── hooks/          # Custom hooks (optional)
-└── tests/          # Generated tests (optional)
+zeno/
+├── entities/        # Database entity definitions
+├── enums/           # Enum type definitions
+├── pages/           # Page route definitions
+└── app.json         # Application configuration
 ```
 
-#### 4.2 Import Conventions
+**Output Structure:** Standard NextJS App Router project with generated code in `src/models/`, `src/components/`, and `src/app/`
 
-- Barrel exports for easy imports
-- Tree-shakeable output
-- TypeScript declaration files
-- Source maps for debugging
+**Configuration Templates:** [docs/templates/](docs/templates/)  
+**Working Examples:** [docs/examples/](docs/examples/)
 
-### 5. Developer Experience
+## 3. Code Generation Pipeline
 
-#### 5.1 Error Handling
+### 3.1 Model Generation
 
-- Clear, actionable error messages
-- Schema validation with line numbers
-- Generation failure recovery
-- Rollback capabilities
+- **Drizzle Schemas**: PostgreSQL schemas with constraints, indexes, and relationships
+- **TypeScript Types**: Base, insert, update, and select variants with relationship typing
+- **Zod Validation**: Client/server validation schemas with custom error messages
+- **Migrations**: Auto-generated migration files for schema changes
 
-#### 5.2 Performance
+### 3.2 Component Generation
 
-- Incremental generation
-- Parallel processing
-- Caching mechanisms
-- Minimal dependencies
+- **Forms**: Auto-generated with validation, sections, and field visibility controls
+- **Tables**: Data tables with sorting, filtering, pagination, and bulk actions
+- **Modals**: Entity management dialogs
+- **Navigation**: Header, footer, and mobile navigation from page definitions
 
-#### 5.3 Debugging
+**Accessibility Requirements**:
 
-- Verbose logging options
-- Generation reports
-- Schema visualisation
-- Dry-run mode
+- WCAG 2.1 AA compliance
+- Semantic HTML structure
+- Minimal div nesting, use sparingly only when needed
+- ARIA attributes and labels
+- Keyboard navigation support
+- Screen reader compatibility
+- User motion preferences detection
+- Focus management
+- Live announcements
+- Skip to main
 
-### 6. Extensibility
+### 3.3 Page Generation
 
-#### 6.1 Plugin System
+- **CRUD Pages**: List, create, edit, and view pages for each entity
+- **Custom Pages**: Composed from section types (hero, stats, tables, content)
+- **Authentication Pages**: Auto-generated signin/signup/profile pages
+- **Layouts**: Root layout with integrated navigation
 
-```typescript
-interface Plugin {
-  name: string;
-  version: string;
+### 3.4 API Generation
 
-  // Hooks
-  beforeGenerate?: (schemas: SchemaSet) => Promise<void>;
-  afterGenerate?: (results: GenerationResults) => Promise<void>;
+- **CRUD Routes**: RESTful API routes for all entities with enable/disable controls
+- **Authentication Routes**: NextAuth integration with automatic user table detection
+- **Validation Middleware**: Server-side validation using generated Zod schemas
+- **Type Safety**: Fully typed API responses and request bodies
 
-  // Custom generators
-  generators?: {
-    [key: string]: Generator;
-  };
+## 4. Opinionated Features
 
-  // Schema extensions
-  schemaExtensions?: SchemaExtension[];
-}
+### 4.1 Authentication Integration
+
+- **Auto-Detection**: Automatically identifies user tables and generates NextAuth configuration
+- **Generated Pages**: `/signin`, `/signup`, `/profile` routes created automatically
+- **Route Protection**: Automatic protection based on page auth requirements
+- **Session Management**: Type-safe session handling with user data
+
+### 4.2 Navigation System
+
+- **Page-Driven**: Navigation structure generated from individual page definitions
+- **Auto-Detection**: Header and footer navigation built from page metadata
+- **Asset Detection**: `icon.svg` or `logo.svg` automatically detected from `app/` or `public/` folders
+
+### 4.3 Smart Defaults
+
+- **Form Sections**: Intelligent grouping of related fields
+- **Field Visibility**: Context-aware show/hide controls for create/edit forms
+- **Relationship Detection**: Automatic foreign key and many-to-many relationship handling
+- **Generation Controls**: Per-entity controls for form/table/API/page generation
+
+## 5. CLI Interface
+
+```bash
+# Project Setup
+zeno init [project-name]          # Create new NextJS project with Zeno
+zeno init --existing              # Add Zeno to existing NextJS project
+
+# Code Generation
+zeno generate                     # Generate all code from schemas
+zeno generate --watch             # Watch mode for development
+zeno generate --models            # Models only
+zeno generate --components        # Components only
+zeno generate --pages             # Pages only
+zeno generate --api               # API routes only
+
+# Development
+zeno dev                          # Start with watching enabled
+zeno validate                     # Validate schema files
+zeno migrate                      # Generate and run migrations
+zeno seed                         # Run seed data
 ```
 
-#### 6.2 Template System
+## 6. Framework Configuration
 
-- Override default templates
-- Custom template variables
-- Template inheritance
-- Partial template support
+**Core Config:** [docs/examples/zeno.config.ts](docs/examples/zeno.config.ts)
 
-### 7. Integration Features
+Key configuration options:
 
-#### 7.1 IDE Support
+- **Schema Directory**: Default `./zeno`
+- **Output Directory**: Default `./src`
+- **Database**: PostgreSQL connection and migration settings
+- **Generation Controls**: Enable/disable specific generators
+- **Development**: Watch mode and verbose logging
 
-- VS Code extension for schema authoring
-- JSON schema for autocompletion
-- Live validation in editor
-- Quick actions for generation
+## 7. Entity Configuration
 
-#### 7.2 Build Tool Integration
+**Entity Template:** [docs/templates/entity.json](docs/templates/entity.json)  
+**Entity Examples:** [docs/examples/entities/](docs/examples/entities/)
 
-- Webpack plugin
-- Vite plugin
-- Rollup plugin
-- ESBuild plugin
+Key features:
 
-#### 7.3 CI/CD Integration
+- **Generation Controls**: Per-entity enable/disable for forms, tables, APIs, pages
+- **Field Configuration**: Database constraints, validation rules, and UI metadata
+- **Relationships**: Foreign keys and associations with automatic detection
+- **Form Sections**: Grouped fields with collapsible sections
+- **Field Visibility**: Different fields for create/edit forms and list/detail views
+- **Seed Data**: Development data for rapid prototyping
 
-- GitHub Actions
-- Pre-commit hooks
-- Schema change detection
-- Automated migration generation
+## 8. Page System
 
-### 8. Non-Functional Requirements
+**Page Template:** [docs/templates/page.json](docs/templates/page.json)  
+**Page Examples:** [docs/examples/pages/](docs/examples/pages/)
 
-#### 8.1 Compatibility
+**Section Types:**
 
-- Node.js 16+ support
-- TypeScript 4.5+ support
-- ESM and CommonJS dual package
-- Cross-platform (Windows, macOS, Linux)
+- **Hero**: Header sections with title/subtitle
+- **Stats**: Metric displays with database queries
+- **Table**: Entity data with filtering and display options
+- **Content**: Markdown content blocks
+- **Custom**: Custom component integration
 
-#### 8.2 Performance Targets
+**Navigation Integration:** Pages define their own header/footer placement, eliminating centralized navigation configuration.
 
-- < 1s for typical schema validation
-- < 5s for full generation (100 tables)
-- < 100ms for incremental updates
-- < 50MB package size
+## 9. Performance & Quality
 
-#### 8.3 Security
+**Performance Targets:**
 
-- No arbitrary code execution
-- Sanitised file paths
-- Secure template rendering
-- Dependency vulnerability scanning
+- < 2s complete application generation (50 entities)
+- < 30s NextJS build time
+- Incremental generation for schema changes
 
-### 9. Documentation Requirements
+**Code Quality:**
 
-#### 9.1 User Documentation
+- TypeScript strict mode compliance
+- ESLint and Prettier integration
+- Accessibility validation
+- Generated test scaffolding (optional)
 
-- Getting started guide
-- Configuration reference
-- Schema format specification
-- Migration guide from v1
-- Troubleshooting guide
+## 10. Migration & Development
 
-#### 9.2 API Documentation
+**Schema Evolution:**
 
-- TypeScript declarations
-- JSDoc comments
-- Interactive API explorer
-- Code examples
+- Automatic migration generation from schema changes
+- Data preservation during updates
+- Rollback support for safety
 
-#### 9.3 Developer Documentation
+**Development Experience:**
 
-- Architecture overview
-- Plugin development guide
-- Contributing guidelines
-- Testing strategies
+- Hot reload integration with NextJS dev server
+- Comprehensive error messages with schema validation
+- Debug mode with detailed generation reports
+- Dry-run capability for previewing changes
+
+## 11. Security Requirements
+
+**Input Security:**
+
+- Schema sanitisation to prevent injection attacks
+- File path validation within project boundaries
+- Secure template rendering without code execution
+
+**Generated Code Security:**
+
+- SQL injection prevention via Drizzle ORM prepared statements
+- XSS protection with automatic HTML escaping
+- CSRF protection via NextJS built-in security
+- Route protection with NextAuth session management
+
+## 12. Documentation and Developer Resources
+
+**Auto-Generated Documentation:**
+
+- API documentation from generated routes
+- Component documentation with usage examples
+- Schema reference documentation
+
+**Developer Resources:**
+
+- Interactive CLI tutorial for first-time setup
+- Best practices guide for schema design
+- Troubleshooting guide for common issues
+- Migration guide for schema evolution
