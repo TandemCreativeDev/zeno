@@ -12,7 +12,9 @@
 
   "features": {
     "search": true,
+    "rounded": true,
     "darkMode": true,
+    "highContrast": false,
     "breadcrumbs": true,
     "pagination": true,
     "comments": false,

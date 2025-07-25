@@ -12,7 +12,9 @@
 
   "features": {
     "search": "Enable search functionality, optional, default false",
-    "darkMode": "Enable dark mode toggle, optional, default false",
+    "rounded": "Use rounded corners, optional, default true",
+    "darkMode": "Enable dark mode toggle, optional, default true",
+    "highContrast": "Enable high contrast mode, optional, default false",
     "breadcrumbs": "Show breadcrumb navigation, optional, default false",
     "pagination": "Enable pagination, optional, default true",
     "comments": "Enable comments system, optional, default false",
