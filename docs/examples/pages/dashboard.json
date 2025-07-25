@@ -1,0 +1,88 @@
+{
+  "route": "/dashboard",
+  "title": "Dashboard",
+  "description": "Main dashboard with key metrics and recent activity",
+  "layout": "default",
+
+  "navigation": {
+    "header": {
+      "include": true,
+      "icon": "chart-bar",
+      "order": 4
+    }
+  },
+
+  "sections": [
+    {
+      "type": "hero",
+      "title": "Welcome back!",
+      "subtitle": "Here's what's happening in your account",
+      "background": "primary",
+      "padding": "lg"
+    },
+    {
+      "type": "stats",
+      "title": "Key Metrics",
+      "columns": 4,
+      "padding": "md",
+      "stats": [
+        {
+          "title": "Total Users",
+          "value": "count:users",
+          "icon": "users",
+          "color": "primary"
+        },
+        {
+          "title": "Published Posts",
+          "value": "count:posts:status=published",
+          "icon": "document-text",
+          "color": "success"
+        },
+        {
+          "title": "Draft Posts",
+          "value": "count:posts:status=draft",
+          "icon": "document",
+          "color": "warning"
+        },
+        {
+          "title": "Total Likes",
+          "value": "count:user_posts",
+          "icon": "heart",
+          "color": "error"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Recent Posts",
+      "entity": "posts",
+      "columns": 2,
+      "padding": "md",
+      "filters": {
+        "limit": 5,
+        "orderBy": "createdAt:desc"
+      }
+    },
+    {
+      "type": "table",
+      "title": "New Users",
+      "entity": "users",
+      "columns": 2,
+      "padding": "md",
+      "filters": {
+        "limit": 5,
+        "orderBy": "createdAt:desc"
+      }
+    }
+  ],
+
+  "metadata": {
+    "title": "Dashboard - My App",
+    "description": "View your account dashboard with key metrics and recent activity"
+  },
+
+  "auth": {
+    "required": true,
+    "redirect": "/signin"
+  }
+}

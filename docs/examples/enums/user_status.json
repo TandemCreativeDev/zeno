@@ -1,0 +1,23 @@
+{
+  "active": {
+    "label": "Active User",
+    "color": "success",
+    "icon": "check-circle"
+  },
+  "inactive": {
+    "label": "Inactive User",
+    "color": "neutral",
+    "icon": "x-circle"
+  },
+  "pending": {
+    "label": "Pending Approval",
+    "color": "warning",
+    "icon": "clock"
+  },
+  "suspended": {
+    "label": "Suspended Account",
+    "color": "error",
+    "icon": "ban"
+  },
+  "description": "User account status options"
+}

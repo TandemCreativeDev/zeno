@@ -1,0 +1,63 @@
+{
+  "route": "/about",
+  "title": "About Us",
+  "description": "Learn more about our company and mission",
+  "layout": "default",
+
+  "navigation": {
+    "header": {
+      "include": true,
+      "icon": "information-circle",
+      "order": 3
+    },
+    "footer": {
+      "include": true,
+      "section": "Company"
+    }
+  },
+
+  "sections": [
+    {
+      "type": "hero",
+      "title": "About Our Company",
+      "subtitle": "Building the future, one line of code at a time",
+      "background": "primary",
+      "padding": "lg"
+    },
+    {
+      "type": "content",
+      "columns": 1,
+      "padding": "lg",
+      "content": "# Our Story\n\nWe started this company with a simple mission: to make technology more accessible and user-friendly for everyone.\n\n## Our Values\n\n- **Innovation**: We're always looking for better ways to solve problems\n- **Quality**: We believe in doing things right the first time\n- **Community**: We're stronger when we work together\n\n## Our Team\n\nOur diverse team of engineers, designers, and product managers work together to create amazing experiences."
+    },
+    {
+      "type": "stats",
+      "title": "By The Numbers",
+      "columns": 3,
+      "padding": "md",
+      "stats": [
+        {
+          "title": "Years in Business",
+          "value": "5+",
+          "icon": "calendar"
+        },
+        {
+          "title": "Happy Customers",
+          "value": "10,000+",
+          "icon": "users"
+        },
+        {
+          "title": "Projects Completed",
+          "value": "500+",
+          "icon": "check-circle"
+        }
+      ]
+    }
+  ],
+
+  "metadata": {
+    "title": "About Us - My App",
+    "description": "Learn about our company, mission, values, and the team behind our products",
+    "keywords": ["about", "company", "team", "mission", "values"]
+  }
+}

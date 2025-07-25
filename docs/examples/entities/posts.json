@@ -1,0 +1,242 @@
+{
+  "tableName": "posts",
+  "displayName": "Blog Posts",
+  "icon": "document-text",
+  "description": "Blog posts and articles",
+
+  "generateForm": true,
+  "generateTable": true,
+  "generateAPI": true,
+  "generatePages": true,
+
+  "columns": {
+    "id": {
+      "dbConstraints": {
+        "type": "serial",
+        "nullable": false,
+        "primaryKey": true
+      },
+      "ui": {
+        "label": "ID",
+        "readonly": true,
+        "section": "metadata"
+      }
+    },
+    "title": {
+      "dbConstraints": {
+        "type": "varchar",
+        "length": 200,
+        "nullable": false
+      },
+      "validation": {
+        "required": true,
+        "min": 5,
+        "max": 200
+      },
+      "ui": {
+        "label": "Title",
+        "placeholder": "Enter post title",
+        "section": "content"
+      }
+    },
+    "slug": {
+      "dbConstraints": {
+        "type": "varchar",
+        "length": 200,
+        "nullable": false,
+        "unique": true
+      },
+      "validation": {
+        "required": true,
+        "pattern": "^[a-z0-9-]+$"
+      },
+      "ui": {
+        "label": "URL Slug",
+        "placeholder": "url-friendly-slug",
+        "helpText": "Auto-generated from title if left empty",
+        "section": "content"
+      }
+    },
+    "content": {
+      "dbConstraints": {
+        "type": "text",
+        "nullable": false
+      },
+      "validation": {
+        "required": true,
+        "min": 50
+      },
+      "ui": {
+        "label": "Content",
+        "type": "richtext",
+        "placeholder": "Write your post content...",
+        "section": "content"
+      }
+    },
+    "excerpt": {
+      "dbConstraints": {
+        "type": "text",
+        "nullable": true
+      },
+      "validation": {
+        "max": 500
+      },
+      "ui": {
+        "label": "Excerpt",
+        "type": "textarea",
+        "placeholder": "Brief summary of the post...",
+        "helpText": "Optional summary for previews",
+        "section": "content"
+      }
+    },
+    "authorId": {
+      "dbConstraints": {
+        "type": "integer",
+        "nullable": false,
+        "references": {
+          "table": "users",
+          "column": "id",
+          "onDelete": "cascade"
+        }
+      },
+      "validation": {
+        "required": true
+      },
+      "ui": {
+        "label": "Author",
+        "type": "select",
+        "section": "metadata"
+      }
+    },
+    "status": {
+      "dbConstraints": {
+        "type": "post_status",
+        "nullable": false,
+        "default": "draft"
+      },
+      "validation": {
+        "required": true
+      },
+      "ui": {
+        "label": "Status",
+        "section": "publishing"
+      }
+    },
+    "publishedAt": {
+      "dbConstraints": {
+        "type": "timestamp",
+        "nullable": true
+      },
+      "ui": {
+        "label": "Published At",
+        "type": "datetime-local",
+        "section": "publishing"
+      }
+    },
+    "featuredImage": {
+      "dbConstraints": {
+        "type": "varchar",
+        "length": 500,
+        "nullable": true
+      },
+      "validation": {
+        "url": true
+      },
+      "ui": {
+        "label": "Featured Image",
+        "type": "file",
+        "accept": "image/*",
+        "section": "media"
+      }
+    },
+    "createdAt": {
+      "dbConstraints": {
+        "type": "timestamp",
+        "nullable": false,
+        "default": "now()"
+      },
+      "ui": {
+        "label": "Created At",
+        "readonly": true,
+        "format": "datetime",
+        "section": "metadata"
+      }
+    },
+    "updatedAt": {
+      "dbConstraints": {
+        "type": "timestamp",
+        "nullable": false,
+        "default": "now()"
+      },
+      "ui": {
+        "label": "Updated At",
+        "readonly": true,
+        "format": "datetime",
+        "section": "metadata"
+      }
+    }
+  },
+
+  "relationships": {
+    "author": {
+      "type": "many-to-one",
+      "table": "users",
+      "foreignKey": "authorId"
+    }
+  },
+
+  "indexes": {
+    "idx_posts_slug": {
+      "columns": ["slug"],
+      "unique": true
+    },
+    "idx_posts_author": {
+      "columns": ["authorId"]
+    },
+    "idx_posts_status": {
+      "columns": ["status"]
+    },
+    "idx_posts_published": {
+      "columns": ["publishedAt"]
+    }
+  },
+
+  "ui": {
+    "listFields": ["title", "author", "status", "publishedAt", "createdAt"],
+    "searchFields": ["title", "content", "excerpt"],
+    "sortField": "createdAt",
+    "sortOrder": "desc",
+    "formSections": [
+      {
+        "name": "content",
+        "title": "Content",
+        "fields": ["title", "slug", "content", "excerpt"],
+        "defaultOpen": true
+      },
+      {
+        "name": "media",
+        "title": "Media",
+        "fields": ["featuredImage"],
+        "collapsible": true
+      },
+      {
+        "name": "publishing",
+        "title": "Publishing",
+        "fields": ["status", "publishedAt"],
+        "collapsible": true
+      }
+    ]
+  },
+
+  "seedData": [
+    {
+      "title": "Welcome to Our Blog",
+      "slug": "welcome-to-our-blog",
+      "content": "This is our first blog post. Welcome to our platform!",
+      "excerpt": "A warm welcome to all our new users.",
+      "authorId": 1,
+      "status": "published",
+      "publishedAt": "2024-01-01T10:00:00Z"
+    }
+  ]
+}

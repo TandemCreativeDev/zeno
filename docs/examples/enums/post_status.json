@@ -1,0 +1,23 @@
+{
+  "draft": {
+    "label": "Draft",
+    "color": "neutral",
+    "icon": "document"
+  },
+  "review": {
+    "label": "Under Review",
+    "color": "warning",
+    "icon": "eye"
+  },
+  "published": {
+    "label": "Published",
+    "color": "success",
+    "icon": "globe-alt"
+  },
+  "archived": {
+    "label": "Archived",
+    "color": "ghost",
+    "icon": "archive"
+  },
+  "description": "Blog post publication status"
+}

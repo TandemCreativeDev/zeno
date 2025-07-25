@@ -1,0 +1,36 @@
+{
+  "route": "/",
+  "title": "Home",
+  "description": "Welcome to our application",
+  "layout": "default",
+
+  "navigation": {
+    "header": {
+      "include": true,
+      "icon": "home",
+      "order": 1
+    }
+  },
+
+  "sections": [
+    {
+      "type": "hero",
+      "title": "Welcome to My App",
+      "subtitle": "The modern solution for your business needs",
+      "background": "primary",
+      "padding": "lg"
+    },
+    {
+      "type": "content",
+      "columns": 1,
+      "padding": "lg",
+      "content": "## Get Started Today\n\nOur platform provides everything you need to get up and running quickly.\n\n### Key Features\n\n- **Fast**: Built for speed and performance\n- **Secure**: Enterprise-grade security\n- **Scalable**: Grows with your business"
+    }
+  ],
+
+  "metadata": {
+    "title": "My App - Modern Business Solutions",
+    "description": "Welcome to My App, the modern solution for your business needs",
+    "keywords": ["business", "solutions", "modern", "platform"]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "My App",
+  "description": "A modern web application built with Zeno Framework",
+  "url": "https://myapp.com",
+
+  "theme": {
+    "primary": "blue",
+    "secondary": "purple",
+    "accent": "pink",
+    "neutral": "slate"
+  },
+
+  "features": {
+    "search": true,
+    "darkMode": true,
+    "breadcrumbs": true,
+    "pagination": true,
+    "comments": false,
+    "analytics": true
+  },
+
+  "metadata": {
+    "keywords": ["webapp", "nextjs", "modern", "framework"],
+    "author": "My App Team",
+    "language": "en"
+  }
+}

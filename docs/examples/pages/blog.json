@@ -1,0 +1,46 @@
+{
+  "route": "/blog",
+  "title": "Blog",
+  "description": "Read our latest blog posts and articles",
+  "layout": "default",
+
+  "navigation": {
+    "header": {
+      "include": true,
+      "icon": "document-text",
+      "order": 2
+    },
+    "footer": {
+      "include": true,
+      "section": "Resources"
+    }
+  },
+
+  "sections": [
+    {
+      "type": "hero",
+      "title": "Our Blog",
+      "subtitle": "Thoughts, insights, and updates from our team",
+      "background": "base",
+      "padding": "lg"
+    },
+    {
+      "type": "table",
+      "title": "Latest Posts",
+      "entity": "posts",
+      "columns": 1,
+      "padding": "md",
+      "filters": {
+        "status": "published",
+        "orderBy": "publishedAt:desc"
+      },
+      "display": "cards"
+    }
+  ],
+
+  "metadata": {
+    "title": "Blog - My App",
+    "description": "Read our latest blog posts, insights, and updates",
+    "keywords": ["blog", "articles", "news", "updates"]
+  }
+}

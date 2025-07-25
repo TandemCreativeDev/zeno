@@ -1,0 +1,23 @@
+{
+  "admin": {
+    "label": "Administrator",
+    "color": "primary",
+    "icon": "shield-check"
+  },
+  "moderator": {
+    "label": "Moderator",
+    "color": "secondary",
+    "icon": "user-group"
+  },
+  "editor": {
+    "label": "Editor",
+    "color": "accent",
+    "icon": "pencil"
+  },
+  "user": {
+    "label": "User",
+    "color": "ghost",
+    "icon": "user"
+  },
+  "description": "User role definitions with permissions"
+}

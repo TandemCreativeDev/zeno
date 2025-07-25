@@ -1,0 +1,239 @@
+{
+  "tableName": "users",
+  "displayName": "Users",
+  "icon": "user-group",
+  "description": "System users and their profiles",
+
+  "generateForm": true,
+  "generateTable": true,
+  "generateAPI": true,
+  "generatePages": true,
+
+  "columns": {
+    "id": {
+      "dbConstraints": {
+        "type": "serial",
+        "nullable": false,
+        "primaryKey": true
+      },
+      "ui": {
+        "label": "ID",
+        "readonly": true,
+        "section": "metadata"
+      }
+    },
+    "email": {
+      "dbConstraints": {
+        "type": "varchar",
+        "length": 255,
+        "nullable": false,
+        "unique": true
+      },
+      "validation": {
+        "required": true,
+        "email": true,
+        "max": 255
+      },
+      "ui": {
+        "label": "Email Address",
+        "placeholder": "user@example.com",
+        "helpText": "Must be a valid email address",
+        "section": "basic"
+      }
+    },
+    "firstName": {
+      "dbConstraints": {
+        "type": "varchar",
+        "length": 100,
+        "nullable": false
+      },
+      "validation": {
+        "required": true,
+        "min": 2,
+        "max": 100
+      },
+      "ui": {
+        "label": "First Name",
+        "placeholder": "Enter first name",
+        "section": "basic"
+      }
+    },
+    "lastName": {
+      "dbConstraints": {
+        "type": "varchar",
+        "length": 100,
+        "nullable": false
+      },
+      "validation": {
+        "required": true,
+        "min": 2,
+        "max": 100
+      },
+      "ui": {
+        "label": "Last Name",
+        "placeholder": "Enter last name",
+        "section": "basic"
+      }
+    },
+    "status": {
+      "dbConstraints": {
+        "type": "user_status",
+        "nullable": false,
+        "default": "pending"
+      },
+      "validation": {
+        "required": true
+      },
+      "ui": {
+        "label": "Account Status",
+        "section": "admin"
+      }
+    },
+    "role": {
+      "dbConstraints": {
+        "type": "user_role",
+        "nullable": false,
+        "default": "user"
+      },
+      "validation": {
+        "required": true
+      },
+      "ui": {
+        "label": "User Role",
+        "section": "admin"
+      }
+    },
+    "profilePicture": {
+      "dbConstraints": {
+        "type": "varchar",
+        "length": 500,
+        "nullable": true
+      },
+      "validation": {
+        "url": true
+      },
+      "ui": {
+        "label": "Profile Picture",
+        "type": "file",
+        "accept": "image/*",
+        "section": "profile"
+      }
+    },
+    "bio": {
+      "dbConstraints": {
+        "type": "text",
+        "nullable": true
+      },
+      "validation": {
+        "max": 1000
+      },
+      "ui": {
+        "label": "Bio",
+        "type": "textarea",
+        "placeholder": "Tell us about yourself...",
+        "helpText": "Optional biography (max 1000 characters)",
+        "section": "profile"
+      }
+    },
+    "createdAt": {
+      "dbConstraints": {
+        "type": "timestamp",
+        "nullable": false,
+        "default": "now()"
+      },
+      "ui": {
+        "label": "Created At",
+        "readonly": true,
+        "format": "datetime",
+        "section": "metadata"
+      }
+    },
+    "updatedAt": {
+      "dbConstraints": {
+        "type": "timestamp",
+        "nullable": false,
+        "default": "now()"
+      },
+      "ui": {
+        "label": "Updated At",
+        "readonly": true,
+        "format": "datetime",
+        "section": "metadata"
+      }
+    }
+  },
+
+  "indexes": {
+    "idx_users_email": {
+      "columns": ["email"],
+      "unique": true
+    },
+    "idx_users_status": {
+      "columns": ["status"]
+    }
+  },
+
+  "ui": {
+    "listFields": ["firstName", "lastName", "email", "status", "createdAt"],
+    "searchFields": ["firstName", "lastName", "email"],
+    "sortField": "createdAt",
+    "sortOrder": "desc",
+    "formSections": [
+      {
+        "name": "basic",
+        "title": "Basic Information",
+        "fields": ["firstName", "lastName", "email"],
+        "defaultOpen": true
+      },
+      {
+        "name": "profile",
+        "title": "Profile Details",
+        "fields": ["profilePicture", "bio"],
+        "collapsible": true
+      },
+      {
+        "name": "admin",
+        "title": "Administration",
+        "fields": ["status", "role"],
+        "collapsible": true
+      }
+    ],
+    "visibility": {
+      "form": {
+        "create": ["firstName", "lastName", "email", "profilePicture", "bio"],
+        "edit": [
+          "firstName",
+          "lastName",
+          "email",
+          "profilePicture",
+          "bio",
+          "status",
+          "role"
+        ],
+        "hidden": ["id", "createdAt", "updatedAt"]
+      },
+      "table": {
+        "list": ["firstName", "lastName", "email", "status", "createdAt"],
+        "hidden": ["id", "updatedAt", "bio"]
+      }
+    }
+  },
+
+  "seedData": [
+    {
+      "email": "admin@example.com",
+      "firstName": "Admin",
+      "lastName": "User",
+      "status": "active",
+      "role": "admin"
+    },
+    {
+      "email": "john@example.com",
+      "firstName": "John",
+      "lastName": "Doe",
+      "status": "active",
+      "role": "user",
+      "bio": "Software developer and tech enthusiast"
+    }
+  ]
+}

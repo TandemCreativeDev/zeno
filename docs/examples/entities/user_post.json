@@ -1,0 +1,62 @@
+{
+  "tableName": "user_posts",
+  "displayName": "User Post Likes",
+  "icon": "heart",
+  "description": "Many-to-many relationship for post likes",
+
+  "generateForm": false,
+  "generateTable": true,
+  "generateAPI": true,
+  "generatePages": false,
+
+  "columns": {
+    "userId": {
+      "dbConstraints": {
+        "type": "integer",
+        "nullable": false,
+        "primaryKey": true,
+        "references": {
+          "table": "users",
+          "column": "id",
+          "onDelete": "cascade"
+        }
+      },
+      "ui": {
+        "label": "User"
+      }
+    },
+    "postId": {
+      "dbConstraints": {
+        "type": "integer",
+        "nullable": false,
+        "primaryKey": true,
+        "references": {
+          "table": "posts",
+          "column": "id",
+          "onDelete": "cascade"
+        }
+      },
+      "ui": {
+        "label": "Post"
+      }
+    },
+    "likedAt": {
+      "dbConstraints": {
+        "type": "timestamp",
+        "nullable": false,
+        "default": "now()"
+      },
+      "ui": {
+        "label": "Liked At",
+        "readonly": true,
+        "format": "datetime"
+      }
+    }
+  },
+
+  "ui": {
+    "listFields": ["userId", "postId", "likedAt"],
+    "sortField": "likedAt",
+    "sortOrder": "desc"
+  }
+}
