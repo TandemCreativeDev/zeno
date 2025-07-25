@@ -1,0 +1,93 @@
+{
+  "tableName": "Database table name, required",
+  "displayName": "Human readable name, required",
+  "icon": "Lucide react icon name for UI, optional",
+  "description": "Entity description, optional",
+
+  "generateForm": "Generate form component, optional, default true",
+  "generateTable": "Generate table component, optional, default true",
+  "generateAPI": "Generate API routes, optional, default true",
+  "generatePages": "Generate CRUD pages, optional, default true",
+
+  "columns": {
+    "columnName": {
+      "dbConstraints": {
+        "type": "Database column type, required",
+        "length": "String length limit, optional",
+        "precision": "Numeric precision, optional",
+        "scale": "Numeric scale, optional",
+        "nullable": "Allow null values, optional, default false",
+        "default": "Default value, optional",
+        "primaryKey": "Is primary key, optional, default false",
+        "unique": "Unique constraint, optional, default false",
+        "references": {
+          "table": "Referenced table name, required if foreign key",
+          "column": "Referenced column name, required if foreign key",
+          "onDelete": "Delete action cascade/restrict/set null, optional"
+        }
+      },
+      "validation": {
+        "required": "Field is required, optional, default false",
+        "min": "Minimum value/length, optional",
+        "max": "Maximum value/length, optional",
+        "email": "Email validation, optional, default false",
+        "url": "URL validation, optional, default false",
+        "pattern": "Regex pattern, optional"
+      },
+      "ui": {
+        "label": "Field label, optional",
+        "placeholder": "Input placeholder, optional",
+        "helpText": "Help text, optional",
+        "section": "Form section name, optional",
+        "readonly": "Read only field, optional, default false",
+        "type": "Input type override, optional",
+        "accept": "File input accept types, optional",
+        "format": "Display format datetime/currency, optional"
+      }
+    }
+  },
+
+  "indexes": {
+    "indexName": {
+      "columns": "Array of column names, required",
+      "unique": "Unique index, optional, default false"
+    }
+  },
+
+  "relationships": {
+    "relationName": {
+      "type": "Relationship type many-to-one/one-to-many, required",
+      "table": "Related table name, required",
+      "foreignKey": "Foreign key column, optional"
+    }
+  },
+
+  "ui": {
+    "listFields": "Array of fields shown in tables, optional",
+    "searchFields": "Array of searchable fields, optional",
+    "sortField": "Default sort field, optional",
+    "sortOrder": "Default sort order asc/desc, optional",
+    "formSections": [
+      {
+        "name": "Section identifier, required",
+        "title": "Section display title, required",
+        "fields": "Array of field names, required",
+        "collapsible": "Section can collapse, optional, default false",
+        "defaultOpen": "Section open by default, optional, default true"
+      }
+    ],
+    "visibility": {
+      "form": {
+        "create": "Array of fields visible in create form, optional",
+        "edit": "Array of fields visible in edit form, optional",
+        "hidden": "Array of always hidden fields, optional"
+      },
+      "table": {
+        "list": "Array of fields shown in list view, optional",
+        "hidden": "Array of always hidden fields, optional"
+      }
+    }
+  },
+
+  "seedData": "Array of seed data objects, optional"
+}

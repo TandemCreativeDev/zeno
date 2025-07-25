@@ -1,0 +1,27 @@
+{
+  "name": "Application name, required",
+  "description": "Application description, required",
+  "url": "Application URL, required",
+
+  "theme": {
+    "primary": "Primary theme color, optional",
+    "secondary": "Secondary theme color, optional",
+    "accent": "Accent theme color, optional",
+    "neutral": "Neutral theme color, optional"
+  },
+
+  "features": {
+    "search": "Enable search functionality, optional, default false",
+    "darkMode": "Enable dark mode toggle, optional, default false",
+    "breadcrumbs": "Show breadcrumb navigation, optional, default false",
+    "pagination": "Enable pagination, optional, default true",
+    "comments": "Enable comments system, optional, default false",
+    "analytics": "Enable analytics tracking, optional, default false"
+  },
+
+  "metadata": {
+    "keywords": "Array of site keywords, optional",
+    "author": "Site author, optional",
+    "language": "Site language code, optional, default 'en'"
+  }
+}

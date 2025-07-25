@@ -1,0 +1,56 @@
+{
+  "route": "NextJS route path, required",
+  "title": "Page title, required",
+  "description": "Page description, optional",
+  "layout": "Layout type default/auth/minimal, optional, default 'default'",
+
+  "navigation": {
+    "header": {
+      "include": "Include in header nav, optional, default false",
+      "icon": "Lucide react icon name, optional",
+      "order": "Nav order number, optional"
+    },
+    "footer": {
+      "include": "Include in footer nav, optional, default false",
+      "section": "Footer section title, required if include true"
+    }
+  },
+
+  "sections": [
+    {
+      "type": "Section type hero/stats/table/content/custom, required",
+      "title": "Section title, optional",
+      "subtitle": "Section subtitle, optional",
+      "entity": "Entity name for table sections, optional",
+      "content": "Markdown content for content sections, optional",
+      "columns": "Grid columns 1-4, optional, default 1",
+      "padding": "Padding size none/sm/md/lg, optional, default 'md'",
+      "background": "Background color base/neutral/primary/secondary, optional, default 'base'",
+      "stats": [
+        {
+          "title": "Stat title, required",
+          "value": "Stat value or query, required",
+          "icon": "Lucide react icon name, optional",
+          "color": "Color class, optional"
+        }
+      ],
+      "filters": {
+        "limit": "Result limit number, optional",
+        "orderBy": "Sort order field:direction, optional"
+      },
+      "display": "Display mode cards/table, optional, default 'table'"
+    }
+  ],
+
+  "metadata": {
+    "title": "SEO title, optional",
+    "description": "SEO description, optional",
+    "keywords": "Array of SEO keywords, optional"
+  },
+
+  "auth": {
+    "required": "Authentication required, optional, default false",
+    "roles": "Array of required roles, optional",
+    "redirect": "Redirect path if unauthorized, optional"
+  }
+}

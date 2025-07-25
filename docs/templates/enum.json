@@ -1,0 +1,8 @@
+{
+  "enumValue": {
+    "label": "Display label, required",
+    "color": "DaisyUI color class, optional",
+    "icon": "Lucide react icon name, optional"
+  },
+  "description": "Enum description, optional"
+}
