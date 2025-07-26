@@ -238,7 +238,9 @@ pnpm start validate        # Test schema validation
 - `/examples/` - Example projects and configurations
 - `/docs/` - Documentation site and specifications
 
-## Review Process Guidelines
+## Post-Implementation Process
+
+### Review Process Guidelines
 
 Before submitting any code, ensure the following steps are completed:
 
@@ -282,6 +284,22 @@ Before submitting any code, ensure the following steps are completed:
    - [ ] Public APIs have JSDoc documentation
    - [ ] File names follow role-based conventions
    - [ ] Async operations optimised for performance where possible
+
+### Documentation Updates
+
+1. **Mark the task as done in `PLAN.md`**
+2. **If the implementation touched other tasks or was unusual** - update the task itself or other tasks as relevant, note any important decisions if applicable (OPTIONAL)
+3. **If applicable, update `CLAUDE.md`** with any learned standards or patterns picked up from the review process - these must be abstracted into concise documentation (OPTIONAL)
+4. If there have been significant changes, update `REQUIREMENTS.md` or `ARCHITECTURE.md` as required (OPTIONAL)
+
+**IMPORTANT**: Be concise, don't repeat yourself, double check and remove duplication/reduce where possible
+
+### Commit
+
+- **Format code before commiting** - run command `npx prettier path/to/file.ts`
+- **Granular commits** - do not commit all in single commit, break them up for optimal traceability
+- **Informative and concise commits** - multiline is encouraged but try to keep it less than 3 lines
+- **Follow commit guidance** outlined above
 
 ## Known Issues & Workarounds
 
