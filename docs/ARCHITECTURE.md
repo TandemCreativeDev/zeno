@@ -166,10 +166,10 @@ interface SchemaSet {
 
 Schema specifications:
 
-- [Entity Template](templates/entity.json)
-- [Enum Template](templates/enum.json)
-- [Page Template](templates/page.json)
-- [App Template](templates/app.json)
+- [Entity Template](templates/schemas/entity.json)
+- [Enum Template](templates/schemas/enum.json)
+- [Page Template](templates/schemas/page.json)
+- [App Template](templates/schemas/app.json)
 
 ### 4.3 Generation Pipeline
 
