@@ -15,3 +15,5 @@ As you implement, explain:
 - How the code works and why it meets our `REQUIREMENTS.md` requirements
 - How it aligns with our `ARCHITECTURE.md`
 - Why it complies with our standards in `CLAUDE.md`
+
+**After implementing:** Follow review process outlined in `CLAUDE.md`, fix issues if required. When there are no more errors, mark the task as done in `PLAN.md`. Then, commit the changes following our commit guidance.
