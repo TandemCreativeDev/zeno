@@ -357,20 +357,20 @@ Clear, actionable error messages with source mapping:
 
 ## 13. Developer Experience
 
-### IDE Support
+### 13.1 IDE Support
 
 - JSON schemas for autocompletion in schema files
 - TypeScript declaration maps for debugging
 - Source maps for generated code
 
-### CLI Features
+### 13.2 CLI Features
 
 - Interactive prompts for complex commands with @clack/prompts
 - Progress indicators for long operations
 - Coloured output with semantic meaning
 - Debug mode with verbose logging
 
-### Documentation
+### 13.3 Documentation
 
 - Auto-generated API docs from JSDoc
 - Interactive examples in documentation

@@ -1,487 +1,584 @@
-# Implementation Plan
-
-## JSON Schema Framework Node Module
-
-### 1. Project Setup and Structure
-
-#### 1.1 Repository Initialisation
-
-```bash
-# Create monorepo structure
-mkdir zeno
-cd zeno
-git init
-
-# Initialise pnpm workspace
-pnpm init
-echo "packages:" > pnpm-workspace.yaml
-echo "  - 'packages/*'" >> pnpm-workspace.yaml
-
-# Create package directories
-mkdir -p packages/{core,cli,generators,templates,plugins}
-mkdir -p {examples,docs,tools}
-
-# Setup base configuration files
-touch .gitignore .npmrc .editorconfig
-touch tsconfig.json tsconfig.base.json
-```
-
-#### 1.2 Monorepo Configuration
-
-```json
-// package.json (root)
-{
-  "name": "zeno",
-  "private": true,
-  "workspaces": ["packages/*"],
-  "scripts": {
-    "build": "turbo run build",
-    "test": "turbo run test",
-    "lint": "turbo run lint",
-    "changeset": "changeset",
-    "version": "changeset version",
-    "release": "turbo run build && changeset publish"
-  },
-  "devDependencies": {
-    "@changesets/cli": "^2.26.0",
-    "turbo": "^1.10.0",
-    "typescript": "^5.0.0"
-  }
-}
-```
-
-#### 1.3 Package Structure
-
-```typescript
-// packages/core/package.json
-{
-  "name": "@jsf/core",
-  "version": "0.0.0",
-  "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
-  },
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "test": "vitest"
-  }
-}
-```
-
-### 2. Development Phases
-
-#### Phase 1: Core Framework (Weeks 1-3)
-
-- **Week 1: Foundation**
-
-  - Set up monorepo structure
-  - Implement schema loader with validation
-  - Create configuration manager
-  - Basic error handling and logging
-
-- **Week 2: Generation Engine**
-
-  - Abstract generator interface
-  - Template engine integration
-  - File system utilities
-  - Generation context and lifecycle
-
-- **Week 3: Plugin System**
-  - Plugin registration and loading
-  - Hook system implementation
-  - Plugin API design
-  - Core plugin interfaces
+# Zeno Framework: Implementation Plan
 
-#### Phase 2: Generators (Weeks 4-6)
+## Phase 1: Foundation (Tasks 1-15)
 
-- **Week 4: Type Generators**
+### [ ] 1. Monorepo Setup
 
-  - TypeScript type generator
-  - Drizzle schema generator
-  - Migration generator
+**Description**: Initialise pnpm workspace with Turborepo configuration  
+**Deliverables**:
 
-- **Week 5: Validation Generators**
+- `pnpm-workspace.yaml` with package structure
+- `turbo.json` with build pipeline
+- Root `package.json` with workspace scripts
+- `.gitignore`, `.npmrc`, `.editorconfig`
+  **Dependencies**: None  
+  **Definition of Done**: `pnpm install` works, `pnpm build` runs successfully
 
-  - Zod schema generator
-  - Yup generator (plugin)
-  - Validation rule mapping
+### [ ] 2. Core Package Scaffold
 
-- **Week 6: Initial UI Generators**
-  - React form generator
-  - React table generator
-  - Template system refinement
+**Description**: Create @zeno/core package with TypeScript and build configuration  
+**Deliverables**:
 
-#### Phase 3: CLI Development (Weeks 7-8)
+- `packages/@zeno/core/package.json` with tsup config
+- `tsconfig.json` and `tsup.config.ts`
+- Empty `src/index.ts` with basic export
+  **Dependencies**: Task 1  
+  **Definition of Done**: Package builds with `pnpm build`, outputs ESM and CJS
 
-- **Week 7: Core Commands**
+### [ ] 3. Type Definitions Package
 
-  - Init command with project scaffolding
-  - Generate command with options
-  - Validate command
-  - Configuration detection
-
-- **Week 8: Advanced Features**
-  - Watch mode implementation
-  - Migration commands
-  - Plugin management commands
-  - Interactive mode
+**Description**: Define core TypeScript interfaces and types (Ref: Architecture §4.1)  
+**Deliverables**:
 
-#### Phase 4: Framework Adapters (Weeks 9-10)
-
-- **Week 9: Next.js Adapter**
-
-  - App router support
-  - API route generation
-  - Middleware integration
-
-- **Week 10: Other Frameworks**
-  - Vue/Nuxt adapter
-  - SvelteKit adapter
-  - Framework detection
+- `packages/@zeno/types` package
+- `EntitySchema`, `EnumSchema`, `PageSchema`, `AppSchema` interfaces
+- `SchemaSet`, `GeneratorContext` types
+- Export from core package
+  **Dependencies**: Task 2  
+  **Definition of Done**: Types compile without errors, can import from @zeno/core
 
-#### Phase 5: Testing & Documentation (Weeks 11-12)
+### [ ] 4. Schema Validation Rules
 
-- **Week 11: Testing**
+**Description**: Implement JSON schema validation using Zod (Ref: Architecture §4.1)  
+**Deliverables**:
 
-  - Unit test coverage
-  - Integration tests
-  - E2E test scenarios
-  - Performance benchmarks
+- Zod schemas for entity, enum, page, app configurations
+- `ValidationResult` type with error details
+- Unit tests for valid/invalid schemas
+  **Dependencies**: Task 3  
+  **Definition of Done**: 100% test coverage on validation logic
 
-- **Week 12: Documentation**
-  - API documentation
-  - User guides
-  - Migration guides
-  - Example projects
+### [ ] 5. Schema Loader Implementation
 
-### 3. Publishing Strategy
+**Description**: Create SchemaLoader class to read and validate JSON files (Ref: Architecture §4.1)  
+**Deliverables**:
 
-#### 3.1 NPM Organisation Setup
+- `SchemaLoader` class with `load()`, `validate()` methods
+- File system operations with proper error handling
+- Integration tests with fixture files
+  **Dependencies**: Tasks 3, 4  
+  **Definition of Done**: Can load example schemas from docs/examples, proper error messages
 
-```bash
-# Create npm organisation
-npm login
-npm org create jsf
+### [ ] 6. Custom Error Classes
 
-# Set up package access
-npm access grant read-write jsf:developers @jsf/core
-npm access public @jsf/core
-```
+**Description**: Implement error handling system (Ref: CLAUDE.md - Error Handling)  
+**Deliverables**:
 
-#### 3.2 Package Publishing Configuration
+- `SchemaValidationError`, `GenerationError`, `ConfigurationError` classes
+- Error context with file path and line numbers
+- Unit tests for error scenarios
+  **Dependencies**: Task 2  
+  **Definition of Done**: Errors provide actionable messages with context
 
-```json
-// .npmrc
-save-exact=true
-tag-version-prefix=""
-message="chore(release): publish"
-access=public
+### [ ] 7. Configuration System
 
-// For scoped packages
-@jsf:registry=https://registry.npmjs.org/
-```
+**Description**: Implement config loading with defaults (Ref: Architecture §7)  
+**Deliverables**:
 
-#### 3.3 Release Process
+- `defineConfig()` helper function
+- Config validation and merging logic
+- Tests for various config scenarios
+  **Dependencies**: Tasks 3, 4  
+  **Definition of Done**: Can load zeno.config.ts, applies defaults correctly
 
-```bash
-# Using changesets for version management
-pnpm changeset init
+### [ ] 8. Template Engine Setup
 
-# Create .changeset/config.json
-{
-  "changelog": "@changesets/cli/changelog",
-  "commit": false,
-  "fixed": [],
-  "linked": [["@jsf/*"]],
-  "access": "public",
-  "baseBranch": "main",
-  "updateInternalDependencies": "patch",
-  "ignore": []
-}
-```
-
-#### 3.4 CI/CD Pipeline
-
-```yaml
-# .github/workflows/release.yml
-name: Release
+**Description**: Integrate Handlebars with custom helpers (Ref: Architecture §4.3)  
+**Deliverables**:
 
-on:
-  push:
-    branches: [main]
+- `TemplateEngine` class with helper registration
+- Built-in helpers: case transformers, pluralisation
+- Unit tests for template rendering
+  **Dependencies**: Task 2  
+  **Definition of Done**: Can render templates with all helpers working
 
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: "pnpm"
+### [ ] 9. Generator Base Class
 
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - run: pnpm test
+**Description**: Abstract Generator class for all generators (Ref: Architecture §5)  
+**Deliverables**:
 
-      - name: Create Release Pull Request or Publish
-        uses: changesets/action@v1
-        with:
-          publish: pnpm release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-```
+- `Generator` abstract class with required methods
+- `GeneratedFile` interface
+- Unit tests for generator lifecycle
+  **Dependencies**: Tasks 3, 8  
+  **Definition of Done**: Can extend and implement test generator
 
-### 4. Migration Strategy
-
-#### 4.1 Extraction Plan
-
-1. **Identify Core Components**
-
-   - Extract generation logic from scripts/
-   - Separate framework-specific code
-   - Identify reusable utilities
-
-2. **Create Abstraction Layers**
-
-   - Framework adapters
-   - ORM adapters
-   - UI library adapters
-
-3. **Maintain Backwards Compatibility**
-   - Legacy config support
-   - Migration commands
-   - Deprecation warnings
-
-#### 4.2 Migration Script
-
-```typescript
-// packages/cli/src/commands/migrate.ts
-export class MigrateCommand extends Command {
-  async execute(args: CommandArgs): Promise<void> {
-    const legacyConfig = await this.detectLegacyProject();
-
-    if (legacyConfig) {
-      console.log("Legacy project detected. Starting migration...");
-
-      // Convert configuration
-      const newConfig = this.convertConfig(legacyConfig);
-      await this.writeConfig(newConfig);
-
-      // Move schemas
-      await this.moveSchemas();
-
-      // Update imports
-      await this.updateImports();
-
-      console.log("Migration complete!");
-    }
-  }
-}
-```
-
-### 5. Testing Strategy
-
-#### 5.1 Test Infrastructure
-
-```typescript
-// packages/core/vitest.config.ts
-export default {
-  test: {
-    globals: true,
-    environment: "node",
-    coverage: {
-      reporter: ["text", "json", "html"],
-      exclude: ["node_modules/", "dist/"],
-    },
-  },
-};
-```
-
-#### 5.2 Test Scenarios
-
-- **Unit Tests**
-
-  - Schema validation
-  - Type generation accuracy
-  - Template rendering
-  - Configuration merging
-
-- **Integration Tests**
-
-  - Full generation pipeline
-  - Plugin integration
-  - Multi-framework support
-
-- **E2E Tests**
-  - Complete project generation
-  - Build verification
-  - Runtime validation
-
-### 6. Documentation Plan
-
-#### 6.1 Documentation Site
-
-```bash
-# Using VitePress for documentation
-cd docs
-pnpm add -D vitepress
-
-# Structure
-docs/
-├── .vitepress/
-│   └── config.ts
-├── guide/
-│   ├── getting-started.md
-│   ├── configuration.md
-│   └── schemas.md
-├── api/
-│   ├── core.md
-│   ├── cli.md
-│   └── generators.md
-└── plugins/
-    ├── writing-plugins.md
-    └── official-plugins.md
-```
-
-#### 6.2 Code Examples
-
-```typescript
-// examples/next-app/jsf.config.ts
-export default {
-  framework: "next",
-  orm: "drizzle",
-  validation: "zod",
-  ui: "react",
-  styling: {
-    solution: "tailwind",
-    componentLibrary: "shadcn",
-  },
-  schemas: "./schemas",
-  output: "./src/generated",
-};
-```
-
-### 7. Community Building
-
-#### 7.1 Open Source Setup
-
-- **License**: MIT
-- **Code of Conduct**: Contributor Covenant
-- **Contributing Guide**: Clear contribution process
-- **Issue Templates**: Bug reports, feature requests
-- **PR Templates**: Standardised PR process
-
-#### 7.2 Community Channels
-
-- GitHub Discussions for Q&A
-- Discord server for real-time chat
-- Twitter account for announcements
-- Blog for detailed tutorials
-
-### 8. Performance Targets
-
-#### 8.1 Benchmarks
-
-```typescript
-// tools/benchmark/index.ts
-import { benchmark } from "vitest";
-
-benchmark("generate 100 tables", async () => {
-  const schemas = generateTestSchemas(100);
-  const framework = new Framework(testConfig);
-  await framework.generate(schemas);
-});
-```
-
-#### 8.2 Optimisation Goals
-
-- < 50ms per table generation
-- < 10MB memory per table
+### [ ] 10. Generation Pipeline
+
+**Description**: Core pipeline for running generators (Ref: Architecture §4.2)  
+**Deliverables**:
+
+- `GenerationPipeline` class with registration and execution
 - Parallel generation support
-- Incremental compilation
+- Integration tests with mock generators
+  **Dependencies**: Task 9  
+  **Definition of Done**: Can register and run multiple generators in sequence
 
-### 9. Security Considerations
+### [ ] 11. File System Utilities
 
-#### 9.1 Security Measures
+**Description**: Safe file operations with validation  
+**Deliverables**:
 
-- Template sandboxing
-- Path traversal prevention
-- Dependency scanning
-- Security policy documentation
+- Path validation to prevent traversal attacks
+- Atomic file writes with backup
+- Directory creation utilities
+- Unit tests for edge cases
+  **Dependencies**: Task 6  
+  **Definition of Done**: All file operations are safe and tested
 
-#### 9.2 Security Testing
+### [ ] 12. Watch Mode Infrastructure
 
-```bash
-# Regular security audits
-pnpm audit
-npm audit signatures
+**Description**: File watching system for development (Ref: Requirements §10)  
+**Deliverables**:
 
-# Dependency scanning
-snyk test
-```
+- Watcher class using chokidar
+- Debounced change detection
+- Schema change diffing
+- Integration tests
+  **Dependencies**: Tasks 5, 10  
+  **Definition of Done**: Detects changes and triggers incremental generation
 
-### 10. Launch Plan
+### [ ] 13. Schema Change Detection
 
-#### 10.1 Beta Release (Week 13)
+**Description**: Implement incremental generation logic  
+**Deliverables**:
 
-- Private beta with selected users
-- Gather feedback on API design
-- Fix critical issues
-- Refine documentation
+- `SchemaChange` type with change details
+- Dependency graph for affected files
+- Unit tests for various change scenarios
+  **Dependencies**: Task 12  
+  **Definition of Done**: Only regenerates affected files on changes
 
-#### 10.2 Public Release (Week 14)
+### [ ] 14. Logging System
 
-- Announce on social media
-- Write launch blog post
-- Submit to JS newsletters
-- Create demo videos
+**Description**: Structured logging with levels  
+**Deliverables**:
 
-#### 10.3 Post-Launch (Ongoing)
+- Logger with debug/info/warn/error levels
+- Context-aware logging
+- Integration with CLI output
+  **Dependencies**: Task 2  
+  **Definition of Done**: Logs are useful for debugging, respects verbosity settings
 
-- Weekly releases for fixes
-- Monthly feature releases
-- Quarterly planning sessions
-- Annual major versions
+### [ ] 15. Core Package Integration Tests
 
-### 11. Success Metrics
+**Description**: End-to-end tests for core functionality  
+**Deliverables**:
 
-#### 11.1 Adoption Metrics
-
-- NPM downloads
-- GitHub stars
-- Active installations
-- Community contributions
-
-#### 11.2 Quality Metrics
-
-- Test coverage (>90%)
-- Bundle size (<5MB)
+- Test harness for full pipeline
+- Fixture projects
 - Performance benchmarks
-- User satisfaction surveys
+  **Dependencies**: Tasks 1-14  
+  **Definition of Done**: Core package works end-to-end with example schemas
 
-### 12. Maintenance Plan
+## Phase 2: Generators (Tasks 16-30)
 
-#### 12.1 Regular Tasks
+### [ ] 16. Model Generator Package
 
-- Weekly dependency updates
-- Bi-weekly issue triage
-- Monthly security reviews
-- Quarterly roadmap updates
+**Description**: Create @zeno/generators/models package (Ref: Requirements §3.1)  
+**Deliverables**:
 
-#### 12.2 Long-term Vision
+- Package scaffold with dependencies
+- Base structure for model generation
+  **Dependencies**: Task 15  
+  **Definition of Done**: Package builds and exports ModelGenerator class
 
-- GraphQL schema support
-- Database-first generation
-- Visual schema editor
-- Cloud-based generation service
+### [ ] 17. Drizzle Schema Generation
+
+**Description**: Generate Drizzle ORM schemas from entities (Ref: Requirements §3.1)  
+**Deliverables**:
+
+- Drizzle schema templates
+- Column type mapping
+- Relationship handling
+- Unit tests with fixtures
+  **Dependencies**: Task 16  
+  **Definition of Done**: Generates valid Drizzle schemas for all column types
+
+### [ ] 18. TypeScript Type Generation
+
+**Description**: Generate TypeScript interfaces and types (Ref: Requirements §3.1)  
+**Deliverables**:
+
+- Base, Insert, Update, Select type variants
+- Relationship typing
+- Enum type generation
+- Unit tests
+  **Dependencies**: Task 16  
+  **Definition of Done**: Generated types compile without errors
+
+### [ ] 19. Zod Schema Generation
+
+**Description**: Generate Zod validation schemas (Ref: Requirements §3.1)  
+**Deliverables**:
+
+- Zod schema templates
+- Validation rule mapping
+- Custom error messages
+- Unit tests
+  **Dependencies**: Task 16  
+  **Definition of Done**: Validation works correctly for all rules
+
+### [ ] 20. Migration Generator
+
+**Description**: Auto-generate database migrations (Ref: Requirements §3.1)  
+**Deliverables**:
+
+- Migration file generation
+- Schema diffing logic
+- Rollback support
+- Integration tests
+  **Dependencies**: Task 17  
+  **Definition of Done**: Can generate and apply migrations
+
+### [ ] 21. Component Generator Package
+
+**Description**: Create @zeno/generators/components package (Ref: Requirements §3.2)  
+**Deliverables**:
+
+- Package scaffold
+- Base component templates
+  **Dependencies**: Task 15  
+  **Definition of Done**: Package builds and exports ComponentGenerator
+
+### [ ] 22. Form Component Generation
+
+**Description**: Generate accessible form components (Ref: Requirements §3.2)  
+**Deliverables**:
+
+- Form templates with sections
+- Field visibility logic
+- Validation integration
+- Accessibility attributes
+- Unit tests
+  **Dependencies**: Task 21  
+  **Definition of Done**: Forms are WCAG 2.1 AA compliant, validation works
+
+### [ ] 23. Table Component Generation
+
+**Description**: Generate data table components (Ref: Requirements §3.2)  
+**Deliverables**:
+
+- Table templates with sorting/filtering
+- Pagination support
+- Bulk actions
+- Unit tests
+  **Dependencies**: Task 21  
+  **Definition of Done**: Tables are accessible and fully functional
+
+### [ ] 24. Modal Component Generation
+
+**Description**: Generate entity management modals (Ref: Requirements §3.2)  
+**Deliverables**:
+
+- Modal templates
+- Focus management
+- Keyboard navigation
+- Unit tests
+  **Dependencies**: Task 21  
+  **Definition of Done**: Modals are accessible with proper focus handling
+
+### [ ] 25. Page Generator Package
+
+**Description**: Create @zeno/generators/pages package (Ref: Requirements §3.3)  
+**Deliverables**:
+
+- Package scaffold
+- Page template structure
+  **Dependencies**: Task 15  
+  **Definition of Done**: Package builds and exports PageGenerator
+
+### [ ] 26. CRUD Page Generation
+
+**Description**: Generate list/create/edit/view pages (Ref: Requirements §3.3)  
+**Deliverables**:
+
+- CRUD page templates
+- Route generation
+- Layout integration
+- Unit tests
+  **Dependencies**: Tasks 22-25  
+  **Definition of Done**: All CRUD operations work with proper routing
+
+### [ ] 27. Custom Page Generation
+
+**Description**: Generate pages from JSON definitions (Ref: Requirements §8)  
+**Deliverables**:
+
+- Section type templates (hero, stats, table, content)
+- Dynamic composition
+- Unit tests for each section type
+  **Dependencies**: Task 25  
+  **Definition of Done**: Can generate all example pages correctly
+
+### [ ] 28. API Generator Package
+
+**Description**: Create @zeno/generators/api package (Ref: Requirements §3.4)  
+**Deliverables**:
+
+- Package scaffold
+- API route templates
+  **Dependencies**: Task 15  
+  **Definition of Done**: Package builds and exports ApiGenerator
+
+### [ ] 29. CRUD API Generation
+
+**Description**: Generate RESTful API routes (Ref: Requirements §3.4)  
+**Deliverables**:
+
+- CRUD route templates
+- Validation middleware
+- Type-safe responses
+- Unit tests
+  **Dependencies**: Tasks 19, 28  
+  **Definition of Done**: APIs handle all CRUD operations with validation
+
+### [ ] 30. Authentication Integration
+
+**Description**: Generate NextAuth configuration (Ref: Requirements §4.1)  
+**Deliverables**:
+
+- Auth route generation
+- User table detection
+- Session type generation
+- Integration tests
+  **Dependencies**: Tasks 17, 29  
+  **Definition of Done**: Authentication works with generated user tables
+
+## Phase 3: CLI Implementation (Tasks 31-40)
+
+### [ ] 31. CLI Package Setup
+
+**Description**: Create @zeno/cli with oclif (Ref: Architecture §6)  
+**Deliverables**:
+
+- oclif project structure
+- Base command class
+- Package configuration
+  **Dependencies**: Task 15  
+  **Definition of Done**: CLI runs with help command
+
+### [ ] 32. Init Command
+
+**Description**: Implement project initialisation (Ref: Requirements §5)  
+**Deliverables**:
+
+- Interactive prompts with @clack/prompts
+- Project scaffolding
+- Dependency installation
+- Integration tests
+  **Dependencies**: Task 31  
+  **Definition of Done**: Can create new project and existing project setup
+
+### [ ] 33. Generate Command
+
+**Description**: Implement code generation command (Ref: Architecture §6)  
+**Deliverables**:
+
+- Generate command with flags
+- Progress indicators
+- Error handling
+- Unit tests
+  **Dependencies**: Tasks 30, 31  
+  **Definition of Done**: Generates all code types with proper output
+
+### [ ] 34. Validate Command
+
+**Description**: Schema validation command  
+**Deliverables**:
+
+- Validate command implementation
+- Detailed error reporting
+- Unit tests
+  **Dependencies**: Tasks 5, 31  
+  **Definition of Done**: Provides clear validation errors with line numbers
+
+### [ ] 35. Migrate Command
+
+**Description**: Database migration command  
+**Deliverables**:
+
+- Migration execution
+- Rollback support
+- Status reporting
+- Integration tests
+  **Dependencies**: Tasks 20, 31  
+  **Definition of Done**: Can run and rollback migrations
+
+### [ ] 36. Dev Command
+
+**Description**: Development mode with watching  
+**Deliverables**:
+
+- Combined watch and generate
+- HMR integration
+- Unit tests
+  **Dependencies**: Tasks 12, 33  
+  **Definition of Done**: Watches files and regenerates on changes
+
+### [ ] 37. CLI Error Handling
+
+**Description**: Consistent error output  
+**Deliverables**:
+
+- Error formatting
+- Debug mode support
+- Help suggestions
+  **Dependencies**: Tasks 6, 31  
+  **Definition of Done**: All errors are actionable and well-formatted
+
+### [ ] 38. CLI Configuration
+
+**Description**: Config detection and loading  
+**Deliverables**:
+
+- Config file detection
+- Environment variable support
+- Default handling
+  **Dependencies**: Tasks 7, 31  
+  **Definition of Done**: Finds and loads configuration correctly
+
+### [ ] 39. Interactive Mode
+
+**Description**: Enhanced interactive features  
+**Deliverables**:
+
+- Schema selection prompts
+- Confirmation dialogs
+- Progress animations
+  **Dependencies**: Task 31  
+  **Definition of Done**: All interactions are smooth and intuitive
+
+### [ ] 40. CLI Integration Tests
+
+**Description**: End-to-end CLI testing  
+**Deliverables**:
+
+- Full command flow tests
+- Output verification
+- Error scenario coverage
+  **Dependencies**: Tasks 31-39  
+  **Definition of Done**: All commands work in real scenarios
+
+## Phase 4: Integration & Polish (Tasks 41-50)
+
+### [ ] 41. Create Package
+
+**Description**: Implement @zeno/create for npx usage  
+**Deliverables**:
+
+- Standalone create package
+- Project templates
+- Quick start flow
+  **Dependencies**: Task 32  
+  **Definition of Done**: `npx @zeno/create my-app` works smoothly
+
+### [ ] 42. Navigation Generation
+
+**Description**: Auto-generate navigation components (Ref: Requirements §4.2)  
+**Deliverables**:
+
+- Navigation templates
+- Auto-detection logic
+- Mobile navigation
+- Unit tests
+  **Dependencies**: Tasks 23, 27  
+  **Definition of Done**: Navigation reflects page definitions correctly
+
+### [ ] 43. Email Configuration
+
+**Description**: Email setup for authentication (Ref: Requirements §4.1)  
+**Deliverables**:
+
+- Nodemailer integration
+- Verification templates
+- Configuration validation
+  **Dependencies**: Task 30  
+  **Definition of Done**: Email verification works in generated apps
+
+### [ ] 44. Seed Data Implementation
+
+**Description**: Database seeding functionality  
+**Deliverables**:
+
+- Seed command
+- Data generation from schemas
+- Relationship handling
+  **Dependencies**: Tasks 17, 35  
+  **Definition of Done**: Can seed all example data correctly
+
+### [ ] 45. Performance Optimisation
+
+**Description**: Meet performance targets (Ref: Requirements §9)  
+**Deliverables**:
+
+- Parallel generation
+- Caching implementation
+- Benchmark suite
+  **Dependencies**: Task 40  
+  **Definition of Done**: Meets all performance targets
+
+### [ ] 46. Accessibility Validation
+
+**Description**: Ensure WCAG compliance (Ref: Requirements §3.2)  
+**Deliverables**:
+
+- Accessibility tests
+- Component audits
+- Documentation
+  **Dependencies**: Tasks 22-24  
+  **Definition of Done**: All components pass accessibility checks
+
+### [ ] 47. Documentation Site
+
+**Description**: Create documentation with VitePress (Ref: Architecture §13.3)  
+**Deliverables**:
+
+- Documentation site setup
+- API documentation
+- Usage guides
+- Examples
+  **Dependencies**: Task 40  
+  **Definition of Done**: Comprehensive docs deployed
+
+### [ ] 48. Example Projects
+
+**Description**: Create example applications  
+**Deliverables**:
+
+- Blog example
+- SaaS starter
+- E-commerce demo
+  **Dependencies**: Task 40  
+  **Definition of Done**: Examples build and run correctly
+
+### [ ] 49. Testing Coverage
+
+**Description**: Achieve >90% test coverage (Ref: Architecture §9)  
+**Deliverables**:
+
+- Missing test cases
+- Coverage reports
+- CI integration
+  **Dependencies**: All previous tasks  
+  **Definition of Done**: Coverage exceeds 90% across all packages
+
+### [ ] 50. Release Preparation
+
+**Description**: Prepare for public release
+**Deliverables**:
+
+- NPM organisation setup
+- CI/CD pipeline
+- Security audit
+- Launch materials
+  **Dependencies**: All previous tasks  
+  **Definition of Done**: Ready for npm publish
+
+## Notes
+
+- Each task should have accompanying tests written first (TDD)
+- Tasks within phases can sometimes be worked in parallel by different developers
+- Performance benchmarks should be run after each generator implementation
+- Accessibility testing should be continuous, not just Task 46
+- Documentation should be updated as features are implemented
