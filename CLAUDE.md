@@ -300,6 +300,7 @@ Before submitting any code, ensure the following steps are completed:
 - **Granular commits** - do not commit all in single commit, break them up for optimal traceability
 - **Informative and concise commits** - multiline is encouraged but try to keep it less than 3 lines
 - **Follow commit guidance** outlined above
+- **You may use gh cli** - it is installed and functioning
 
 ## Known Issues & Workarounds
 
