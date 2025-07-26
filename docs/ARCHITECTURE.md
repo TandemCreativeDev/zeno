@@ -2,72 +2,84 @@
 
 ## 1. System Overview
 
-Zeno transforms JSON schema definitions into TypeScript types, database schemas, validation logic, and UI components. Built as a framework-agnostic node module with CLI and programmatic APIs.
+Zeno is a standalone Node module that generates production-ready NextJS applications from JSON schema definitions. Built with modern tooling and accessibility-first principles.
 
 ```
 ┌───────────────────────────────────────────┐
 │                CLI (oclif)                │
-│  ┌──────┐ ┌────────┐ ┌──────┐ ┌───────┐   │
-│  │ init │ │generate│ │watch │ │migrate│   │
-│  └───┬──┘ └───┬────┘ └───┬──┘ └───┬───┘   │
-│      └────────┴─────┬────┴────────┘       │
+│  ┌──────┐ ┌────────┐ ┌────────┐ ┌─────┐   │
+│  │ init │ │validate│ │generate│ │watch│   │
+│  └───┬──┘ └────┬───┘ └───┬────┘ └──┬──┘   │
+│      └─────────┴────┬────┴─────────┘      │
 └─────────────────────┼─────────────────────┘
                       │
 ┌─────────────────────▼─────────────────────┐
 │                Core Engine                │
-│  ┌────────┐ ┌──────────┐ ┌─────────────┐  │
-│  │ Schema │ │ Template │ │  Generator  │  │
-│  │ Loader │ │  Engine  │ │  Pipeline   │  │
-│  └───┬────┘ └─────┬────┘ └──────┬──────┘  │
-│      └────────────┼─────────────┘         │
-└───────────────────┼───────────────────────┘
-                    │
-┌───────────────────▼───────────────────────┐
-│           Output Plugins                  │
-│  ┌──────┐ ┌─────┐ ┌──────┐ ┌──────────┐   │
-│  │Types │ │ ORM │ │Valid │ │Components│   │
-│  └──────┘ └─────┘ └──────┘ └──────────┘   │
+│  ┌──────────┐ ┌──────────┐ ┌───────────┐  │
+│  │  Schema  │ │ Template │ │ Generator │  │
+│  │  Loader  │ │  Engine  │ │ Pipeline  │  │
+│  └───┬──────┘ └─────┬────┘ └──────┬────┘  │
+│      └──────────────┼─────────────┘       │
+└─────────────────────┼─────────────────────┘
+                      │
+┌─────────────────────▼─────────────────────┐
+│              Output Plugins               │
+│  ┌────────┐ ┌───────┐ ┌───────┐ ┌─────┐   │
+│  │ Models │ │ Comps │ │ Pages │ │ API │   │
+│  └────────┘ └───────┘ └───────┘ └─────┘   │
 └───────────────────────────────────────────┘
 ```
 
 ## 2. Technology Stack
 
-**Build & Development**
+### Build & Development
 
-- **tsup**: Zero-config TypeScript bundler (wraps esbuild)
-- **TypeScript 5.0+**: With strict mode and ES2022 target
-- **pnpm workspaces**: Monorepo package management
-- **Turborepo**: Build orchestration and caching
+- **tsup**: Zero-config TypeScript bundler (wraps esbuild) for lightning-fast builds
+- **TypeScript 5.0+**: Strict mode with ES2022 target
+- **pnpm workspaces**: Efficient monorepo package management
+- **Turborepo**: Build orchestration with intelligent caching
 
-**CLI Framework**
+### CLI Framework
 
-- **oclif**: Enterprise-grade CLI framework
-- **commander.js**: Fallback for simpler commands
+- **oclif**: Enterprise-grade CLI framework from Salesforce/Heroku
+- **@clack/prompts**: Beautiful interactive prompts
 
-**Template Engine**
+### Code Generation
 
-- **Handlebars**: Template rendering
-- **plop**: File scaffolding automation
+- **Handlebars**: Battle-tested template engine
+- **Plop**: Micro-generator framework for file scaffolding
 
-**Testing & Quality**
+### Testing & Quality
 
-- **Vitest**: Fast, modern test runner
-- **Biome**: Linting and formatting
-- **changesets**: Version management and publishing
+- **Vitest**: Blazing fast test runner with HMR support
+- **Biome**: All-in-one linter/formatter (replaces ESLint + Prettier)
+- **changesets**: Flexible version management and publishing
+
+### Generated App Stack
+
+- **Next + Tailwind**: Full-stack framework
+- **NextAuth**: Authentication with automated configuration
+- **Nodemailer**: Email verification
+- **Drizzle ORM**: Type-safe database operations
+- **PostgreSQL**: RDBMS
+- **Zod**: Runtime validation
+- **DaisyUI**: Accessible component styling
+
+## 3. Package Structure
 
 ## 3. Package Structure
 
 ```
 zeno/
 ├── packages/
-│   ├── @zeno/core           # Core framework
+│   ├── @zeno/core           # Core framework engine
 │   ├── @zeno/cli            # CLI implementation
-│   ├── @zeno/generators/    # Generator plugins
-│   │   ├── types            # TypeScript types
-│   │   ├── drizzle          # Drizzle ORM
-│   │   ├── zod              # Zod validation
-│   │   └── react            # React components
-│   └── @zeno/create         # Scaffolding tool
+│   ├── @zeno/generators/    # Output generators
+│   │   ├── models           # Drizzle + TypeScript + Zod
+│   │   ├── components       # React components
+│   │   ├── pages            # NextJS pages
+│   │   └── api              # API routes
+│   └── @zeno/create         # Project scaffolding
 ├── examples/                # Example projects
 ├── docs/                    # Documentation site
 └── turbo.json               # Turborepo config
@@ -76,13 +88,6 @@ zeno/
 ## 4. Core Architecture
 
 ### 4.1 Schema System
-
-Schemas follow the structure defined in:
-
-- [Entity Template](templates/entity.json)
-- [Enum Template](templates/enum.json)
-- [Page Template](templates/page.json)
-- [App Template](templates/app.json)
 
 ```typescript
 interface SchemaLoader {
@@ -99,29 +104,30 @@ interface SchemaSet {
 }
 ```
 
+Schema specifications:
+
+- [Entity Template](templates/entity.json)
+- [Enum Template](templates/enum.json)
+- [Page Template](templates/page.json)
+- [App Template](templates/app.json)
+
 ### 4.2 Generation Pipeline
 
 ```typescript
 interface GenerationPipeline {
-  // Plugin registration
-  use(generator: Generator): this;
-
-  // Generation execution
+  register(generator: Generator): this;
   generate(schemas: SchemaSet, config: Config): Promise<Result>;
-
-  // Incremental generation
   generateChanges(changes: SchemaChange[]): Promise<Result>;
 }
 
 abstract class Generator {
   abstract name: string;
   abstract generate(context: GeneratorContext): Promise<GeneratedFile[]>;
+  abstract supports(schema: Schema): boolean;
 }
 ```
 
 ### 4.3 Template Engine
-
-Using Handlebars with custom helpers:
 
 ```typescript
 interface TemplateEngine {
@@ -129,45 +135,35 @@ interface TemplateEngine {
   registerPartial(name: string, template: string): void;
   render(template: string, data: unknown): string;
 }
-
-// Built-in helpers
-const helpers = {
-  camelCase,
-  pascalCase,
-  kebabCase,
-  snakeCase,
-  pluralise,
-  singularise,
-  json,
-  eq,
-  includes,
-};
 ```
+
+Built-in helpers:
+
+- Case transformers: `camelCase`, `pascalCase`, `kebabCase`, `snakeCase`
+- Pluralisation: `pluralise`, `singularise`
+- Utilities: `json`, `eq`, `includes`, `when`
 
 ## 5. Generator Architecture
 
-Each generator is a standalone package following this pattern:
+Each generator follows a consistent pattern:
 
 ```typescript
-// packages/generators/drizzle/src/index.ts
-export class DrizzleGenerator extends Generator {
-  name = "drizzle";
+export class ModelGenerator extends Generator {
+  name = "models";
+
+  supports(schema: Schema): boolean {
+    return schema.type === "entity" || schema.type === "enum";
+  }
 
   async generate(context: GeneratorContext): Promise<GeneratedFile[]> {
-    const { entities, enums } = context.schemas;
     const files: GeneratedFile[] = [];
 
-    // Generate schemas
-    for (const [name, entity] of entities) {
-      files.push({
-        path: `database/schema/${name}.ts`,
-        content: await this.generateSchema(entity),
-      });
-    }
-
-    // Generate migrations
-    if (context.config.migrations) {
-      files.push(...(await this.generateMigrations(context)));
+    for (const [name, entity] of context.schemas.entities) {
+      files.push(
+        await this.generateSchema(entity),
+        await this.generateTypes(entity),
+        await this.generateValidation(entity)
+      );
     }
 
     return files;
@@ -180,15 +176,17 @@ export class DrizzleGenerator extends Generator {
 Using oclif for robust CLI features:
 
 ```typescript
-// packages/cli/src/commands/generate.ts
 import { Command, Flags } from "@oclif/core";
 
 export class Generate extends Command {
   static description = "Generate code from schemas";
 
   static flags = {
-    watch: Flags.boolean({ char: "w" }),
-    only: Flags.string({ multiple: true }),
+    watch: Flags.boolean({ char: "w", description: "Watch for changes" }),
+    only: Flags.string({
+      multiple: true,
+      options: ["models", "components", "pages", "api"],
+    }),
   };
 
   async run() {
@@ -196,9 +194,9 @@ export class Generate extends Command {
     const zeno = await Zeno.create();
 
     if (flags.watch) {
-      await zeno.watch();
+      await zeno.watch({ generators: flags.only });
     } else {
-      await zeno.generate({ only: flags.only });
+      await zeno.generate({ generators: flags.only });
     }
   }
 }
@@ -206,55 +204,63 @@ export class Generate extends Command {
 
 ## 7. Configuration
 
-```typescript
-// zeno.config.ts
-export default defineConfig({
-  schemas: "./zeno",
-  output: "./src",
+[**Example zeno config file**](examples/zeno.config.ts)
 
-  generators: {
-    types: true,
-    drizzle: {
-      migrations: true,
-      seed: true,
-    },
-    zod: true,
-    components: {
-      framework: "react",
-      styling: "tailwind",
+Configuration via `zeno.config.ts`:
+
+```typescript
+export default defineConfig({
+  schemaDir: "./zeno",
+  outputDir: "./src",
+
+  database: {
+    provider: "postgresql",
+    connection: process.env.DATABASE_URL!,
+    migrations: {
+      dir: "./drizzle",
+      auto: true,
     },
   },
 
-  templates: {
-    // Custom template overrides
-    "component/form": "./templates/custom-form.hbs",
+  email: {
+    host: process.env.EMAIL_HOST!,
+    port: parseInt(process.env.EMAIL_PORT || "587"),
+    auth: {
+      user: process.env.EMAIL_USER!,
+      pass: process.env.EMAIL_PASS!,
+    },
+  },
+
+  generate: {
+    models: true,
+    components: true,
+    pages: true,
+    api: true,
   },
 });
 ```
 
-### 8. Build Configuration
+## 8. Build Configuration
 
-Using tsup for zero-config builds:
+Using tsup for zero-config builds, in `tsup.config.ts`:
 
 ```javascript
-// tsup.config.ts
 export default defineConfig({
   entry: ["src/index.ts"],
   format: ["cjs", "esm"],
   dts: true,
-  splitting: false,
   sourcemap: true,
   clean: true,
   external: ["node:*"],
+  treeshaking: true,
 });
 ```
 
 ### 9. Testing Strategy
 
-Using Vitest for fast, modern testing:
+Using Vitest for modern testing, in`vitest.config.ts`:
 
 ```typescript
-// vitest.config.ts
 export default defineConfig({
   test: {
     globals: true,
@@ -282,12 +288,17 @@ describe("SchemaLoader", () => {
 });
 ```
 
-### 10. Publishing & Release
+Test categories:
 
-Using changesets for automated releases:
+- **Unit**: Schema validation, generator output correctness, template rendering, utility functions, CLI command behaviour
+- **Integration**: Full generation pipeline, file system operations
+- **E2E**: Complete project generation and build verification
+
+## 10. Publishing & Release
+
+Using changesets for automated releases, in `.changeset/config.json`:
 
 ```json
-// .changeset/config.json
 {
   "changelog": "@changesets/cli/changelog",
   "commit": false,
@@ -297,105 +308,41 @@ Using changesets for automated releases:
 }
 ```
 
-GitHub Action for releases:
+GitHub Actions workflow handles:
 
-```yaml
-name: Release
-on:
-  push:
-    branches: [main]
+- Automated testing on PRs
+- Version bumping via changesets
+- NPM publishing on main branch
+- GitHub release creation
 
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
+## 11. Performance Optimisations
 
-      - run: pnpm install
-      - run: pnpm build
-      - run: pnpm test
+### Incremental Generation
 
-      - uses: changesets/action@v1
-        with:
-          publish: pnpm release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-```
-
-### 11. Plugin System
-
-Simple, powerful plugin API:
-
-```typescript
-interface Plugin {
-  name: string;
-
-  // Lifecycle hooks
-  setup?(zeno: Zeno): void | Promise<void>;
-  beforeGenerate?(context: Context): void | Promise<void>;
-  afterGenerate?(result: Result): void | Promise<void>;
-
-  // Custom generators
-  generators?: Generator[];
-
-  // Template extensions
-  templates?: Record<string, string>;
-  helpers?: Record<string, Helper>;
-}
-
-// Usage
-export default defineConfig({
-  plugins: [
-    zenoAuth(), // Authentication generator
-    zenoGraphQL(), // GraphQL schema generator
-    zenoOpenAPI(), // OpenAPI spec generator
-  ],
-});
-```
-
-### 12. Performance Optimisations
-
-**Incremental Generation**
-
-- File-level caching with content hashing
+- Only regenerate changed schemas
+- Content hashing for file-level caching
 - Dependency graph for minimal regeneration
 - Parallel generation using worker threads
 
-**Build Caching**
+### Build Caching
 
-- Turborepo for cross-machine caching
+- Turborepo for local and remote caching
 - Granular task dependencies
-- Remote caching support
+- Shared cache across team
 
-**Development Mode**
+### Development Mode
 
-- Hot reload via file watching
+- File watching with chokidar
 - In-memory caching
-- Partial generation on change
+- HMR-style updates for generated files
+- Minimal file writes to preserve hot reload
 
-### 13. Error Handling
+## 12. Error Handling
 
-Clear, actionable error messages:
+Clear, actionable error messages with source mapping:
 
-```typescript
-class SchemaValidationError extends Error {
-  constructor(
-    public file: string,
-    public line: number,
-    public column: number,
-    public details: string
-  ) {
-    super(`Invalid schema in ${file}:${line}:${column}\n${details}`)
-  }
-}
-
-// Pretty error output
-✖ Invalid schema in schemas/users.json:15:8
+```
+✖ Invalid schema in zeno/entities/users.json:15:8
 
   Property "email" validation error:
   Cannot use both "email: true" and "pattern" together
@@ -408,60 +355,31 @@ class SchemaValidationError extends Error {
   17 │   }
 ```
 
-### 14. Developer Experience
+## 13. Developer Experience
 
-**TypeScript-First**
+### IDE Support
 
-- Full type inference from schemas
-- Strict mode by default
-- Declaration maps for debugging
+- JSON schemas for autocompletion in schema files
+- TypeScript declaration maps for debugging
+- Source maps for generated code
 
-**IDE Support**
+### CLI Features
 
-- JSON schemas for autocompletion
-- VS Code extension (future)
-- Inline documentation
-
-**CLI Features**
-
-- Interactive prompts with @clack/prompts
-- Progress indicators
-- Colored output
+- Interactive prompts for complex commands with @clack/prompts
+- Progress indicators for long operations
+- Coloured output with semantic meaning
 - Debug mode with verbose logging
 
-### 15. Security Considerations
+### Documentation
 
-- Path sanitisation for file operations
-- Template sandboxing
-- No arbitrary code execution
-- Dependency scanning in CI
-- Regular security audits
+- Auto-generated API docs from JSDoc
+- Interactive examples in documentation
+- Migration guides between versions
 
-### 16. Non-Functional Requirements
+## 14. Security Considerations
 
-**Performance**
-
-- < 100ms startup time
-- < 1s for 100 table generation
-- < 50ms incremental updates
-
-**Compatibility**
-
-- Node.js 18+ (LTS versions)
-- ESM and CommonJS dual package
-- Windows, macOS, Linux support
-
-**Package Size**
-
-- Core: < 2MB
-- CLI: < 5MB
-- Generators: < 1MB each
-
-### 17. Migration Path
-
-From existing Next.js implementation:
-
-1. Extract core logic to @zeno/core
-2. Maintain backwards compatibility via adapter
-3. Gradual deprecation with clear migration guides
-4. Automated migration tool using plop
+- **Input Validation**: Schema sanitisation prevents injection
+- **Path Safety**: All file operations within project boundaries
+- **Template Sandboxing**: No arbitrary code execution in templates
+- **Dependency Scanning**: Automated security audits in CI
+- **Email Security**: TLS enforcement, credential encryption
