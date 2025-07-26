@@ -1,0 +1,6 @@
+packages:
+  - "packages/@zeno/core"
+  - "packages/@zeno/cli"
+  - "packages/@zeno/create"
+  - "packages/@zeno/generators/*"
+  - "examples/*"
