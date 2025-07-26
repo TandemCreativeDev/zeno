@@ -170,6 +170,33 @@ Built-in helpers:
 - Pluralisation: `pluralise`, `singularise`
 - Utilities: `json`, `eq`, `includes`, `when`
 
+### Template Helper Implementation
+
+Handlebars helpers use flexible signatures to accommodate the framework's argument passing:
+
+```typescript
+export type TemplateHelper = (...args: unknown[]) => unknown;
+
+// Helper implementation pattern
+this.registerHelper("when", (...args: unknown[]) => {
+  const condition = args[0];
+  const truthyValue = args[1];
+  const falsyValue = args.length > 2 && typeof args[2] !== "object" ? args[2] : "";
+  return condition ? truthyValue : falsyValue;
+});
+
+// Prevent HTML escaping for structured output
+this.registerHelper("json", (...args: unknown[]) => {
+  const obj = args[0];
+  return new this.handlebars.SafeString(JSON.stringify(obj, null, 2));
+});
+```
+
+**Implementation Notes:**
+- Handlebars passes an options object as the final argument to helpers
+- Use `SafeString` to prevent HTML entity escaping for JSON/structured output
+- Modern Handlebars (4.7+) includes TypeScript definitions
+
 ## 5. Generator Architecture
 
 Each generator follows a consistent pattern:

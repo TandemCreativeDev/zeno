@@ -81,7 +81,7 @@
   **Dependencies**: Tasks 3, 4  
   **Definition of Done**: Can load zeno.config.ts, applies defaults correctly
 
-### [ ] 8. Template Engine Setup
+### [x] 8. Template Engine Setup
 
 **Description**: Integrate Handlebars with custom helpers (Ref: Architecture §4.3)  
 **Deliverables**:

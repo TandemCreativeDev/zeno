@@ -37,3 +37,11 @@ export interface ValidationError {
   line?: number;
   column?: number;
 }
+
+export type TemplateHelper = (...args: unknown[]) => unknown;
+
+export interface TemplateEngine {
+  registerHelper(name: string, fn: TemplateHelper): void;
+  registerPartial(name: string, template: string): void;
+  render(template: string, data: unknown): string;
+}

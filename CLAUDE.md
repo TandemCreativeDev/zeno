@@ -338,6 +338,12 @@ const partialDatabaseSchema = z.object({
 
 This allows intuitive config authoring like `{ migrations: { auto: true } }` while maintaining type safety.
 
+### Handlebars Template Engine Integration
+
+**Key Learnings**:
+- Use `(...args: unknown[]) => unknown` signature for Handlebars helpers to handle options object properly
+- Use `SafeString` for structured output like JSON to prevent HTML escaping
+
 ## References
 
 - [Architecture Specification](docs/ARCHITECTURE.md)
