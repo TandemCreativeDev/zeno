@@ -25,7 +25,7 @@
   **Dependencies**: Task 1  
   **Definition of Done**: Package builds with `pnpm build`, outputs ESM and CJS
 
-### [ ] 3. Type Definitions Definitions
+### [x] 3. Type Definitions Definitions
 
 **Description**: Define core TypeScript interfaces and types within @zeno/core package (Ref: Architecture §4.1)
 **Deliverables**:
