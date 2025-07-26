@@ -2,7 +2,7 @@
 
 ## Phase 1: Foundation (Tasks 1-15)
 
-### [ ] 1. Monorepo Setup
+### [x] 1. Monorepo Setup
 
 **Description**: Initialise pnpm workspace with Turborepo configuration  
 **Deliverables**:
@@ -14,7 +14,7 @@
   **Dependencies**: None  
   **Definition of Done**: `pnpm install` works, `pnpm build` runs successfully
 
-### [ ] 2. Core Package Scaffold
+### [x] 2. Core Package Scaffold
 
 **Description**: Create @zeno/core package with TypeScript and build configuration  
 **Deliverables**:

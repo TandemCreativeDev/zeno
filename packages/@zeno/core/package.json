@@ -1,0 +1,55 @@
+{
+  "name": "@zeno/core",
+  "version": "0.0.1",
+  "description": "Core framework engine for Zeno - schema loading, validation, and generation pipeline",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "nextjs",
+    "code-generation",
+    "schema",
+    "typescript",
+    "framework"
+  ],
+  "author": "Zeno Framework",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TandemCreativeDev/zeno.git",
+    "directory": "packages/@zeno/core"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "packageManager": "pnpm@10.13.1",
+  "dependencies": {
+    "chokidar": "4.0.3",
+    "handlebars": "4.7.8",
+    "zod": "4.0.10"
+  },
+  "devDependencies": {
+    "@types/node": "24.1.0",
+    "tsup": "8.5.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}
