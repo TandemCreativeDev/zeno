@@ -1,8 +1,8 @@
-# Zeno Framework
-
 <div align="center">
- <img src="./assets/logo.svg" width="150" height="150" alt="Zeno Logo">
+ <img src="./assets/logo.svg" width="175" height="175" alt="Zeno Logo">
 </div>
+
+# Zeno Framework
 
 Standalone Node module that generates production-ready NextJS applications from JSON schema definitions. Eliminates boilerplate development by automatically generating database models, UI components, pages, navigation, and API routes directly into standard NextJS project structure.
 
