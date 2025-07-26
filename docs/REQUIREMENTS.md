@@ -74,6 +74,7 @@ zeno/
 - **Generated Pages**: `/signin`, `/signup`, `/profile` routes created automatically
 - **Route Protection**: Automatic protection based on page auth requirements
 - **Session Management**: Type-safe session handling with user data
+- **Automated emailing**: Verification on signup
 
 ### 4.2 Navigation System
 
