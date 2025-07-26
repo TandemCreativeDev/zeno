@@ -31,7 +31,7 @@ export const AppMetadataSchema = z.object({
 export const AppSchemaValidator = z.object({
   name: z.string().min(1).max(100),
   description: z.string().min(1).max(500),
-  url: z.string().url("URL must be a valid URL"),
+  url: z.url("URL must be a valid URL"),
   theme: AppThemeSchema.optional(),
   features: AppFeaturesSchema.optional(),
   metadata: AppMetadataSchema.optional(),
