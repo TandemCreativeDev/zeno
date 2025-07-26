@@ -1,6 +1,4 @@
-// Form component for users table
-// This file is auto-generated. Do not edit manually.
-// Generated at: 2025-07-25T00:16:36.341Z
+// @ts-nocheck
 
 "use client";
 
