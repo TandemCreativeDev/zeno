@@ -1,7 +1,7 @@
 # Zeno Framework
 
 <div align="center">
- <img src="./sassets/logo.svg" width="150" height="150" alt="GatBot Logo">
+ <img src="./assets/logo.svg" width="150" height="150" alt="Zeno Logo">
 </div>
 
 Standalone Node module that generates production-ready NextJS applications from JSON schema definitions. Eliminates boilerplate development by automatically generating database models, UI components, pages, navigation, and API routes directly into standard NextJS project structure.
