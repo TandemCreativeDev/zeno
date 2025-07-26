@@ -37,7 +37,7 @@
   **Dependencies**: Task 2
   **Definition of Done**: Types compile without errors, can import from @zeno/core
 
-### [ ] 4. Schema Validation Rules
+### [x] 4. Schema Validation Rules
 
 **Description**: Implement JSON schema validation using Zod (Ref: Architecture §4.1)  
 **Deliverables**:

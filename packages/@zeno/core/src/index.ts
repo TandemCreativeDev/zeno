@@ -11,3 +11,4 @@ export function createZeno() {
 }
 
 export * from "./types";
+export * from "./validation";
