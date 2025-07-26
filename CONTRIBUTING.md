@@ -21,14 +21,14 @@ Thank you for your interest in contributing to Zeno! This guide will help you ge
 **HTTPS:**
 
 ```bash
-git clone https://github.com/TandemCreativeDev/zeno.git
+git clone https://github.com/[YOUR_USERNAME]/zeno.git
 cd zeno
 ```
 
 **SSH:**
 
 ```bash
-git clone git@github.com:TandemCreativeDev/zeno.git
+git clone git@github.com:[YOUR_USERNAME]/zeno.git
 cd zeno
 ```
 
