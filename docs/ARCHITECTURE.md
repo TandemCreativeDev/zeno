@@ -87,7 +87,34 @@ zeno/
 
 ## 4. Core Architecture
 
-### 4.1 Schema System
+### 4.1 Type System & Validation
+
+Zeno uses **Zod as the single source of truth** for all data structures, ensuring runtime validation matches compile-time types:
+
+```typescript
+// Validation schema defines structure and validation rules
+export const EntitySchemaValidator = z.object({
+  name: z.string().min(1),
+  columns: z.array(EntityColumnSchema),
+  ui: EntityUiSchema.optional(),
+});
+
+// TypeScript types inferred from Zod schemas
+export type EntitySchema = z.infer<typeof EntitySchemaValidator>;
+export type EntityColumn = z.infer<typeof EntityColumnSchema>;
+
+// Clean re-exports for organized imports
+// src/types/entity.ts
+export type { EntitySchema, EntityColumn } from "../validation/entitySchema";
+```
+
+**Benefits:**
+- **Single source of truth**: Schema changes automatically update types
+- **Runtime safety**: Validation matches TypeScript types exactly
+- **Maintainability**: No manual type synchronization required
+- **Developer experience**: IntelliSense works seamlessly with validated data
+
+### 4.2 Schema System
 
 ```typescript
 interface SchemaLoader {
@@ -111,7 +138,7 @@ Schema specifications:
 - [Page Template](templates/page.json)
 - [App Template](templates/app.json)
 
-### 4.2 Generation Pipeline
+### 4.3 Generation Pipeline
 
 ```typescript
 interface GenerationPipeline {
@@ -127,7 +154,7 @@ abstract class Generator {
 }
 ```
 
-### 4.3 Template Engine
+### 4.4 Template Engine
 
 ```typescript
 interface TemplateEngine {

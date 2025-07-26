@@ -81,6 +81,7 @@ const onSchemaChange = (changes: SchemaChange[]) => {};
 - **NO `any` type allowed** - use proper typing
 - **Minimal use of `unknown`** - prefer specific types
 - **Explicit return types** for public API functions
+- **Zod as single source of truth** - infer TypeScript types from Zod schemas (ref [Architecture](docs/ARCHITECTURE.md) 4.1)
 
 ```typescript
 // ✅ Good - inferred where clear, explicit for public APIs
@@ -262,6 +263,7 @@ Before submitting any code, ensure the following steps are completed:
    - **Function Patterns:** Class methods, function declarations for utilities, arrows for callbacks
    - **File Naming:** camelCase utilities, PascalCase classes, simple command/type names
    - **TypeScript:** No `any` types, minimal `unknown`, explicit public API returns
+   - **Zod Type Inference:** Types inferred from Zod schemas with clean re-exports
    - **Error Handling:** Custom error classes with context information
    - **Export Patterns:** Named exports with explicit index file re-exports
    - **CLI Output:** @clack/prompts for consistent user experience
@@ -271,6 +273,7 @@ Before submitting any code, ensure the following steps are completed:
    - [ ] Function declarations used for standalone utilities
    - [ ] Imports properly ordered with types last
    - [ ] No `any` types used anywhere in codebase
+   - [ ] Types inferred from Zod schemas where validation exists
    - [ ] Custom error classes provide sufficient context
    - [ ] CLI output uses @clack/prompts consistently
    - [ ] Public APIs have JSDoc documentation
@@ -289,6 +292,51 @@ Before submitting any code, ensure the following steps are completed:
 - < 10MB memory per table
 - < 2s complete application generation (50 entities)
 - Parallel generation support with worker threads
+
+## Implementation Challenges & Solutions
+
+### Nested Partial Schemas in Zod
+
+**Problem**: When using Zod `.partial()` on schemas with nested objects that have defaults, TypeScript errors occur when providing partial nested objects:
+
+```typescript
+// ❌ This pattern causes TypeScript errors
+const schema = z.object({
+  database: z.object({
+    dir: z.string().default("./drizzle"),
+    auto: z.boolean().default(false),
+  }).default({}),
+});
+
+const partialSchema = schema.partial();
+// Error: Property 'dir' is missing when trying to use { auto: true }
+```
+
+**Solution**: Define separate schemas for nested objects and create explicit partial schemas:
+
+```typescript
+// ✅ Correct pattern for nested partial schemas
+const migrationsSchema = z.object({
+  dir: z.string().default("./drizzle"),
+  auto: z.boolean().default(false),
+});
+
+const partialMigrationsSchema = migrationsSchema.partial();
+
+const partialDatabaseSchema = z.object({
+  provider: z.literal("postgresql").optional(),
+  connection: z.string().optional(),
+  migrations: partialMigrationsSchema.optional(),
+}).strict();
+```
+
+**Key Learnings**:
+- `.partial()` doesn't handle nested objects with defaults properly
+- Define nested schemas separately for better partial handling
+- Create explicit partial schemas for complex nested structures
+- Final validation should still use complete schemas to ensure required fields
+
+This allows intuitive config authoring like `{ migrations: { auto: true } }` while maintaining type safety.
 
 ## References
 

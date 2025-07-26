@@ -7,6 +7,7 @@ export { EnumSchemaValidator } from "./enumSchema";
 export { PageSchemaValidator } from "./pageSchema";
 export { AppSchemaValidator } from "./appSchema";
 export { validateSchemaSet } from "./schemaSet";
+export { zenoConfigSchema, zenoConfigInputSchema, databaseConfigSchema, emailConfigSchema, generateConfigSchema, devConfigSchema } from "./configSchema";
 
 export type { ValidationResult, ValidationError } from "../types/core";
 

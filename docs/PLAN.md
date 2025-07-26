@@ -70,7 +70,7 @@
   **Dependencies**: Task 2  
   **Definition of Done**: Errors provide actionable messages with context
 
-### [ ] 7. Configuration System
+### [x] 7. Configuration System
 
 **Description**: Implement config loading with defaults (Ref: Architecture §7)  
 **Deliverables**:
@@ -493,7 +493,7 @@
 - Nodemailer integration
 - Verification templates
 - Configuration validation
-  **Dependencies**: Task 30  
+  **Dependencies**: Tasks 7, 30  
   **Definition of Done**: Email verification works in generated apps
 
 ### [ ] 44. Seed Data Implementation

@@ -7,3 +7,4 @@ export type { EntitySchema, EntityColumn, EntityIndex, EntityRelationship, Entit
 export type { EnumSchema, EnumValue } from "./enum";
 export type { PageSchema, PageSection, PageNavigation, PageStat, PageSectionFilters, PageMetadata, PageAuth } from "./page";
 export type { SchemaSet, GeneratorContext, GeneratedFile, ValidationResult, ValidationError } from "./core";
+export type { ZenoConfig, ZenoConfigInput, DatabaseConfig, EmailConfig, GenerateConfig, DevConfig } from "./config";
