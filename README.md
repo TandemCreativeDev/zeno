@@ -8,7 +8,7 @@ Standalone Node module that generates production-ready NextJS applications from 
 
 ## Who is Zeno?
 
-Zeno of Elea was a the Greek philosopher who believed that only one single entity exists that makes up all of reality (the JSON schemas), and rejected the existence of space, time, and motion (the code and infrastructure). In our case, Zeno rejects the existence of boilerplate code and scattered repeated variables, they only believe in the single entity that is JSON schemas. Our schemas are the only thing that is real, nothing else is real, code does not exist (or at least until you `zeno generate` it that is!).
+Zeno of Elea was a the Greek philosopher who believed that only one single entity exists that makes up all of reality (the JSON schemas), and rejected the existence of space, time, and motion (the code and infrastructure). In our case, Zeno rejects the existence of boilerplate code and scattered repeated variables, they only believe in the single entity that is JSON schemas. Our schemas are the only thing that is real, everything else is an illusion, code does not exist (or at least until you `zeno generate` it that is!).
 
 ## Tech Stack
 
