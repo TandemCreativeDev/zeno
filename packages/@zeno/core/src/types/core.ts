@@ -2,10 +2,10 @@
  * Core type definitions for schema loading and generation
  */
 
-import type { AppSchema } from "../validation/appSchema";
-import type { EntitySchema } from "../validation/entitySchema";
-import type { EnumSchema } from "../validation/enumSchema";
-import type { PageSchema } from "../validation/pageSchema";
+import type { AppSchema } from "./app";
+import type { EntitySchema } from "./entity";
+import type { EnumSchema } from "./enum";
+import type { PageSchema } from "./page";
 
 export interface SchemaSet {
   entities: Map<string, EntitySchema>;
