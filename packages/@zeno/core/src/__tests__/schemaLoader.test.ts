@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { join } from "node:path";
-import { SchemaLoader } from "../schemaLoader";
-import { SchemaValidationError } from "../errors";
+import { SchemaLoader } from "../utils/schemaLoader";
+import { SchemaValidationError } from "../utils/errors";
 
 describe("SchemaLoader", () => {
   const loader = new SchemaLoader();

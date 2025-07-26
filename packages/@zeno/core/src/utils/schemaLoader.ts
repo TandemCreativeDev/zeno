@@ -8,14 +8,14 @@
 import { readFile, readdir, stat } from "node:fs/promises";
 import { join, extname, basename } from "node:path";
 
-import { validateSchemaSet } from "./validation";
+import { validateSchemaSet } from "../validation";
 import { SchemaValidationError } from "./errors";
 
-import type { SchemaSet, ValidationResult } from "./types/core";
-import type { AppSchema } from "./types/app";
-import type { EntitySchema } from "./types/entity";
-import type { EnumSchema } from "./types/enum";
-import type { PageSchema } from "./types/page";
+import type { SchemaSet, ValidationResult } from "../types/core";
+import type { AppSchema } from "../types/app";
+import type { EntitySchema } from "../types/entity";
+import type { EnumSchema } from "../types/enum";
+import type { PageSchema } from "../types/page";
 
 export class SchemaLoader {
   /**
@@ -65,10 +65,7 @@ export class SchemaLoader {
             firstError.line
           );
         }
-        throw new SchemaValidationError(
-          "Schema validation failed",
-          schemaDir
-        );
+        throw new SchemaValidationError("Schema validation failed", schemaDir);
       }
 
       return { entities, enums, pages, app };
@@ -76,9 +73,11 @@ export class SchemaLoader {
       if (error instanceof SchemaValidationError) {
         throw error;
       }
-      
+
       throw new SchemaValidationError(
-        `Failed to load schemas: ${error instanceof Error ? error.message : String(error)}`,
+        `Failed to load schemas: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
         schemaDir
       );
     }
@@ -140,13 +139,15 @@ export class SchemaLoader {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") {
         throw new SchemaValidationError(`Schema file not found`, filePath);
       }
-      
+
       if (error instanceof SyntaxError) {
         throw new SchemaValidationError(`Invalid JSON syntax`, filePath);
       }
-      
+
       throw new SchemaValidationError(
-        `Failed to read file: ${error instanceof Error ? error.message : String(error)}`,
+        `Failed to read file: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
         filePath
       );
     }

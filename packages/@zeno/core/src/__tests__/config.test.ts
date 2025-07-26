@@ -15,8 +15,8 @@ import {
   resolveConfig,
   validateConfig,
   DEFAULT_CONFIG,
-} from "../config";
-import { ConfigurationError } from "../errors";
+} from "../utils/config";
+import { ConfigurationError } from "../utils/errors";
 
 import type { ZenoConfigInput } from "../types/config";
 

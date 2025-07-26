@@ -3,7 +3,7 @@ import {
   SchemaValidationError,
   GenerationError,
   ConfigurationError,
-} from "../errors";
+} from "../utils/errors";
 
 describe("SchemaValidationError", () => {
   it("should create error with file path", () => {
