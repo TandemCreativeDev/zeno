@@ -21,7 +21,9 @@ zeno/
 **Output Structure:** Standard NextJS App Router project with generated code in `src/models/`, `src/components/`, and `src/app/`
 
 [**Configuration Templates**](templates/schemas/)  
-[**Working Examples**](examples/)
+[**Configuration Working Examples**](examples/schemas)
+[**Reusable UI Components**](templates/ui/)  
+[**Generated Components Examples**](examples/components)
 
 ## 3. Code Generation Pipeline
 
@@ -126,7 +128,7 @@ Key configuration options:
 ## 7. Entity Configuration
 
 [**Entity Template**](templates/schemas/entity.json)  
-[**Entity Examples**](examples/entities/)
+[**Entity Examples**](examples/schemas/entities/)
 
 Key features:
 
@@ -140,7 +142,7 @@ Key features:
 ## 8. Page System
 
 [**Page Template**](templates/schemas/page.json)  
-[**Page Examples**](examples/pages/)
+[**Page Examples**](examples/schemas/pages/)
 
 **Section Types:**
 
