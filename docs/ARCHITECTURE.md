@@ -1,590 +1,467 @@
-# Architecture Specification
+# Zeno Framework: Architecture Specification
 
-## Zeno Node Module
+## 1. System Overview
 
-### 1. System Architecture Overview
-
-```
-┌───────────────────────────────────────────────────────────┐
-│                         CLI Interface                     │
-│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐          │
-│  │  init   │ │generate │ │validate │ │  watch  │          │
-│  └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘          │
-│       └───────────┴───────────┴───────────┘               │
-└───────────────────────────┬───────────────────────────────┘
-                            │
-┌───────────────────────────▼───────────────────────────────┐
-│                      Core Framework                       │
-│  ┌─────────────┐  ┌──────────────┐  ┌─────────────┐       │
-│  │Schema Loader│  │Config Manager│  │Plugin System│       │
-│  └──────┬──────┘  └──────┬───────┘  └──────┬──────┘       │
-│         │                │                 │              │
-│  ┌──────▼────────────────▼─────────────────▼───────┐      │
-│  │              Generation Engine                  │      │
-│  │  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐            │      │
-│  │  │Types │ │ ORM  │ │Valid.│ │ UI   │            │      │
-│  │  └──────┘ └──────┘ └──────┘ └──────┘            │      │
-│  └─────────────────────────────────────────────────┘      │
-└───────────────────────────────────────────────────────────┘
-                            │
-┌───────────────────────────▼───────────────────────────────┐
-│                    Output Adapters                        │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐       │
-│  │  React  │  │   Vue   │  │ Angular │  │ Svelte  │       │
-│  └─────────┘  └─────────┘  └─────────┘  └─────────┘       │
-└───────────────────────────────────────────────────────────┘
-```
-
-### 2. Package Structure
+Zeno transforms JSON schema definitions into TypeScript types, database schemas, validation logic, and UI components. Built as a framework-agnostic node module with CLI and programmatic APIs.
 
 ```
-json-schema-framework/
+┌───────────────────────────────────────────┐
+│                CLI (oclif)                │
+│  ┌──────┐ ┌────────┐ ┌──────┐ ┌───────┐   │
+│  │ init │ │generate│ │watch │ │migrate│   │
+│  └───┬──┘ └───┬────┘ └───┬──┘ └───┬───┘   │
+│      └────────┴─────┬────┴────────┘       │
+└─────────────────────┼─────────────────────┘
+                      │
+┌─────────────────────▼─────────────────────┐
+│                Core Engine                │
+│  ┌────────┐ ┌──────────┐ ┌─────────────┐  │
+│  │ Schema │ │ Template │ │  Generator  │  │
+│  │ Loader │ │  Engine  │ │  Pipeline   │  │
+│  └───┬────┘ └─────┬────┘ └──────┬──────┘  │
+│      └────────────┼─────────────┘         │
+└───────────────────┼───────────────────────┘
+                    │
+┌───────────────────▼───────────────────────┐
+│           Output Plugins                  │
+│  ┌──────┐ ┌─────┐ ┌──────┐ ┌──────────┐   │
+│  │Types │ │ ORM │ │Valid │ │Components│   │
+│  └──────┘ └─────┘ └──────┘ └──────────┘   │
+└───────────────────────────────────────────┘
+```
+
+## 2. Technology Stack
+
+**Build & Development**
+
+- **tsup**: Zero-config TypeScript bundler (wraps esbuild)
+- **TypeScript 5.0+**: With strict mode and ES2022 target
+- **pnpm workspaces**: Monorepo package management
+- **Turborepo**: Build orchestration and caching
+
+**CLI Framework**
+
+- **oclif**: Enterprise-grade CLI framework
+- **commander.js**: Fallback for simpler commands
+
+**Template Engine**
+
+- **Handlebars**: Template rendering
+- **plop**: File scaffolding automation
+
+**Testing & Quality**
+
+- **Vitest**: Fast, modern test runner
+- **Biome**: Linting and formatting
+- **changesets**: Version management and publishing
+
+## 3. Package Structure
+
+```
+zeno/
 ├── packages/
-│   ├── core/                 # Core framework logic
-│   │   ├── src/
-│   │   │   ├── schema/      # Schema loading and validation
-│   │   │   ├── config/      # Configuration management
-│   │   │   ├── generator/   # Generation engine
-│   │   │   ├── plugin/      # Plugin system
-│   │   │   └── utils/       # Shared utilities
-│   │   └── package.json
-│   │
-│   ├── cli/                  # CLI implementation
-│   │   ├── src/
-│   │   │   ├── commands/    # CLI commands
-│   │   │   ├── utils/       # CLI utilities
-│   │   │   └── index.ts     # CLI entry point
-│   │   └── package.json
-│   │
-│   ├── generators/           # Generator implementations
-│   │   ├── types/           # TypeScript generator
-│   │   ├── drizzle/         # Drizzle ORM generator
-│   │   ├── prisma/          # Prisma generator
-│   │   ├── zod/             # Zod validation generator
-│   │   ├── react/           # React component generator
-│   │   └── vue/             # Vue component generator
-│   │
-│   ├── templates/            # Default templates
-│   │   ├── components/      # Component templates
-│   │   ├── forms/           # Form templates
-│   │   └── tables/          # Table templates
-│   │
-│   └── plugins/              # Official plugins
-│       ├── auth/            # Authentication plugin
-│       ├── api/             # API generation plugin
-│       └── testing/         # Test generation plugin
-│
-├── examples/                 # Example projects
-├── docs/                     # Documentation
-└── tools/                    # Development tools
+│   ├── @zeno/core           # Core framework
+│   ├── @zeno/cli            # CLI implementation
+│   ├── @zeno/generators/    # Generator plugins
+│   │   ├── types            # TypeScript types
+│   │   ├── drizzle          # Drizzle ORM
+│   │   ├── zod              # Zod validation
+│   │   └── react            # React components
+│   └── @zeno/create         # Scaffolding tool
+├── examples/                # Example projects
+├── docs/                    # Documentation site
+└── turbo.json               # Turborepo config
 ```
 
-### 3. Core Components
+## 4. Core Architecture
 
-#### 3.1 Schema Loader
+### 4.1 Schema System
+
+Schemas follow the structure defined in:
+
+- [Entity Template](templates/entity.json)
+- [Enum Template](templates/enum.json)
+- [Page Template](templates/page.json)
+- [App Template](templates/app.json)
 
 ```typescript
 interface SchemaLoader {
-  loadFromDirectory(path: string): Promise<SchemaSet>;
-  loadFromFiles(files: string[]): Promise<SchemaSet>;
-  validateSchema(schema: TableSchema | EnumSchema): ValidationResult;
-  resolveReferences(schemas: SchemaSet): ResolvedSchemaSet;
-  detectChanges(oldSchemas: SchemaSet, newSchemas: SchemaSet): SchemaChanges;
+  load(path: string): Promise<SchemaSet>;
+  validate(schema: Schema): ValidationResult;
+  watch(path: string, onChange: (changes: SchemaChange[]) => void): Watcher;
 }
 
-class SchemaLoaderImpl implements SchemaLoader {
-  private validators: Map<string, Validator>;
-  private cache: SchemaCache;
-
-  constructor(options: SchemaLoaderOptions) {
-    this.validators = this.initValidators();
-    this.cache = new SchemaCache(options.cacheDir);
-  }
+interface SchemaSet {
+  entities: Map<string, EntitySchema>;
+  enums: Map<string, EnumSchema>;
+  pages: Map<string, PageSchema>;
+  app: AppSchema;
 }
 ```
 
-#### 3.2 Configuration Manager
+### 4.2 Generation Pipeline
 
 ```typescript
-interface ConfigManager {
-  loadConfig(path?: string): Promise<FrameworkConfig>;
-  validateConfig(config: unknown): FrameworkConfig;
-  mergeConfigs(...configs: Partial<FrameworkConfig>[]): FrameworkConfig;
-  getGeneratorConfig(generator: string): GeneratorConfig;
-}
+interface GenerationPipeline {
+  // Plugin registration
+  use(generator: Generator): this;
 
-class ConfigManagerImpl implements ConfigManager {
-  private static readonly CONFIG_FILES = [
-    "jsf.config.js",
-    "jsf.config.ts",
-    "jsf.config.json",
-    ".jsfrc.json",
-  ];
+  // Generation execution
+  generate(schemas: SchemaSet, config: Config): Promise<Result>;
 
-  async loadConfig(path?: string): Promise<FrameworkConfig> {
-    const configPath = path || (await this.findConfigFile());
-    return this.parseConfigFile(configPath);
-  }
-}
-```
-
-#### 3.3 Generation Engine
-
-```typescript
-interface GenerationEngine {
-  registerGenerator(name: string, generator: Generator): void;
-  generate(
-    schemas: SchemaSet,
-    options: GenerationOptions
-  ): Promise<GenerationResult>;
-  generateIncremental(
-    changes: SchemaChanges,
-    options: GenerationOptions
-  ): Promise<GenerationResult>;
+  // Incremental generation
+  generateChanges(changes: SchemaChange[]): Promise<Result>;
 }
 
 abstract class Generator {
   abstract name: string;
-  abstract version: string;
-
-  abstract canGenerate(schema: Schema): boolean;
-  abstract generate(
-    schema: Schema,
-    context: GenerationContext
-  ): Promise<GeneratedFile[]>;
-
-  protected renderTemplate(template: string, data: any): string {
-    return this.templateEngine.render(template, data);
-  }
+  abstract generate(context: GeneratorContext): Promise<GeneratedFile[]>;
 }
 ```
 
-#### 3.4 Plugin System
+### 4.3 Template Engine
 
-```typescript
-interface PluginManager {
-  register(plugin: Plugin): void;
-  loadPlugin(name: string): Promise<Plugin>;
-  executeHook(hook: string, ...args: any[]): Promise<void>;
-  getGenerators(): Map<string, Generator>;
-}
-
-interface Plugin {
-  name: string;
-  version: string;
-
-  install(framework: Framework): void;
-
-  hooks?: {
-    beforeLoad?: Hook;
-    afterLoad?: Hook;
-    beforeGenerate?: Hook;
-    afterGenerate?: Hook;
-    beforeWrite?: Hook;
-    afterWrite?: Hook;
-  };
-
-  generators?: Record<string, Generator>;
-  validators?: Record<string, Validator>;
-  templates?: Record<string, Template>;
-}
-```
-
-### 4. Data Models
-
-#### 4.1 Schema Types
-
-```typescript
-interface TableSchema {
-  tableName: string;
-  displayName: string;
-  icon?: string;
-  description?: string;
-  columns: Record<string, ColumnSchema>;
-  indexes?: Record<string, IndexSchema>;
-  relationships?: Record<string, RelationshipSchema>;
-  ui?: UISchema;
-  seedData?: Record<string, unknown>[];
-}
-
-interface ColumnSchema {
-  dbConstraints: DatabaseConstraints;
-  validation?: ValidationRules;
-  ui?: UIConfig;
-}
-
-interface EnumSchema {
-  values: string[];
-  labels?: Record<string, string>;
-  colors?: Record<string, string>;
-  icons?: Record<string, string>;
-  description?: string;
-}
-
-interface SchemaSet {
-  tables: Map<string, TableSchema>;
-  enums: Map<string, EnumSchema>;
-  metadata: SchemaMetadata;
-}
-```
-
-#### 4.2 Generation Types
-
-```typescript
-interface GenerationContext {
-  schema: Schema;
-  config: FrameworkConfig;
-  generators: Map<string, Generator>;
-  templates: TemplateRegistry;
-  utils: GenerationUtils;
-}
-
-interface GenerationResult {
-  files: GeneratedFile[];
-  errors: GenerationError[];
-  warnings: GenerationWarning[];
-  stats: GenerationStats;
-}
-
-interface GeneratedFile {
-  path: string;
-  content: string;
-  type: "create" | "update" | "delete";
-  generator: string;
-}
-```
-
-### 5. Generator Architecture
-
-#### 5.1 Base Generator Pattern
-
-```typescript
-abstract class BaseGenerator extends Generator {
-  protected config: GeneratorConfig;
-  protected templateEngine: TemplateEngine;
-
-  constructor(config: GeneratorConfig) {
-    super();
-    this.config = config;
-    this.templateEngine = new TemplateEngine(config.templates);
-  }
-
-  protected async loadTemplate(name: string): Promise<Template> {
-    return this.templateEngine.load(name);
-  }
-
-  protected formatCode(code: string, language: string): Promise<string> {
-    return this.formatter.format(code, language);
-  }
-}
-```
-
-#### 5.2 ORM Generators
-
-```typescript
-class DrizzleGenerator extends BaseGenerator {
-  name = "drizzle";
-  version = "1.0.0";
-
-  async generate(
-    schema: TableSchema,
-    context: GenerationContext
-  ): Promise<GeneratedFile[]> {
-    const files: GeneratedFile[] = [];
-
-    // Generate schema file
-    files.push(await this.generateSchema(schema, context));
-
-    // Generate migration
-    if (context.config.database.migrations) {
-      files.push(await this.generateMigration(schema, context));
-    }
-
-    // Generate seed data
-    if (schema.seedData) {
-      files.push(await this.generateSeed(schema, context));
-    }
-
-    return files;
-  }
-}
-```
-
-#### 5.3 Component Generators
-
-```typescript
-class ReactComponentGenerator extends BaseGenerator {
-  name = "react-components";
-  version = "1.0.0";
-
-  async generate(
-    schema: TableSchema,
-    context: GenerationContext
-  ): Promise<GeneratedFile[]> {
-    const files: GeneratedFile[] = [];
-
-    // Generate form component
-    if (this.shouldGenerateForm(schema)) {
-      files.push(await this.generateForm(schema, context));
-    }
-
-    // Generate table component
-    if (this.shouldGenerateTable(schema)) {
-      files.push(await this.generateTable(schema, context));
-    }
-
-    // Generate hooks
-    if (context.config.ui.hooks) {
-      files.push(await this.generateHooks(schema, context));
-    }
-
-    return files;
-  }
-}
-```
-
-### 6. Template System
-
-#### 6.1 Template Engine
+Using Handlebars with custom helpers:
 
 ```typescript
 interface TemplateEngine {
-  register(name: string, template: Template): void;
-  load(name: string): Promise<Template>;
-  render(template: Template | string, data: any): string;
-  compile(source: string): CompiledTemplate;
+  registerHelper(name: string, fn: Helper): void;
+  registerPartial(name: string, template: string): void;
+  render(template: string, data: unknown): string;
 }
 
-class HandlebarsTemplateEngine implements TemplateEngine {
-  private handlebars: typeof Handlebars;
-  private templates: Map<string, Template>;
-  private helpers: Map<string, Helper>;
-
-  constructor() {
-    this.handlebars = Handlebars.create();
-    this.registerHelpers();
-  }
-
-  private registerHelpers(): void {
-    this.handlebars.registerHelper("camelCase", toCamelCase);
-    this.handlebars.registerHelper("pascalCase", toPascalCase);
-    this.handlebars.registerHelper("kebabCase", toKebabCase);
-  }
-}
-```
-
-#### 6.2 Template Structure
-
-```typescript
-interface Template {
-  name: string;
-  source: string;
-  partials?: Record<string, string>;
-  helpers?: Record<string, Helper>;
-  data?: Record<string, any>;
-}
-
-interface CompiledTemplate {
-  render(data: any): string;
-  ast: TemplateAST;
-}
-```
-
-### 7. CLI Architecture
-
-#### 7.1 Command Structure
-
-```typescript
-abstract class Command {
-  abstract name: string;
-  abstract description: string;
-  abstract options: CommandOption[];
-
-  abstract execute(args: CommandArgs): Promise<void>;
-
-  protected async loadFramework(args: CommandArgs): Promise<Framework> {
-    const config = await this.loadConfig(args);
-    return new Framework(config);
-  }
-}
-
-class GenerateCommand extends Command {
-  name = "generate";
-  description = "Generate code from schemas";
-
-  options = [
-    { name: "config", alias: "c", description: "Config file path" },
-    { name: "watch", alias: "w", description: "Watch mode" },
-    { name: "only", alias: "o", description: "Generate only specific types" },
-  ];
-
-  async execute(args: CommandArgs): Promise<void> {
-    const framework = await this.loadFramework(args);
-
-    if (args.watch) {
-      await framework.watch();
-    } else {
-      await framework.generate();
-    }
-  }
-}
-```
-
-### 8. Build and Distribution
-
-#### 8.1 Package Configuration
-
-```json
-{
-  "name": "@jsf/core",
-  "version": "1.0.0",
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./generators/*": {
-      "types": "./dist/generators/*.d.ts",
-      "import": "./dist/generators/*.js",
-      "require": "./dist/generators/*.cjs"
-    }
-  },
-  "bin": {
-    "jsf": "./dist/cli/index.js"
-  },
-  "files": ["dist", "templates"],
-  "engines": {
-    "node": ">=16.0.0"
-  }
-}
-```
-
-#### 8.2 Build Pipeline
-
-```typescript
-// build.config.ts
-export default {
-  entries: [
-    { input: "src/index.ts", output: "dist/index" },
-    { input: "src/cli/index.ts", output: "dist/cli/index" },
-  ],
-  formats: ["esm", "cjs"],
-  dts: true,
-  clean: true,
-  external: ["node:fs", "node:path", "node:url"],
-  plugins: [preserveShebang(), copyTemplates()],
+// Built-in helpers
+const helpers = {
+  camelCase,
+  pascalCase,
+  kebabCase,
+  snakeCase,
+  pluralise,
+  singularise,
+  json,
+  eq,
+  includes,
 };
+```
+
+## 5. Generator Architecture
+
+Each generator is a standalone package following this pattern:
+
+```typescript
+// packages/generators/drizzle/src/index.ts
+export class DrizzleGenerator extends Generator {
+  name = "drizzle";
+
+  async generate(context: GeneratorContext): Promise<GeneratedFile[]> {
+    const { entities, enums } = context.schemas;
+    const files: GeneratedFile[] = [];
+
+    // Generate schemas
+    for (const [name, entity] of entities) {
+      files.push({
+        path: `database/schema/${name}.ts`,
+        content: await this.generateSchema(entity),
+      });
+    }
+
+    // Generate migrations
+    if (context.config.migrations) {
+      files.push(...(await this.generateMigrations(context)));
+    }
+
+    return files;
+  }
+}
+```
+
+## 6. CLI Architecture
+
+Using oclif for robust CLI features:
+
+```typescript
+// packages/cli/src/commands/generate.ts
+import { Command, Flags } from "@oclif/core";
+
+export class Generate extends Command {
+  static description = "Generate code from schemas";
+
+  static flags = {
+    watch: Flags.boolean({ char: "w" }),
+    only: Flags.string({ multiple: true }),
+  };
+
+  async run() {
+    const { flags } = await this.parse(Generate);
+    const zeno = await Zeno.create();
+
+    if (flags.watch) {
+      await zeno.watch();
+    } else {
+      await zeno.generate({ only: flags.only });
+    }
+  }
+}
+```
+
+## 7. Configuration
+
+```typescript
+// zeno.config.ts
+export default defineConfig({
+  schemas: "./zeno",
+  output: "./src",
+
+  generators: {
+    types: true,
+    drizzle: {
+      migrations: true,
+      seed: true,
+    },
+    zod: true,
+    components: {
+      framework: "react",
+      styling: "tailwind",
+    },
+  },
+
+  templates: {
+    // Custom template overrides
+    "component/form": "./templates/custom-form.hbs",
+  },
+});
+```
+
+### 8. Build Configuration
+
+Using tsup for zero-config builds:
+
+```javascript
+// tsup.config.ts
+export default defineConfig({
+  entry: ["src/index.ts"],
+  format: ["cjs", "esm"],
+  dts: true,
+  splitting: false,
+  sourcemap: true,
+  clean: true,
+  external: ["node:*"],
+});
 ```
 
 ### 9. Testing Strategy
 
-#### 9.1 Test Structure
-
-```
-tests/
-├── unit/
-│   ├── schema-loader.test.ts
-│   ├── generators/
-│   └── utils/
-├── integration/
-│   ├── cli.test.ts
-│   ├── generation.test.ts
-│   └── plugins.test.ts
-├── e2e/
-│   ├── next-app.test.ts
-│   ├── vue-app.test.ts
-│   └── api-generation.test.ts
-└── fixtures/
-    ├── schemas/
-    └── configs/
-```
-
-#### 9.2 Testing Utilities
+Using Vitest for fast, modern testing:
 
 ```typescript
-class TestFramework {
-  static async createTestProject(
-    config: Partial<FrameworkConfig>
-  ): Promise<TestProject> {
-    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "jsf-test-"));
-    return new TestProject(tmpDir, config);
-  }
-}
-
-class TestProject {
-  constructor(private dir: string, private config: Partial<FrameworkConfig>) {}
-
-  async addSchema(name: string, schema: TableSchema): Promise<void> {
-    const schemaPath = path.join(this.dir, "schemas", `${name}.json`);
-    await fs.writeFile(schemaPath, JSON.stringify(schema, null, 2));
-  }
-
-  async generate(): Promise<GenerationResult> {
-    const framework = new Framework(this.config);
-    return framework.generate();
-  }
-}
+// vitest.config.ts
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: "node",
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html"],
+      exclude: ["**/node_modules/**", "**/dist/**"],
+    },
+  },
+});
 ```
 
-### 10. Performance Optimisations
-
-#### 10.1 Caching Strategy
+Example test:
 
 ```typescript
-interface CacheManager {
-  get<T>(key: string): Promise<T | null>;
-  set<T>(key: string, value: T, ttl?: number): Promise<void>;
-  invalidate(pattern: string): Promise<void>;
-  clear(): Promise<void>;
-}
+describe("SchemaLoader", () => {
+  it("loads entity schemas", async () => {
+    const loader = new SchemaLoader();
+    const schemas = await loader.load("./test/fixtures");
 
-class FileSystemCache implements CacheManager {
-  private cacheDir: string;
+    expect(schemas.entities.get("users")).toBeDefined();
+    expect(schemas.enums.get("user_status")).toBeDefined();
+  });
+});
+```
 
-  constructor(cacheDir: string) {
-    this.cacheDir = cacheDir;
-  }
+### 10. Publishing & Release
 
-  async get<T>(key: string): Promise<T | null> {
-    const hash = this.hashKey(key);
-    const cachePath = path.join(this.cacheDir, hash);
+Using changesets for automated releases:
 
-    try {
-      const data = await fs.readFile(cachePath, "utf-8");
-      const cached = JSON.parse(data);
-
-      if (cached.expires && cached.expires < Date.now()) {
-        await fs.unlink(cachePath);
-        return null;
-      }
-
-      return cached.value;
-    } catch {
-      return null;
-    }
-  }
+```json
+// .changeset/config.json
+{
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "linked": [["@zeno/*"]],
+  "access": "public",
+  "baseBranch": "main"
 }
 ```
 
-#### 10.2 Parallel Processing
+GitHub Action for releases:
+
+```yaml
+name: Release
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm test
+
+      - uses: changesets/action@v1
+        with:
+          publish: pnpm release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+```
+
+### 11. Plugin System
+
+Simple, powerful plugin API:
 
 ```typescript
-class ParallelGenerator {
-  private workerPool: WorkerPool;
+interface Plugin {
+  name: string;
 
-  constructor(workers: number = os.cpus().length) {
-    this.workerPool = new WorkerPool(workers);
-  }
+  // Lifecycle hooks
+  setup?(zeno: Zeno): void | Promise<void>;
+  beforeGenerate?(context: Context): void | Promise<void>;
+  afterGenerate?(result: Result): void | Promise<void>;
 
-  async generate(
-    schemas: SchemaSet,
-    options: GenerationOptions
-  ): Promise<GenerationResult> {
-    const tasks = this.createGenerationTasks(schemas, options);
-    const results = await this.workerPool.executeAll(tasks);
-    return this.mergeResults(results);
+  // Custom generators
+  generators?: Generator[];
+
+  // Template extensions
+  templates?: Record<string, string>;
+  helpers?: Record<string, Helper>;
+}
+
+// Usage
+export default defineConfig({
+  plugins: [
+    zenoAuth(), // Authentication generator
+    zenoGraphQL(), // GraphQL schema generator
+    zenoOpenAPI(), // OpenAPI spec generator
+  ],
+});
+```
+
+### 12. Performance Optimisations
+
+**Incremental Generation**
+
+- File-level caching with content hashing
+- Dependency graph for minimal regeneration
+- Parallel generation using worker threads
+
+**Build Caching**
+
+- Turborepo for cross-machine caching
+- Granular task dependencies
+- Remote caching support
+
+**Development Mode**
+
+- Hot reload via file watching
+- In-memory caching
+- Partial generation on change
+
+### 13. Error Handling
+
+Clear, actionable error messages:
+
+```typescript
+class SchemaValidationError extends Error {
+  constructor(
+    public file: string,
+    public line: number,
+    public column: number,
+    public details: string
+  ) {
+    super(`Invalid schema in ${file}:${line}:${column}\n${details}`)
   }
 }
+
+// Pretty error output
+✖ Invalid schema in schemas/users.json:15:8
+
+  Property "email" validation error:
+  Cannot use both "email: true" and "pattern" together
+
+  13 │   "validation": {
+  14 │     "required": true,
+  15 │     "email": true,
+     ╵     ^^^^^^^^^^^^
+  16 │     "pattern": "^[a-z]+@example.com$"
+  17 │   }
 ```
+
+### 14. Developer Experience
+
+**TypeScript-First**
+
+- Full type inference from schemas
+- Strict mode by default
+- Declaration maps for debugging
+
+**IDE Support**
+
+- JSON schemas for autocompletion
+- VS Code extension (future)
+- Inline documentation
+
+**CLI Features**
+
+- Interactive prompts with @clack/prompts
+- Progress indicators
+- Colored output
+- Debug mode with verbose logging
+
+### 15. Security Considerations
+
+- Path sanitisation for file operations
+- Template sandboxing
+- No arbitrary code execution
+- Dependency scanning in CI
+- Regular security audits
+
+### 16. Non-Functional Requirements
+
+**Performance**
+
+- < 100ms startup time
+- < 1s for 100 table generation
+- < 50ms incremental updates
+
+**Compatibility**
+
+- Node.js 18+ (LTS versions)
+- ESM and CommonJS dual package
+- Windows, macOS, Linux support
+
+**Package Size**
+
+- Core: < 2MB
+- CLI: < 5MB
+- Generators: < 1MB each
+
+### 17. Migration Path
+
+From existing Next.js implementation:
+
+1. Extract core logic to @zeno/core
+2. Maintain backwards compatibility via adapter
+3. Gradual deprecation with clear migration guides
+4. Automated migration tool using plop
