@@ -26,6 +26,13 @@ export default defineConfig({
     api: true,
     navigation: true,
   },
+  // Email configuration
+  email: {
+    email: "user@example.com",
+    password: process.env.EMAIL_PASSWORD!,
+    host: process.env.EMAIL_HOST!,
+    port: parseInt(process.env.EMAIL_PORT || "587", 10),
+  },
 
   // Development options
   dev: {
