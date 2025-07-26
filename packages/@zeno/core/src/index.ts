@@ -12,4 +12,5 @@ export function createZeno() {
 
 export * from "./types";
 export * from "./validation";
-export { SchemaLoader, createSchemaLoader, SchemaValidationError } from "./schemaLoader";
+export * from "./errors";
+export { SchemaLoader, createSchemaLoader } from "./schemaLoader";

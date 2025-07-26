@@ -9,23 +9,13 @@ import { readFile, readdir, stat } from "node:fs/promises";
 import { join, extname, basename } from "node:path";
 
 import { validateSchemaSet } from "./validation";
+import { SchemaValidationError } from "./errors";
 
 import type { SchemaSet, ValidationResult } from "./types/core";
 import type { AppSchema } from "./types/app";
 import type { EntitySchema } from "./types/entity";
 import type { EnumSchema } from "./types/enum";
 import type { PageSchema } from "./types/page";
-
-export class SchemaValidationError extends Error {
-  constructor(
-    message: string,
-    public readonly filePath: string,
-    public readonly lineNumber?: number
-  ) {
-    super(message);
-    this.name = "SchemaValidationError";
-  }
-}
 
 export class SchemaLoader {
   /**

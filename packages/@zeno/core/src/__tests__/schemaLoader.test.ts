@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { join } from "node:path";
-import { SchemaLoader, SchemaValidationError } from "../schemaLoader";
+import { SchemaLoader } from "../schemaLoader";
+import { SchemaValidationError } from "../errors";
 
 describe("SchemaLoader", () => {
   const loader = new SchemaLoader();
@@ -41,14 +42,18 @@ describe("SchemaLoader", () => {
 
     it("throws SchemaValidationError for missing app.json", async () => {
       const nonExistentPath = join(__dirname, "non-existent");
-      
-      await expect(loader.load(nonExistentPath)).rejects.toThrow(SchemaValidationError);
+
+      await expect(loader.load(nonExistentPath)).rejects.toThrow(
+        SchemaValidationError
+      );
     });
 
     it("handles missing subdirectories gracefully", async () => {
       const emptyPath = join(__dirname, "fixtures-empty");
-      
-      await expect(loader.load(emptyPath)).rejects.toThrow(SchemaValidationError);
+
+      await expect(loader.load(emptyPath)).rejects.toThrow(
+        SchemaValidationError
+      );
     });
 
     it("provides descriptive error messages for invalid schemas", async () => {
@@ -66,13 +71,13 @@ describe("SchemaLoader", () => {
         displayName: "Users",
         columns: {
           id: {
-            dbConstraints: { 
+            dbConstraints: {
               type: "text",
-              primaryKey: true 
+              primaryKey: true,
             },
-            validation: { required: true }
-          }
-        }
+            validation: { required: true },
+          },
+        },
       });
 
       const enums = new Map();
@@ -83,20 +88,20 @@ describe("SchemaLoader", () => {
         sections: [
           {
             type: "table",
-            entity: "users"
-          }
+            entity: "users",
+          },
         ],
-        navigation: { 
-          header: { include: true } 
+        navigation: {
+          header: { include: true },
         },
-        auth: { required: false }
+        auth: { required: false },
       });
 
       const app = {
         name: "test",
         description: "Test app",
         url: "https://test.example.com",
-        features: { search: false, darkMode: false }
+        features: { search: false, darkMode: false },
       };
 
       const result = loader.validate(entities, enums, pages, app, "/test");
@@ -114,20 +119,20 @@ describe("SchemaLoader", () => {
         sections: [
           {
             type: "table",
-            entity: "non-existent-entity"
-          }
+            entity: "non-existent-entity",
+          },
         ],
-        navigation: { 
-          header: { include: true } 
+        navigation: {
+          header: { include: true },
         },
-        auth: { required: false }
+        auth: { required: false },
       });
 
       const app = {
         name: "test",
         description: "Test app",
         url: "https://test.example.com",
-        features: { search: false, darkMode: false }
+        features: { search: false, darkMode: false },
       };
 
       const result = loader.validate(entities, enums, pages, app, "/test");
