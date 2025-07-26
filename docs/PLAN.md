@@ -25,16 +25,16 @@
   **Dependencies**: Task 1  
   **Definition of Done**: Package builds with `pnpm build`, outputs ESM and CJS
 
-### [ ] 3. Type Definitions Package
+### [ ] 3. Type Definitions Definitions
 
-**Description**: Define core TypeScript interfaces and types (Ref: Architecture §4.1)  
+**Description**: Define core TypeScript interfaces and types within @zeno/core package (Ref: Architecture §4.1)
 **Deliverables**:
 
-- `packages/@zeno/types` package
+- `src/types/` directory in @zeno/core
 - `EntitySchema`, `EnumSchema`, `PageSchema`, `AppSchema` interfaces
 - `SchemaSet`, `GeneratorContext` types
-- Export from core package
-  **Dependencies**: Task 2  
+- Export all types from main index
+  **Dependencies**: Task 2
   **Definition of Done**: Types compile without errors, can import from @zeno/core
 
 ### [ ] 4. Schema Validation Rules
