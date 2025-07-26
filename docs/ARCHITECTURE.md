@@ -114,6 +114,39 @@ export type { EntitySchema, EntityColumn } from "../validation/entitySchema";
 - **Maintainability**: No manual type synchronization required
 - **Developer experience**: IntelliSense works seamlessly with validated data
 
+### 4.2 Nested Partial Schema Handling
+
+When using Zod `.partial()` with nested objects that have defaults, define schemas separately:
+
+```typescript
+// ❌ Problematic pattern - TypeScript errors with nested defaults
+const schema = z.object({
+  database: z.object({
+    dir: z.string().default("./drizzle"),
+    auto: z.boolean().default(false),
+  }).default({}),
+});
+
+const partialSchema = schema.partial();
+// Error: Property 'dir' is missing when trying to use { auto: true }
+
+// ✅ Correct pattern - separate nested schemas
+const migrationsSchema = z.object({
+  dir: z.string().default("./drizzle"),
+  auto: z.boolean().default(false),
+});
+
+const partialMigrationsSchema = migrationsSchema.partial();
+
+const partialDatabaseSchema = z.object({
+  provider: z.literal("postgresql").optional(),
+  connection: z.string().optional(),
+  migrations: partialMigrationsSchema.optional(),
+}).strict();
+```
+
+This enables intuitive config authoring like `{ migrations: { auto: true } }` while maintaining type safety.
+
 ### 4.2 Schema System
 
 ```typescript

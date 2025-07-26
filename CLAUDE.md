@@ -82,6 +82,9 @@ const onSchemaChange = (changes: SchemaChange[]) => {};
 - **Minimal use of `unknown`** - prefer specific types
 - **Explicit return types** for public API functions
 - **Zod as single source of truth** - infer TypeScript types from Zod schemas (ref [Architecture](docs/ARCHITECTURE.md) 4.1)
+- **Nested partial schemas** - define nested schemas separately when using `.partial()` with defaults
+- **Handlebar helpers** - Use `(...args: unknown[]) => unknown` signature to handle options object properly
+- **Structured outputs (JSON)** - Use `SafeString` to prevent HTML escaping
 
 ```typescript
 // ✅ Good - inferred where clear, explicit for public APIs
@@ -292,57 +295,6 @@ Before submitting any code, ensure the following steps are completed:
 - < 10MB memory per table
 - < 2s complete application generation (50 entities)
 - Parallel generation support with worker threads
-
-## Implementation Challenges & Solutions
-
-### Nested Partial Schemas in Zod
-
-**Problem**: When using Zod `.partial()` on schemas with nested objects that have defaults, TypeScript errors occur when providing partial nested objects:
-
-```typescript
-// ❌ This pattern causes TypeScript errors
-const schema = z.object({
-  database: z.object({
-    dir: z.string().default("./drizzle"),
-    auto: z.boolean().default(false),
-  }).default({}),
-});
-
-const partialSchema = schema.partial();
-// Error: Property 'dir' is missing when trying to use { auto: true }
-```
-
-**Solution**: Define separate schemas for nested objects and create explicit partial schemas:
-
-```typescript
-// ✅ Correct pattern for nested partial schemas
-const migrationsSchema = z.object({
-  dir: z.string().default("./drizzle"),
-  auto: z.boolean().default(false),
-});
-
-const partialMigrationsSchema = migrationsSchema.partial();
-
-const partialDatabaseSchema = z.object({
-  provider: z.literal("postgresql").optional(),
-  connection: z.string().optional(),
-  migrations: partialMigrationsSchema.optional(),
-}).strict();
-```
-
-**Key Learnings**:
-- `.partial()` doesn't handle nested objects with defaults properly
-- Define nested schemas separately for better partial handling
-- Create explicit partial schemas for complex nested structures
-- Final validation should still use complete schemas to ensure required fields
-
-This allows intuitive config authoring like `{ migrations: { auto: true } }` while maintaining type safety.
-
-### Handlebars Template Engine Integration
-
-**Key Learnings**:
-- Use `(...args: unknown[]) => unknown` signature for Handlebars helpers to handle options object properly
-- Use `SafeString` for structured output like JSON to prevent HTML escaping
 
 ## References
 
