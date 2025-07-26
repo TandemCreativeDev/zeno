@@ -5,6 +5,7 @@ import { SchemaLoader, SchemaValidationError } from "../schemaLoader";
 describe("SchemaLoader", () => {
   const loader = new SchemaLoader();
   const fixturesPath = join(__dirname, "fixtures");
+  const docsExamplesPath = join(__dirname, "../../../../../docs/examples");
 
   describe("load", () => {
     it("loads valid schemas successfully", async () => {
@@ -48,6 +49,12 @@ describe("SchemaLoader", () => {
       const emptyPath = join(__dirname, "fixtures-empty");
       
       await expect(loader.load(emptyPath)).rejects.toThrow(SchemaValidationError);
+    });
+
+    it("provides descriptive error messages for invalid schemas", async () => {
+      await expect(loader.load(docsExamplesPath)).rejects.toThrowError(
+        "Only one primary key is allowed per entity"
+      );
     });
   });
 
