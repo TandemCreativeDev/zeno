@@ -4,7 +4,7 @@
 
 Zeno is a standalone Node module that generates production-ready NextJS applications from JSON schema definitions. The framework eliminates boilerplate development by automatically generating database models, UI components, pages, navigation, and API routes directly into standard NextJS project structure. Built with accessibility-first principles and complete type safety using Drizzle ORM, Zod validation, and DaisyUI components.
 
-**Technology Stack:** NextJS App Router + Drizzle ORM + Zod validation + DaisyUI styling + PostgreSQL
+**Technology Stack:** NextJS App Router + Drizzle ORM + Zod validation + DaisyUI styling + PostgreSQL + NextAuth
 
 ## 2. Input/Output Architecture
 
@@ -20,8 +20,8 @@ zeno/
 
 **Output Structure:** Standard NextJS App Router project with generated code in `src/models/`, `src/components/`, and `src/app/`
 
-**Configuration Templates:** [docs/templates/](docs/templates/)  
-**Working Examples:** [docs/examples/](docs/examples/)
+[**Configuration Templates**](templates/)  
+[**Working Examples**](examples/)
 
 ## 3. Code Generation Pipeline
 
@@ -113,7 +113,7 @@ zeno seed                         # Run seed data
 
 ## 6. Framework Configuration
 
-**Core Config:** [docs/examples/zeno.config.ts](docs/examples/zeno.config.ts)
+[**Core Config**](examples/zeno.config.ts)
 
 Key configuration options:
 
@@ -125,8 +125,8 @@ Key configuration options:
 
 ## 7. Entity Configuration
 
-**Entity Template:** [docs/templates/entity.json](docs/templates/entity.json)  
-**Entity Examples:** [docs/examples/entities/](docs/examples/entities/)
+[**Entity Template**](templates/entity.json)  
+[**Entity Examples**](examples/entities/)
 
 Key features:
 
@@ -139,8 +139,8 @@ Key features:
 
 ## 8. Page System
 
-**Page Template:** [docs/templates/page.json](docs/templates/page.json)  
-**Page Examples:** [docs/examples/pages/](docs/examples/pages/)
+[**Page Template**](templates/page.json)  
+[**Page Examples**](examples/pages/)
 
 **Section Types:**
 
