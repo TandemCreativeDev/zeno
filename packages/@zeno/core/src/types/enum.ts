@@ -1,14 +1,8 @@
 /**
- * Enum schema type definitions for enum types
+ * Enum schema type definitions imported from Zod validators
  */
 
-export interface EnumValue {
-  label: string;
-  color?: string;
-  icon?: string;
-}
-
-export interface EnumSchema {
-  description?: string;
-  values: Record<string, EnumValue>;
-}
+export type {
+  EnumSchema,
+  EnumValue,
+} from "../validation/enumSchema";

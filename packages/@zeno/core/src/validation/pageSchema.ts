@@ -4,7 +4,7 @@
 
 import { z } from "zod";
 
-const PageNavigationSchema = z.object({
+export const PageNavigationSchema = z.object({
   header: z.object({
     include: z.boolean().optional(),
     icon: z.string().optional(),
@@ -16,19 +16,19 @@ const PageNavigationSchema = z.object({
   }).optional(),
 });
 
-const PageStatSchema = z.object({
+export const PageStatSchema = z.object({
   title: z.string().min(1),
   value: z.string().min(1),
   icon: z.string().optional(),
   color: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Color must be a valid hex color").optional(),
 });
 
-const PageSectionFiltersSchema = z.object({
+export const PageSectionFiltersSchema = z.object({
   limit: z.number().int().positive().optional(),
   orderBy: z.string().optional(),
 });
 
-const PageSectionSchema = z.object({
+export const PageSectionSchema = z.object({
   type: z.enum(["hero", "stats", "table", "content", "custom"]),
   title: z.string().optional(),
   subtitle: z.string().optional(),
@@ -55,13 +55,13 @@ const PageSectionSchema = z.object({
   message: "Section type requirements not met",
 });
 
-const PageMetadataSchema = z.object({
+export const PageMetadataSchema = z.object({
   title: z.string().optional(),
   description: z.string().optional(),
   keywords: z.array(z.string()).optional(),
 });
 
-const PageAuthSchema = z.object({
+export const PageAuthSchema = z.object({
   required: z.boolean().optional(),
   roles: z.array(z.string()).optional(),
   redirect: z.string().optional(),
@@ -78,4 +78,10 @@ export const PageSchemaValidator = z.object({
   auth: PageAuthSchema.optional(),
 });
 
-export type PageSchemaValidationType = z.infer<typeof PageSchemaValidator>;
+export type PageSchema = z.infer<typeof PageSchemaValidator>;
+export type PageNavigation = z.infer<typeof PageNavigationSchema>;
+export type PageStat = z.infer<typeof PageStatSchema>;
+export type PageSectionFilters = z.infer<typeof PageSectionFiltersSchema>;
+export type PageSection = z.infer<typeof PageSectionSchema>;
+export type PageMetadata = z.infer<typeof PageMetadataSchema>;
+export type PageAuth = z.infer<typeof PageAuthSchema>;

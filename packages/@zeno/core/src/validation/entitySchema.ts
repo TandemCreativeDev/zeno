@@ -4,7 +4,7 @@
 
 import { z } from "zod";
 
-const DbConstraintsSchema = z.object({
+export const DbConstraintsSchema = z.object({
   type: z.string().min(1),
   length: z.number().positive().optional(),
   precision: z.number().positive().optional(),
@@ -20,7 +20,7 @@ const DbConstraintsSchema = z.object({
   }).optional(),
 });
 
-const ValidationRulesSchema = z.object({
+export const ValidationRulesSchema = z.object({
   required: z.boolean().optional(),
   min: z.number().optional(),
   max: z.number().optional(),
@@ -37,7 +37,7 @@ const ValidationRulesSchema = z.object({
   path: ["email"],
 });
 
-const UiMetadataSchema = z.object({
+export const UiMetadataSchema = z.object({
   label: z.string().optional(),
   placeholder: z.string().optional(),
   helpText: z.string().optional(),
@@ -48,24 +48,24 @@ const UiMetadataSchema = z.object({
   format: z.enum(["datetime", "currency"]).optional(),
 });
 
-const EntityColumnSchema = z.object({
+export const EntityColumnSchema = z.object({
   dbConstraints: DbConstraintsSchema,
   validation: ValidationRulesSchema.optional(),
   ui: UiMetadataSchema.optional(),
 });
 
-const EntityIndexSchema = z.object({
+export const EntityIndexSchema = z.object({
   columns: z.array(z.string().min(1)).min(1),
   unique: z.boolean().optional(),
 });
 
-const EntityRelationshipSchema = z.object({
+export const EntityRelationshipSchema = z.object({
   type: z.enum(["many-to-one", "one-to-many"]),
   table: z.string().min(1),
   foreignKey: z.string().optional(),
 });
 
-const FormSectionSchema = z.object({
+export const FormSectionSchema = z.object({
   name: z.string().min(1),
   title: z.string().min(1),
   fields: z.array(z.string().min(1)).min(1),
@@ -73,7 +73,7 @@ const FormSectionSchema = z.object({
   defaultOpen: z.boolean().optional(),
 });
 
-const EntityVisibilitySchema = z.object({
+export const EntityVisibilitySchema = z.object({
   form: z.object({
     create: z.array(z.string()).optional(),
     edit: z.array(z.string()).optional(),
@@ -85,7 +85,7 @@ const EntityVisibilitySchema = z.object({
   }).optional(),
 });
 
-const EntityUiSchema = z.object({
+export const EntityUiSchema = z.object({
   listFields: z.array(z.string()).optional(),
   searchFields: z.array(z.string()).optional(),
   sortField: z.string().optional(),
@@ -115,4 +115,13 @@ export const EntitySchemaValidator = z.object({
   seedData: z.array(z.record(z.string(), z.unknown())).optional(),
 });
 
-export type EntitySchemaValidationType = z.infer<typeof EntitySchemaValidator>;
+export type EntitySchema = z.infer<typeof EntitySchemaValidator>;
+export type EntityColumn = z.infer<typeof EntityColumnSchema>;
+export type EntityIndex = z.infer<typeof EntityIndexSchema>;
+export type EntityRelationship = z.infer<typeof EntityRelationshipSchema>;
+export type EntityUi = z.infer<typeof EntityUiSchema>;
+export type FormSection = z.infer<typeof FormSectionSchema>;
+export type EntityVisibility = z.infer<typeof EntityVisibilitySchema>;
+export type DbConstraints = z.infer<typeof DbConstraintsSchema>;
+export type ValidationRules = z.infer<typeof ValidationRulesSchema>;
+export type UiMetadata = z.infer<typeof UiMetadataSchema>;
