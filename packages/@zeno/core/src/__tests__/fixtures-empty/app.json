@@ -1,0 +1,13 @@
+{
+  "name": "empty-app",
+  "features": {
+    "auth": false,
+    "email": false
+  },
+  "database": {
+    "provider": "postgresql"
+  },
+  "ui": {
+    "theme": "light"
+  }
+}

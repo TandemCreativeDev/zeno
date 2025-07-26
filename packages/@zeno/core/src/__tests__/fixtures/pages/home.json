@@ -1,0 +1,27 @@
+{
+  "route": "/",
+  "title": "Home",
+  "sections": [
+    {
+      "type": "hero",
+      "title": "Welcome",
+      "subtitle": "Test application homepage"
+    },
+    {
+      "type": "table",
+      "entity": "users",
+      "title": "Users List"
+    }
+  ],
+  "navigation": {
+    "header": {
+      "include": true
+    },
+    "footer": {
+      "include": false
+    }
+  },
+  "auth": {
+    "required": false
+  }
+}

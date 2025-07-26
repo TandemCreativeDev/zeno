@@ -1,0 +1,8 @@
+{
+  "description": "Status enumeration for entities",
+  "values": {
+    "ACTIVE": { "label": "Active" },
+    "INACTIVE": { "label": "Inactive" },
+    "PENDING": { "label": "Pending" }
+  }
+}

@@ -48,7 +48,7 @@
   **Dependencies**: Task 3  
   **Definition of Done**: 100% test coverage on validation logic
 
-### [ ] 5. Schema Loader Implementation
+### [x] 5. Schema Loader Implementation
 
 **Description**: Create SchemaLoader class to read and validate JSON files (Ref: Architecture §4.1)  
 **Deliverables**:

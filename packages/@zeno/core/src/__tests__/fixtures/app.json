@@ -1,0 +1,9 @@
+{
+  "name": "test-app",
+  "description": "Test application for schema loader",
+  "url": "https://test-app.example.com",
+  "features": {
+    "search": true,
+    "darkMode": false
+  }
+}
