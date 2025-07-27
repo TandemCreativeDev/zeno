@@ -197,7 +197,7 @@ for (const result of results) {
 ### Comments and Documentation
 
 - **No inline comments** except for complex business logic
-- **JSDoc for all public APIs**
+- **JSDoc for all public APIs** but nothing else
 
 ```typescript
 /**
