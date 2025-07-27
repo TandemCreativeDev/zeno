@@ -4,7 +4,7 @@
 
 Zeno is a standalone Node module that generates production-ready NextJS applications from JSON schema definitions. The framework eliminates boilerplate development by automatically generating database models, UI components, pages, navigation, and API routes directly into standard NextJS project structure. Built with accessibility-first principles and complete type safety using Drizzle ORM, Zod validation, and DaisyUI components.
 
-**Technology Stack:** NextJS App Router + Drizzle ORM + Zod validation + DaisyUI styling + PostgreSQL + NextAuth
+**Technology Stack:** NextJS App Router + Drizzle ORM + Zod validation + DaisyUI styling + PostgreSQL + NextAuth + React Hook Form
 
 ## 2. Input/Output Architecture
 
@@ -41,18 +41,71 @@ zeno/
 - **Modals**: Entity management dialogs
 - **Navigation**: Header, footer, and mobile navigation from page definitions
 
+#### Form Component Architecture
+
+Forms are generated as **composite components** using a standardised set of UI building blocks. The wrapper of the generated component is a form element containing:
+
+- Multiple [Fieldset components](templates/ui/Fieldset.tsx) for each data entry section
+- Multiple [FormField components](templates/ui/FormField.tsx) is a universal field component handling ALL input types
+- A standardised set of form buttons in [FormActions](templates/ui/FormActions.tsx)
+
+An examples of the generated components is this [UsersForm component](examples/components/user/UserForm.tsx).
+
+**Required UI Components for Forms:**
+
+1. **FormField Component**
+
+   - Props: name, label, type, required, placeholder, helpText, validation, register, errors
+   - Supports: text, email, tel, number, date, datetime-local, select, textarea, checkbox, file
+   - Built-in validation integration with react-hook-form
+   - Accessibility: proper label association, aria-describedby for help/errors, aria-required
+
+2. **Fieldset Component**
+
+   - Props: legend, children, columns (1-3), className
+   - Responsive grid layout
+   - Semantic HTML with fieldset/legend elements
+
+3. **FormActions Component**
+
+   - Props: mode, loading, onCancel, onReset, submitText
+   - Loading states with spinner
+   - Responsive layout
+
+#### Table Component Architecture
+
+Tables are generated using the full-featured data table with sorting, filtering, search [**DataTable component**](templates/ui/DataTable.tsx) with column definitions. An examples of the generated components is this [UsersTable component](examples/components/user/UserTable.tsx).
+
+**Required UI Components for Tables:**
+
+1. [**DataTable Component**](templates/ui/DataTable.tsx)
+
+   - Props: data, columns, searchFields, sortField, sortOrder, onEdit, onDelete, onView, loading, title
+   - Column sorting with visual indicators
+   - Global search across specified fields
+   - Action buttons for CRUD operations
+   - Loading states
+   - Item count display
+
+2. [**TableCell Component**](templates/ui/TableCell.tsx)
+
+   - Handles cell formatting
+   - Props: value, formatter, prefix, suffix
+   - Formatters: currency, date, datetime, boolean, text
+   - Null/undefined handling
+
 **Accessibility Requirements**:
 
 - WCAG 2.1 AA compliance
-- Semantic HTML structure
+- Semantic HTML structure (form, fieldset, legend, label, table, thead, tbody)
 - Minimal div nesting, use sparingly only when needed
-- ARIA attributes and labels
-- Keyboard navigation support
-- Screen reader compatibility
+- ARIA attributes (aria-labelledby, aria-describedby, aria-required, role="alert")
+- Keyboard navigation support (tab order, enter/space activation)
+- Screen reader compatibility (proper labels, live regions)
 - User motion preferences detection
-- Focus management
-- Live announcements
-- Skip to main
+- Focus management (visible focus states, focus trapping in modals)
+- Live announcements for dynamic content
+- Skip to main content link
 
 ### 3.3 Page Generation
 
@@ -86,10 +139,11 @@ zeno/
 
 ### 4.3 Smart Defaults
 
-- **Form Sections**: Intelligent grouping of related fields
+- **Form Sections**: Intelligent grouping of related fields using Fieldset components
 - **Field Visibility**: Context-aware show/hide controls for create/edit forms
 - **Relationship Detection**: Automatic foreign key and many-to-many relationship handling
 - **Generation Controls**: Per-entity controls for form/table/API/page generation
+- **Validation Integration**: Automatic react-hook-form + Zod integration
 
 ## 5. CLI Interface
 
@@ -148,11 +202,11 @@ Key features:
 
 - **Hero**: Header sections with title/subtitle
 - **Stats**: Metric displays with database queries
-- **Table**: Entity data with filtering and display options
+- **Table**: Entity data with filtering and display options (uses [DataTable component](templates/ui/DataTable.tsx))
 - **Content**: Markdown content blocks
 - **Custom**: Custom component integration
 
-**Navigation Integration:** Pages define their own header/footer placement, eliminating centralized navigation configuration.
+**Navigation Integration:** Pages define their own header/footer placement, eliminating centralised navigation configuration.
 
 ## 9. Performance & Quality
 
@@ -161,13 +215,15 @@ Key features:
 - < 2s complete application generation (50 entities)
 - < 30s NextJS build time
 - Incremental generation for schema changes
+- Optimised bundle sizes through component reuse
 
 **Code Quality:**
 
 - TypeScript strict mode compliance
 - ESLint and Prettier integration
-- Accessibility validation
+- Accessibility validation (axe-core integration)
 - Generated test scaffolding (optional)
+- Component reusability through shared UI components
 
 ## 10. Migration & Development
 
@@ -183,6 +239,7 @@ Key features:
 - Comprehensive error messages with schema validation
 - Debug mode with detailed generation reports
 - Dry-run capability for previewing changes
+- Component preview in Storybook
 
 ## 11. Security Requirements
 
@@ -198,6 +255,7 @@ Key features:
 - XSS protection with automatic HTML escaping
 - CSRF protection via NextJS built-in security
 - Route protection with NextAuth session management
+- Form validation on both client and server
 
 ## 12. Documentation and Developer Resources
 
@@ -206,6 +264,7 @@ Key features:
 - API documentation from generated routes
 - Component documentation with usage examples
 - Schema reference documentation
+- UI component library documentation
 
 **Developer Resources:**
 
@@ -213,3 +272,4 @@ Key features:
 - Best practices guide for schema design
 - Troubleshooting guide for common issues
 - Migration guide for schema evolution
+- UI component customisation guide
