@@ -12,4 +12,12 @@ export {
   validateConfig,
 } from "./config";
 export * from "./errors";
+export {
+  ensureDirectory,
+  fileExists,
+  safeJoin,
+  safeReadFile,
+  safeWriteFile,
+  validatePath,
+} from "./fileSystem";
 export { createSchemaLoader, SchemaLoader } from "./schemaLoader";
