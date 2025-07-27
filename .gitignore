@@ -78,3 +78,6 @@ Thumbs.db
 
 # Yarn Integrity file
 .yarn-integrity
+
+# GitHub sync state
+.github-sync-state.json
