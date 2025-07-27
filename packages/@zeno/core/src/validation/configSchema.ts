@@ -10,22 +10,28 @@ const migrationsSchema = z.object({
   auto: z.boolean().default(false),
 });
 
-const emailAuthSchema = z.object({
-  user: z.string().min(1, "Email user is required"),
-  pass: z.string().min(1, "Email password is required"),
-}).strict();
+const emailAuthSchema = z
+  .object({
+    user: z.string().min(1, "Email user is required"),
+    pass: z.string().min(1, "Email password is required"),
+  })
+  .strict();
 
-export const databaseConfigSchema = z.object({
-  provider: z.literal("postgresql"),
-  connection: z.string().min(1, "Database connection string is required"),
-  migrations: migrationsSchema.default({ dir: "./drizzle", auto: false }),
-}).strict();
+export const databaseConfigSchema = z
+  .object({
+    provider: z.literal("postgresql"),
+    connection: z.string().min(1, "Database connection string is required"),
+    migrations: migrationsSchema.default({ dir: "./drizzle", auto: false }),
+  })
+  .strict();
 
-export const emailConfigSchema = z.object({
-  host: z.string().min(1, "Email host is required"),
-  port: z.number().int().min(1).max(65535).default(587),
-  auth: emailAuthSchema,
-}).strict();
+export const emailConfigSchema = z
+  .object({
+    host: z.string().min(1, "Email host is required"),
+    port: z.number().int().min(1).max(65535).default(587),
+    auth: emailAuthSchema,
+  })
+  .strict();
 
 const generateConfigSchemaBase = z.object({
   models: z.boolean().default(true),
@@ -53,42 +59,53 @@ export const devConfigSchema = devConfigSchemaBase.default({
   verbose: false,
 });
 
-export const zenoConfigSchema = z.object({
-  schemaDir: z.string().default("./zeno"),
-  outputDir: z.string().default("./src"),
-  database: databaseConfigSchema,
-  email: emailConfigSchema,
-  generate: generateConfigSchema,
-  dev: devConfigSchema,
-}).strict();
+export const zenoConfigSchema = z
+  .object({
+    schemaDir: z.string().default("./zeno"),
+    outputDir: z.string().default("./src"),
+    database: databaseConfigSchema,
+    email: emailConfigSchema,
+    generate: generateConfigSchema,
+    dev: devConfigSchema,
+  })
+  .strict();
 
 // Create schemas that allow partial input for nested objects
 const partialMigrationsSchema = migrationsSchema.partial();
 const partialEmailAuthSchema = emailAuthSchema.partial();
 
-const partialDatabaseConfigSchema = z.object({
-  provider: z.literal("postgresql").optional(),
-  connection: z.string().min(1, "Database connection string is required").optional(),
-  migrations: partialMigrationsSchema.optional(),
-}).strict();
+const partialDatabaseConfigSchema = z
+  .object({
+    provider: z.literal("postgresql").optional(),
+    connection: z
+      .string()
+      .min(1, "Database connection string is required")
+      .optional(),
+    migrations: partialMigrationsSchema.optional(),
+  })
+  .strict();
 
-const partialEmailConfigSchema = z.object({
-  host: z.string().min(1, "Email host is required").optional(),
-  port: z.number().int().min(1).max(65535).optional(),
-  auth: partialEmailAuthSchema.optional(),
-}).strict();
+const partialEmailConfigSchema = z
+  .object({
+    host: z.string().min(1, "Email host is required").optional(),
+    port: z.number().int().min(1).max(65535).optional(),
+    auth: partialEmailAuthSchema.optional(),
+  })
+  .strict();
 
 const partialGenerateConfigSchema = generateConfigSchemaBase.partial();
 const partialDevConfigSchema = devConfigSchemaBase.partial();
 
-export const zenoConfigInputSchema = z.object({
-  schemaDir: z.string().optional(),
-  outputDir: z.string().optional(),
-  database: partialDatabaseConfigSchema.optional(),
-  email: partialEmailConfigSchema.optional(),
-  generate: partialGenerateConfigSchema.optional(),
-  dev: partialDevConfigSchema.optional(),
-}).strict();
+export const zenoConfigInputSchema = z
+  .object({
+    schemaDir: z.string().optional(),
+    outputDir: z.string().optional(),
+    database: partialDatabaseConfigSchema.optional(),
+    email: partialEmailConfigSchema.optional(),
+    generate: partialGenerateConfigSchema.optional(),
+    dev: partialDevConfigSchema.optional(),
+  })
+  .strict();
 
 // Infer types from Zod schemas for single source of truth
 export type DatabaseConfig = z.infer<typeof databaseConfigSchema>;

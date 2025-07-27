@@ -3,38 +3,49 @@
  */
 
 import { z } from "zod";
+import type { ValidationError, ValidationResult } from "../types/core";
+import { AppSchemaValidator } from "./appSchema";
 import { EntitySchemaValidator } from "./entitySchema";
 import { EnumSchemaValidator } from "./enumSchema";
 import { PageSchemaValidator } from "./pageSchema";
-import { AppSchemaValidator } from "./appSchema";
-
-import type { ValidationResult, ValidationError } from "../types/core";
 
 /**
  * Validates an entity schema and returns detailed validation results
  */
-export function validateEntitySchema(data: unknown, filePath: string): ValidationResult {
+export function validateEntitySchema(
+  data: unknown,
+  filePath: string
+): ValidationResult {
   return validateWithZodSchema(EntitySchemaValidator, data, filePath);
 }
 
 /**
  * Validates an enum schema and returns detailed validation results
  */
-export function validateEnumSchema(data: unknown, filePath: string): ValidationResult {
+export function validateEnumSchema(
+  data: unknown,
+  filePath: string
+): ValidationResult {
   return validateWithZodSchema(EnumSchemaValidator, data, filePath);
 }
 
 /**
  * Validates a page schema and returns detailed validation results
  */
-export function validatePageSchema(data: unknown, filePath: string): ValidationResult {
+export function validatePageSchema(
+  data: unknown,
+  filePath: string
+): ValidationResult {
   return validateWithZodSchema(PageSchemaValidator, data, filePath);
 }
 
 /**
  * Validates an app schema and returns detailed validation results
  */
-export function validateAppSchema(data: unknown, filePath: string): ValidationResult {
+export function validateAppSchema(
+  data: unknown,
+  filePath: string
+): ValidationResult {
   return validateWithZodSchema(AppSchemaValidator, data, filePath);
 }
 
@@ -51,24 +62,38 @@ export function validateSchemaSet(
   const errors: ValidationError[] = [];
 
   for (const [name, entityData] of entities.entries()) {
-    const result = validateEntitySchema(entityData, `${basePath}/entities/${name}.json`);
+    const result = validateEntitySchema(
+      entityData,
+      `${basePath}/entities/${name}.json`
+    );
     errors.push(...result.errors);
   }
 
   for (const [name, enumData] of enums.entries()) {
-    const result = validateEnumSchema(enumData, `${basePath}/enums/${name}.json`);
+    const result = validateEnumSchema(
+      enumData,
+      `${basePath}/enums/${name}.json`
+    );
     errors.push(...result.errors);
   }
 
   for (const [name, pageData] of pages.entries()) {
-    const result = validatePageSchema(pageData, `${basePath}/pages/${name}.json`);
+    const result = validatePageSchema(
+      pageData,
+      `${basePath}/pages/${name}.json`
+    );
     errors.push(...result.errors);
   }
 
   const appResult = validateAppSchema(app, `${basePath}/app.json`);
   errors.push(...appResult.errors);
 
-  const crossReferenceErrors = validateCrossReferences(entities, enums, pages, basePath);
+  const crossReferenceErrors = validateCrossReferences(
+    entities,
+    enums,
+    pages,
+    basePath
+  );
   errors.push(...crossReferenceErrors);
 
   return {
@@ -80,7 +105,11 @@ export function validateSchemaSet(
 /**
  * Helper function to validate data against a Zod schema
  */
-function validateWithZodSchema(schema: z.ZodSchema, data: unknown, filePath: string): ValidationResult {
+function validateWithZodSchema(
+  schema: z.ZodSchema,
+  data: unknown,
+  filePath: string
+): ValidationResult {
   try {
     schema.parse(data);
     return { valid: true, errors: [] };
@@ -103,10 +132,12 @@ function validateWithZodSchema(schema: z.ZodSchema, data: unknown, filePath: str
 
     return {
       valid: false,
-      errors: [{
-        message: "Unknown validation error",
-        path: filePath,
-      }],
+      errors: [
+        {
+          message: "Unknown validation error",
+          path: filePath,
+        },
+      ],
     };
   }
 }
@@ -125,14 +156,16 @@ function validateCrossReferences(
 
   for (const [entityName, entityData] of entities.entries()) {
     const filePath = `${basePath}/entities/${entityName}.json`;
-    
+
     try {
       const entity = EntitySchemaValidator.parse(entityData);
-      
+
       if (entity.relationships) {
-        for (const [relName, relationship] of Object.entries(entity.relationships)) {
+        for (const [relName, relationship] of Object.entries(
+          entity.relationships
+        )) {
           if (!entityNames.has(relationship.table)) {
-            const line = getLineNumber(['relationships', relName, 'table']);
+            const line = getLineNumber(["relationships", relName, "table"]);
             const errorObj: ValidationError = {
               message: `Referenced entity '${relationship.table}' not found`,
               path: filePath,
@@ -149,7 +182,13 @@ function validateCrossReferences(
         for (const [colName, column] of Object.entries(entity.columns)) {
           if (column.dbConstraints.references) {
             if (!entityNames.has(column.dbConstraints.references.table)) {
-              const line = getLineNumber(['columns', colName, 'dbConstraints', 'references', 'table']);
+              const line = getLineNumber([
+                "columns",
+                colName,
+                "dbConstraints",
+                "references",
+                "table",
+              ]);
               const errorObj: ValidationError = {
                 message: `Referenced entity '${column.dbConstraints.references.table}' not found`,
                 path: filePath,
@@ -169,13 +208,17 @@ function validateCrossReferences(
 
   for (const [pageName, pageData] of pages.entries()) {
     const filePath = `${basePath}/pages/${pageName}.json`;
-    
+
     try {
       const page = PageSchemaValidator.parse(pageData);
-      
+
       for (const [sectionIndex, section] of page.sections.entries()) {
         if (section.entity && !entityNames.has(section.entity)) {
-          const line = getLineNumber(['sections', sectionIndex.toString(), 'entity']);
+          const line = getLineNumber([
+            "sections",
+            sectionIndex.toString(),
+            "entity",
+          ]);
           const errorObj: ValidationError = {
             message: `Referenced entity '${section.entity}' not found`,
             path: filePath,
@@ -201,6 +244,6 @@ function validateCrossReferences(
  */
 function getLineNumber(path: (string | number)[]): number | undefined {
   if (path.length === 0) return undefined;
-  
+
   return Math.max(1, path.length * 2);
 }

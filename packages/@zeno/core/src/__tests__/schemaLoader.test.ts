@@ -1,12 +1,15 @@
-import { describe, it, expect } from "vitest";
 import { join } from "node:path";
-import { SchemaLoader } from "../utils/schemaLoader";
+import { describe, expect, it } from "vitest";
 import { SchemaValidationError } from "../utils/errors";
+import { SchemaLoader } from "../utils/schemaLoader";
 
 describe("SchemaLoader", () => {
   const loader = new SchemaLoader();
   const fixturesPath = join(__dirname, "fixtures");
-  const docsExamplesPath = join(__dirname, "../../../../../docs/examples/schemas");
+  const docsExamplesPath = join(
+    __dirname,
+    "../../../../../docs/examples/schemas"
+  );
 
   describe("load", () => {
     it("loads valid schemas successfully", async () => {

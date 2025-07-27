@@ -3,10 +3,10 @@
  */
 
 export type {
-  ZenoConfig,
-  ZenoConfigInput,
   DatabaseConfig,
+  DevConfig,
   EmailConfig,
   GenerateConfig,
-  DevConfig,
+  ZenoConfig,
+  ZenoConfigInput,
 } from "../validation/configSchema";

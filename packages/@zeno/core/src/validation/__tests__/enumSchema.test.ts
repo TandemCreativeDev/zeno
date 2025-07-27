@@ -2,7 +2,7 @@
  * @fileoverview Tests for EnumSchema validation
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { EnumSchemaValidator } from "../enumSchema";
 
 describe("EnumSchemaValidator", () => {
@@ -80,7 +80,8 @@ describe("EnumSchemaValidator", () => {
   it("rejects enum with invalid key format", () => {
     const invalidEnum = {
       values: {
-        "active": { // Should be uppercase
+        active: {
+          // Should be uppercase
           label: "Active",
         },
       },
@@ -89,7 +90,9 @@ describe("EnumSchemaValidator", () => {
     const result = EnumSchemaValidator.safeParse(invalidEnum);
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(JSON.stringify(result.error.issues)).toContain("uppercase with underscores");
+      expect(JSON.stringify(result.error.issues)).toContain(
+        "uppercase with underscores"
+      );
     }
   });
 
@@ -144,7 +147,8 @@ describe("EnumSchemaValidator", () => {
   it("rejects enum with lowercase in key", () => {
     const invalidEnum = {
       values: {
-        "Active_User": { // Mixed case not allowed
+        Active_User: {
+          // Mixed case not allowed
           label: "Active User",
         },
       },

@@ -3,11 +3,11 @@
  */
 
 export type {
-  PageSchema,
-  PageNavigation,
-  PageStat,
-  PageSectionFilters,
-  PageSection,
-  PageMetadata,
   PageAuth,
+  PageMetadata,
+  PageNavigation,
+  PageSchema,
+  PageSection,
+  PageSectionFilters,
+  PageStat,
 } from "../validation/pageSchema";

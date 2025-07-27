@@ -2,7 +2,7 @@
  * @fileoverview Tests for EntitySchema validation
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { EntitySchemaValidator } from "../entitySchema";
 
 describe("EntitySchemaValidator", () => {
@@ -74,7 +74,9 @@ describe("EntitySchemaValidator", () => {
     const result = EntitySchemaValidator.safeParse(invalidEntity);
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0]?.message).toContain("lowercase with underscores");
+      expect(result.error.issues[0]?.message).toContain(
+        "lowercase with underscores"
+      );
     }
   });
 
@@ -101,7 +103,9 @@ describe("EntitySchemaValidator", () => {
     const result = EntitySchemaValidator.safeParse(invalidEntity);
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0]?.message).toContain("Only one primary key is allowed");
+      expect(result.error.issues[0]?.message).toContain(
+        "Only one primary key is allowed"
+      );
     }
   });
 
@@ -209,7 +213,8 @@ describe("EntitySchemaValidator", () => {
       tableName: "users",
       displayName: "Users",
       columns: {
-        "": { // Empty column name
+        "": {
+          // Empty column name
           dbConstraints: {
             type: "varchar",
           },

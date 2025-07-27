@@ -3,8 +3,8 @@
  */
 
 export type {
-  AppSchema,
-  AppTheme,
   AppFeatures,
   AppMetadata,
+  AppSchema,
+  AppTheme,
 } from "../validation/appSchema";

@@ -1,8 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  SchemaValidationError,
-  GenerationError,
   ConfigurationError,
+  GenerationError,
+  SchemaValidationError,
 } from "../utils/errors";
 
 describe("SchemaValidationError", () => {

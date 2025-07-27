@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { TemplateEngine, createTemplateEngine } from "../TemplateEngine";
+import { createTemplateEngine, TemplateEngine } from "../TemplateEngine";
 
 describe("TemplateEngine", () => {
   describe("factory function", () => {
@@ -71,7 +71,8 @@ describe("TemplateEngine", () => {
       const engine = new TemplateEngine();
       engine.registerPartial("userCard", "{{name}} ({{email}})");
 
-      const template = "Users: {{#each users}}{{> userCard}}{{#unless @last}}, {{/unless}}{{/each}}";
+      const template =
+        "Users: {{#each users}}{{> userCard}}{{#unless @last}}, {{/unless}}{{/each}}";
       const data = {
         users: [
           { name: "Alice", email: "alice@example.com" },
@@ -80,7 +81,9 @@ describe("TemplateEngine", () => {
       };
 
       const result = engine.render(template, data);
-      expect(result).toBe("Users: Alice (alice@example.com), Bob (bob@example.com)");
+      expect(result).toBe(
+        "Users: Alice (alice@example.com), Bob (bob@example.com)"
+      );
     });
   });
 
@@ -288,14 +291,26 @@ describe("TemplateEngine", () => {
   describe("eq helper", () => {
     it("compares equal values", () => {
       const engine = new TemplateEngine();
-      expect(engine.render("{{#if (eq status 'active')}}Yes{{/if}}", { status: "active" })).toBe("Yes");
-      expect(engine.render("{{#if (eq count 5)}}Yes{{/if}}", { count: 5 })).toBe("Yes");
+      expect(
+        engine.render("{{#if (eq status 'active')}}Yes{{/if}}", {
+          status: "active",
+        })
+      ).toBe("Yes");
+      expect(
+        engine.render("{{#if (eq count 5)}}Yes{{/if}}", { count: 5 })
+      ).toBe("Yes");
     });
 
     it("compares unequal values", () => {
       const engine = new TemplateEngine();
-      expect(engine.render("{{#if (eq status 'inactive')}}Yes{{else}}No{{/if}}", { status: "active" })).toBe("No");
-      expect(engine.render("{{#if (eq count 3)}}Yes{{else}}No{{/if}}", { count: 5 })).toBe("No");
+      expect(
+        engine.render("{{#if (eq status 'inactive')}}Yes{{else}}No{{/if}}", {
+          status: "active",
+        })
+      ).toBe("No");
+      expect(
+        engine.render("{{#if (eq count 3)}}Yes{{else}}No{{/if}}", { count: 5 })
+      ).toBe("No");
     });
   });
 
@@ -303,14 +318,28 @@ describe("TemplateEngine", () => {
     it("checks if array includes item", () => {
       const engine = new TemplateEngine();
       const data = { tags: ["red", "blue", "green"] };
-      expect(engine.render("{{#if (includes tags 'blue')}}Yes{{/if}}", data)).toBe("Yes");
-      expect(engine.render("{{#if (includes tags 'yellow')}}Yes{{else}}No{{/if}}", data)).toBe("No");
+      expect(
+        engine.render("{{#if (includes tags 'blue')}}Yes{{/if}}", data)
+      ).toBe("Yes");
+      expect(
+        engine.render(
+          "{{#if (includes tags 'yellow')}}Yes{{else}}No{{/if}}",
+          data
+        )
+      ).toBe("No");
     });
 
     it("handles non-array input", () => {
       const engine = new TemplateEngine();
-      expect(engine.render("{{#if (includes null 'item')}}Yes{{else}}No{{/if}}", {})).toBe("No");
-      expect(engine.render("{{#if (includes 'string' 'item')}}Yes{{else}}No{{/if}}", {})).toBe("No");
+      expect(
+        engine.render("{{#if (includes null 'item')}}Yes{{else}}No{{/if}}", {})
+      ).toBe("No");
+      expect(
+        engine.render(
+          "{{#if (includes 'string' 'item')}}Yes{{else}}No{{/if}}",
+          {}
+        )
+      ).toBe("No");
     });
   });
 
@@ -352,7 +381,8 @@ describe("TemplateEngine", () => {
 
     it("uses helpers in conditionals", () => {
       const engine = new TemplateEngine();
-      const template = "{{#if (eq (snakeCase name) 'hello_world')}}Match{{else}}No match{{/if}}";
+      const template =
+        "{{#if (eq (snakeCase name) 'hello_world')}}Match{{else}}No match{{/if}}";
       const data = { name: "helloWorld" };
       const result = engine.render(template, data);
       expect(result).toBe("Match");

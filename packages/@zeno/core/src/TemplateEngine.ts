@@ -1,6 +1,9 @@
 import Handlebars from "handlebars";
 
-import type { TemplateEngine as ITemplateEngine, TemplateHelper } from "./types/core";
+import type {
+  TemplateEngine as ITemplateEngine,
+  TemplateHelper,
+} from "./types/core";
 
 export class TemplateEngine implements ITemplateEngine {
   private handlebars: typeof Handlebars;
@@ -27,13 +30,17 @@ export class TemplateEngine implements ITemplateEngine {
     this.registerHelper("camelCase", (...args: unknown[]) => {
       const str = args[0];
       if (typeof str !== "string") return "";
-      return str.replace(/[-_\s]+(.)?/g, (_, char) => char ? char.toUpperCase() : "");
+      return str.replace(/[-_\s]+(.)?/g, (_, char) =>
+        char ? char.toUpperCase() : ""
+      );
     });
 
     this.registerHelper("pascalCase", (...args: unknown[]) => {
       const str = args[0];
       if (typeof str !== "string") return "";
-      const camelCased = str.replace(/[-_\s]+(.)?/g, (_, char) => char ? char.toUpperCase() : "");
+      const camelCased = str.replace(/[-_\s]+(.)?/g, (_, char) =>
+        char ? char.toUpperCase() : ""
+      );
       return camelCased.charAt(0).toUpperCase() + camelCased.slice(1);
     });
 
@@ -59,23 +66,35 @@ export class TemplateEngine implements ITemplateEngine {
       const str = args[0];
       if (typeof str !== "string") return "";
       if (str.endsWith("y")) {
-        return str.slice(0, -1) + "ies";
+        return `${str.slice(0, -1)}ies`;
       }
-      if (str.endsWith("s") || str.endsWith("sh") || str.endsWith("ch") || str.endsWith("x") || str.endsWith("z")) {
-        return str + "es";
+      if (
+        str.endsWith("s") ||
+        str.endsWith("sh") ||
+        str.endsWith("ch") ||
+        str.endsWith("x") ||
+        str.endsWith("z")
+      ) {
+        return `${str}es`;
       }
-      return str + "s";
+      return `${str}s`;
     });
 
     this.registerHelper("singularise", (...args: unknown[]) => {
       const str = args[0];
       if (typeof str !== "string") return "";
       if (str.endsWith("ies")) {
-        return str.slice(0, -3) + "y";
+        return `${str.slice(0, -3)}y`;
       }
       if (str.endsWith("es") && str.length > 2) {
         const withoutEs = str.slice(0, -2);
-        if (withoutEs.endsWith("s") || withoutEs.endsWith("sh") || withoutEs.endsWith("ch") || withoutEs.endsWith("x") || withoutEs.endsWith("z")) {
+        if (
+          withoutEs.endsWith("s") ||
+          withoutEs.endsWith("sh") ||
+          withoutEs.endsWith("ch") ||
+          withoutEs.endsWith("x") ||
+          withoutEs.endsWith("z")
+        ) {
           return withoutEs;
         }
       }
@@ -106,7 +125,8 @@ export class TemplateEngine implements ITemplateEngine {
     this.registerHelper("when", (...args: unknown[]) => {
       const condition = args[0];
       const truthyValue = args[1];
-      const falsyValue = args.length > 2 && typeof args[2] !== "object" ? args[2] : "";
+      const falsyValue =
+        args.length > 2 && typeof args[2] !== "object" ? args[2] : "";
       return condition ? truthyValue : falsyValue;
     });
   }

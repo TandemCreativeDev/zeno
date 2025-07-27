@@ -13,29 +13,36 @@ export const DbConstraintsSchema = z.object({
   default: z.union([z.string(), z.number(), z.boolean()]).optional(),
   primaryKey: z.boolean().optional(),
   unique: z.boolean().optional(),
-  references: z.object({
-    table: z.string().min(1),
-    column: z.string().min(1),
-    onDelete: z.enum(["cascade", "restrict", "set null"]).optional(),
-  }).optional(),
+  references: z
+    .object({
+      table: z.string().min(1),
+      column: z.string().min(1),
+      onDelete: z.enum(["cascade", "restrict", "set null"]).optional(),
+    })
+    .optional(),
 });
 
-export const ValidationRulesSchema = z.object({
-  required: z.boolean().optional(),
-  min: z.number().optional(),
-  max: z.number().optional(),
-  email: z.boolean().optional(),
-  url: z.boolean().optional(),
-  pattern: z.string().optional(),
-}).refine((data) => {
-  if (data.email && data.pattern) {
-    return false;
-  }
-  return true;
-}, {
-  message: "Cannot use both 'email: true' and 'pattern' together",
-  path: ["email"],
-});
+export const ValidationRulesSchema = z
+  .object({
+    required: z.boolean().optional(),
+    min: z.number().optional(),
+    max: z.number().optional(),
+    email: z.boolean().optional(),
+    url: z.boolean().optional(),
+    pattern: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.email && data.pattern) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "Cannot use both 'email: true' and 'pattern' together",
+      path: ["email"],
+    }
+  );
 
 export const UiMetadataSchema = z.object({
   label: z.string().optional(),
@@ -74,15 +81,19 @@ export const FormSectionSchema = z.object({
 });
 
 export const EntityVisibilitySchema = z.object({
-  form: z.object({
-    create: z.array(z.string()).optional(),
-    edit: z.array(z.string()).optional(),
-    hidden: z.array(z.string()).optional(),
-  }).optional(),
-  table: z.object({
-    list: z.array(z.string()).optional(),
-    hidden: z.array(z.string()).optional(),
-  }).optional(),
+  form: z
+    .object({
+      create: z.array(z.string()).optional(),
+      edit: z.array(z.string()).optional(),
+      hidden: z.array(z.string()).optional(),
+    })
+    .optional(),
+  table: z
+    .object({
+      list: z.array(z.string()).optional(),
+      hidden: z.array(z.string()).optional(),
+    })
+    .optional(),
 });
 
 export const EntityUiSchema = z.object({
@@ -95,7 +106,13 @@ export const EntityUiSchema = z.object({
 });
 
 export const EntitySchemaValidator = z.object({
-  tableName: z.string().min(1).regex(/^[a-z][a-z0-9_]*$/, "Table name must be lowercase with underscores"),
+  tableName: z
+    .string()
+    .min(1)
+    .regex(
+      /^[a-z][a-z0-9_]*$/,
+      "Table name must be lowercase with underscores"
+    ),
   displayName: z.string().min(1),
   icon: z.string().optional(),
   description: z.string().optional(),
@@ -103,14 +120,21 @@ export const EntitySchemaValidator = z.object({
   generateTable: z.boolean().optional(),
   generateAPI: z.boolean().optional(),
   generatePages: z.boolean().optional(),
-  columns: z.record(z.string().min(1), EntityColumnSchema).refine((columns) => {
-    const primaryKeys = Object.values(columns).filter(col => col.dbConstraints.primaryKey);
-    return primaryKeys.length <= 1;
-  }, {
-    message: "Only one primary key is allowed per entity",
-  }),
+  columns: z.record(z.string().min(1), EntityColumnSchema).refine(
+    (columns) => {
+      const primaryKeys = Object.values(columns).filter(
+        (col) => col.dbConstraints.primaryKey
+      );
+      return primaryKeys.length <= 1;
+    },
+    {
+      message: "Only one primary key is allowed per entity",
+    }
+  ),
   indexes: z.record(z.string().min(1), EntityIndexSchema).optional(),
-  relationships: z.record(z.string().min(1), EntityRelationshipSchema).optional(),
+  relationships: z
+    .record(z.string().min(1), EntityRelationshipSchema)
+    .optional(),
   ui: EntityUiSchema.optional(),
   seedData: z.array(z.record(z.string(), z.unknown())).optional(),
 });

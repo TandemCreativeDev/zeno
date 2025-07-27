@@ -3,14 +3,14 @@
  */
 
 export type {
-  EntitySchema,
+  DbConstraints,
   EntityColumn,
   EntityIndex,
   EntityRelationship,
+  EntitySchema,
   EntityUi,
-  FormSection,
   EntityVisibility,
-  DbConstraints,
-  ValidationRules,
+  FormSection,
   UiMetadata,
+  ValidationRules,
 } from "../validation/entitySchema";

@@ -5,17 +5,15 @@
  * @throws {SchemaValidationError} When schema files are invalid
  */
 
-import { readFile, readdir, stat } from "node:fs/promises";
-import { join, extname, basename } from "node:path";
-
-import { validateSchemaSet } from "../validation";
-import { SchemaValidationError } from "./errors";
-
-import type { SchemaSet, ValidationResult } from "../types/core";
+import { readdir, readFile, stat } from "node:fs/promises";
+import { basename, extname, join } from "node:path";
 import type { AppSchema } from "../types/app";
+import type { SchemaSet, ValidationResult } from "../types/core";
 import type { EntitySchema } from "../types/entity";
 import type { EnumSchema } from "../types/enum";
 import type { PageSchema } from "../types/page";
+import { validateSchemaSet } from "../validation";
+import { SchemaValidationError } from "./errors";
 
 export class SchemaLoader {
   /**

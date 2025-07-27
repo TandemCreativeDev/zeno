@@ -2,7 +2,7 @@
  * @fileoverview Tests for PageSchema validation
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { PageSchemaValidator } from "../pageSchema";
 
 describe("PageSchemaValidator", () => {
@@ -154,7 +154,9 @@ describe("PageSchemaValidator", () => {
     const result = PageSchemaValidator.safeParse(invalidPage);
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0]?.message).toContain("Section type requirements");
+      expect(result.error.issues[0]?.message).toContain(
+        "Section type requirements"
+      );
     }
   });
 

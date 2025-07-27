@@ -2,14 +2,14 @@
  * @fileoverview Utility functions for Zeno core package
  */
 
-export * from "./errors";
-export { SchemaLoader, createSchemaLoader } from "./schemaLoader";
 export {
+  DEFAULT_CONFIG,
   defineConfig,
-  loadConfig,
   findConfigFile,
+  loadConfig,
   mergeConfig,
   resolveConfig,
   validateConfig,
-  DEFAULT_CONFIG,
 } from "./config";
+export * from "./errors";
+export { createSchemaLoader, SchemaLoader } from "./schemaLoader";

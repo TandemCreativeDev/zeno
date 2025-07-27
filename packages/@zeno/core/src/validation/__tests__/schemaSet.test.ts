@@ -2,8 +2,14 @@
  * @fileoverview Tests for SchemaSet validation and cross-reference validation
  */
 
-import { describe, it, expect } from "vitest";
-import { validateSchemaSet, validateEntitySchema, validateEnumSchema, validatePageSchema, validateAppSchema } from "../schemaSet";
+import { describe, expect, it } from "vitest";
+import {
+  validateAppSchema,
+  validateEntitySchema,
+  validateEnumSchema,
+  validatePageSchema,
+  validateSchemaSet,
+} from "../schemaSet";
 
 describe("Schema validation functions", () => {
   describe("validateEntitySchema", () => {
@@ -140,68 +146,80 @@ describe("Schema validation functions", () => {
 describe("validateSchemaSet", () => {
   it("validates complete schema set without cross-reference errors", () => {
     const entities = new Map([
-      ["users", {
-        tableName: "users",
-        displayName: "Users",
-        columns: {
-          id: {
-            dbConstraints: {
-              type: "serial",
-              primaryKey: true,
-            },
-          },
-        },
-      }],
-      ["posts", {
-        tableName: "posts",
-        displayName: "Posts",
-        columns: {
-          id: {
-            dbConstraints: {
-              type: "serial",
-              primaryKey: true,
-            },
-          },
-          user_id: {
-            dbConstraints: {
-              type: "integer",
-              references: {
-                table: "users",
-                column: "id",
+      [
+        "users",
+        {
+          tableName: "users",
+          displayName: "Users",
+          columns: {
+            id: {
+              dbConstraints: {
+                type: "serial",
+                primaryKey: true,
               },
             },
           },
         },
-        relationships: {
-          author: {
-            type: "many-to-one",
-            table: "users",
+      ],
+      [
+        "posts",
+        {
+          tableName: "posts",
+          displayName: "Posts",
+          columns: {
+            id: {
+              dbConstraints: {
+                type: "serial",
+                primaryKey: true,
+              },
+            },
+            user_id: {
+              dbConstraints: {
+                type: "integer",
+                references: {
+                  table: "users",
+                  column: "id",
+                },
+              },
+            },
+          },
+          relationships: {
+            author: {
+              type: "many-to-one",
+              table: "users",
+            },
           },
         },
-      }],
+      ],
     ]);
 
     const enums = new Map([
-      ["status", {
-        values: {
-          ACTIVE: {
-            label: "Active",
+      [
+        "status",
+        {
+          values: {
+            ACTIVE: {
+              label: "Active",
+            },
           },
         },
-      }],
+      ],
     ]);
 
     const pages = new Map([
-      ["dashboard", {
-        route: "/dashboard",
-        title: "Dashboard",
-        sections: [
-          {
-            type: "table",
-            entity: "users",
-          },
-        ],
-      }],
+      [
+        "dashboard",
+        {
+          route: "/dashboard",
+          title: "Dashboard",
+          sections: [
+            {
+              type: "table",
+              entity: "users",
+            },
+          ],
+        },
+      ],
     ]);
 
     const app = {
@@ -217,24 +235,27 @@ describe("validateSchemaSet", () => {
 
   it("detects missing entity references in relationships", () => {
     const entities = new Map([
-      ["posts", {
-        tableName: "posts",
-        displayName: "Posts",
-        columns: {
-          id: {
-            dbConstraints: {
-              type: "serial",
-              primaryKey: true,
+      [
+        "posts",
+        {
+          tableName: "posts",
+          displayName: "Posts",
+          columns: {
+            id: {
+              dbConstraints: {
+                type: "serial",
+                primaryKey: true,
+              },
+            },
+          },
+          relationships: {
+            author: {
+              type: "many-to-one",
+              table: "users", // users entity doesn't exist
             },
           },
         },
-        relationships: {
-          author: {
-            type: "many-to-one",
-            table: "users", // users entity doesn't exist
-          },
-        },
-      }],
+      ],
     ]);
 
     const enums = new Map();
@@ -247,8 +268,8 @@ describe("validateSchemaSet", () => {
 
     const result = validateSchemaSet(entities, enums, pages, app, "/test");
     expect(result.valid).toBe(false);
-    
-    const referenceError = result.errors.find(error => 
+
+    const referenceError = result.errors.find((error) =>
       error.message.includes("Referenced entity 'users' not found")
     );
     expect(referenceError).toBeDefined();
@@ -257,27 +278,30 @@ describe("validateSchemaSet", () => {
 
   it("detects missing entity references in foreign keys", () => {
     const entities = new Map([
-      ["posts", {
-        tableName: "posts",
-        displayName: "Posts",
-        columns: {
-          id: {
-            dbConstraints: {
-              type: "serial",
-              primaryKey: true,
+      [
+        "posts",
+        {
+          tableName: "posts",
+          displayName: "Posts",
+          columns: {
+            id: {
+              dbConstraints: {
+                type: "serial",
+                primaryKey: true,
+              },
             },
-          },
-          user_id: {
-            dbConstraints: {
-              type: "integer",
-              references: {
-                table: "users", // users entity doesn't exist
-                column: "id",
+            user_id: {
+              dbConstraints: {
+                type: "integer",
+                references: {
+                  table: "users", // users entity doesn't exist
+                  column: "id",
+                },
               },
             },
           },
         },
-      }],
+      ],
     ]);
 
     const enums = new Map();
@@ -290,8 +314,8 @@ describe("validateSchemaSet", () => {
 
     const result = validateSchemaSet(entities, enums, pages, app, "/test");
     expect(result.valid).toBe(false);
-    
-    const referenceError = result.errors.find(error => 
+
+    const referenceError = result.errors.find((error) =>
       error.message.includes("Referenced entity 'users' not found")
     );
     expect(referenceError).toBeDefined();
@@ -301,16 +325,19 @@ describe("validateSchemaSet", () => {
     const entities = new Map();
     const enums = new Map();
     const pages = new Map([
-      ["dashboard", {
-        route: "/dashboard",
-        title: "Dashboard",
-        sections: [
-          {
-            type: "table",
-            entity: "users", // users entity doesn't exist
-          },
-        ],
-      }],
+      [
+        "dashboard",
+        {
+          route: "/dashboard",
+          title: "Dashboard",
+          sections: [
+            {
+              type: "table",
+              entity: "users", // users entity doesn't exist
+            },
+          ],
+        },
+      ],
     ]);
 
     const app = {
@@ -321,8 +348,8 @@ describe("validateSchemaSet", () => {
 
     const result = validateSchemaSet(entities, enums, pages, app, "/test");
     expect(result.valid).toBe(false);
-    
-    const referenceError = result.errors.find(error => 
+
+    const referenceError = result.errors.find((error) =>
       error.message.includes("Referenced entity 'users' not found")
     );
     expect(referenceError).toBeDefined();
@@ -331,25 +358,34 @@ describe("validateSchemaSet", () => {
 
   it("accumulates multiple validation errors", () => {
     const entities = new Map([
-      ["invalid", {
-        tableName: "Invalid", // Invalid table name
-        displayName: "Invalid",
-        columns: {},
-      }],
+      [
+        "invalid",
+        {
+          tableName: "Invalid", // Invalid table name
+          displayName: "Invalid",
+          columns: {},
+        },
+      ],
     ]);
 
     const enums = new Map([
-      ["empty", {
-        values: {}, // Empty values
-      }],
+      [
+        "empty",
+        {
+          values: {}, // Empty values
+        },
+      ],
     ]);
 
     const pages = new Map([
-      ["invalid", {
-        route: "invalid", // Invalid route
-        title: "Invalid",
-        sections: [],
-      }],
+      [
+        "invalid",
+        {
+          route: "invalid", // Invalid route
+          title: "Invalid",
+          sections: [],
+        },
+      ],
     ]);
 
     const app = {

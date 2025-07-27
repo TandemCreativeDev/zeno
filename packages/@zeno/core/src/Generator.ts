@@ -5,7 +5,7 @@
  * lifecycle methods, validation, and file generation capabilities.
  */
 
-import type { GeneratorContext, GeneratedFile, SchemaSet } from "./types/core";
+import type { GeneratedFile, GeneratorContext, SchemaSet } from "./types/core";
 import type { EntitySchema } from "./types/entity";
 import type { EnumSchema } from "./types/enum";
 import type { PageSchema } from "./types/page";

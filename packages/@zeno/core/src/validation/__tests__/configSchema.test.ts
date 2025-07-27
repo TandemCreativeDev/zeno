@@ -2,14 +2,14 @@
  * Tests for configuration schema validation
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  zenoConfigSchema,
-  zenoConfigInputSchema,
   databaseConfigSchema,
+  devConfigSchema,
   emailConfigSchema,
   generateConfigSchema,
-  devConfigSchema,
+  zenoConfigInputSchema,
+  zenoConfigSchema,
 } from "../configSchema";
 
 describe("Configuration Schema Validation", () => {
@@ -250,7 +250,7 @@ describe("Configuration Schema Validation", () => {
       };
 
       const result = zenoConfigSchema.parse(config);
-      
+
       expect(result.schemaDir).toBe("./zeno");
       expect(result.outputDir).toBe("./src");
       expect(result.database.migrations.dir).toBe("./drizzle");
@@ -332,7 +332,9 @@ describe("Configuration Schema Validation", () => {
       };
 
       const result = zenoConfigInputSchema.parse(config);
-      expect(result.database?.connection).toBe("postgresql://localhost/partial");
+      expect(result.database?.connection).toBe(
+        "postgresql://localhost/partial"
+      );
       expect(result.database?.provider).toBeUndefined();
       expect(result.generate?.models).toBe(false);
       // Note: components will have default value since the schema has defaults

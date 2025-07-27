@@ -6,15 +6,13 @@
 import { readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-
-import {
-  zenoConfigSchema,
-  zenoConfigInputSchema,
-} from "../validation/configSchema";
-import { ConfigurationError } from "./errors";
-
 import type { ZenoConfig, ZenoConfigInput } from "../types/config";
 import type { ValidationResult } from "../types/core";
+import {
+  zenoConfigInputSchema,
+  zenoConfigSchema,
+} from "../validation/configSchema";
+import { ConfigurationError } from "./errors";
 
 /**
  * Helper function for defining configuration with type safety
