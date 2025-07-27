@@ -320,7 +320,7 @@ Before submitting any code, ensure the following steps are completed:
   - **Informative and concise commits** - multiline is encouraged but try to keep it less than 3 lines
   - **Follow commit guidance** outlined above
   - **You may use gh cli** - it is installed and functioning
-3. **Sync with github issues** - run `pnpm sync-issues`
+3. **Sync with github issues** - run `pnpm sync-issues` (remember to return to repo root directory to run this)
 
 ## Known Issues & Workarounds
 
