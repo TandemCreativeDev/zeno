@@ -38,6 +38,7 @@ Zeno is a standalone Node module that generates production-ready NextJS applicat
 - **TypeScript 5.0+**: Strict mode with ES2022 target
 - **pnpm workspaces**: Efficient monorepo package management
 - **Turborepo**: Build orchestration with intelligent caching
+- **Storybook**: Component development and documentation for @zeno/templates
 
 ### CLI Framework
 
@@ -54,6 +55,7 @@ Zeno is a standalone Node module that generates production-ready NextJS applicat
 - **Vitest**: Blazing fast test runner with HMR support
 - **Biome**: All-in-one linter/formatter (replaces ESLint + Prettier)
 - **changesets**: Flexible version management and publishing
+- **Chromatic**: Visual regression testing for @zeno/templates components
 
 ### Generated App Stack
 
@@ -64,8 +66,8 @@ Zeno is a standalone Node module that generates production-ready NextJS applicat
 - **PostgreSQL**: RDBMS
 - **Zod**: Runtime validation
 - **DaisyUI**: Accessible component styling
-
-## 3. Package Structure
+- **Tailwind Typography**: Convenient re-usable prose styles
+- **React Hook Form**: Form state management with validation
 
 ## 3. Package Structure
 
@@ -74,6 +76,7 @@ zeno/
 ├── packages/
 │   ├── @zeno/core           # Core framework engine
 │   ├── @zeno/cli            # CLI implementation
+│   ├── @zeno/templates      # UI component library & templates
 │   ├── @zeno/generators/    # Output generators
 │   │   ├── models           # Drizzle + TypeScript + Zod
 │   │   ├── components       # React components
@@ -84,6 +87,14 @@ zeno/
 ├── docs/                    # Documentation site
 └── turbo.json               # Turborepo config
 ```
+
+**@zeno/templates Package Contents:**
+
+- React UI components (FormField, DataTable, Modal, etc.)
+- Handlebars templates for code generation
+- Storybook stories and documentation
+- Component tests and visual regression
+- Export as standalone npm package
 
 ## 4. Core Architecture
 
@@ -109,6 +120,7 @@ export type { EntitySchema, EntityColumn } from "../validation/entitySchema";
 ```
 
 **Benefits:**
+
 - **Single source of truth**: Schema changes automatically update types
 - **Runtime safety**: Validation matches TypeScript types exactly
 - **Maintainability**: No manual type synchronization required
@@ -121,10 +133,12 @@ When using Zod `.partial()` with nested objects that have defaults, define schem
 ```typescript
 // ❌ Problematic pattern - TypeScript errors with nested defaults
 const schema = z.object({
-  database: z.object({
-    dir: z.string().default("./drizzle"),
-    auto: z.boolean().default(false),
-  }).default({}),
+  database: z
+    .object({
+      dir: z.string().default("./drizzle"),
+      auto: z.boolean().default(false),
+    })
+    .default({}),
 });
 
 const partialSchema = schema.partial();
@@ -138,16 +152,18 @@ const migrationsSchema = z.object({
 
 const partialMigrationsSchema = migrationsSchema.partial();
 
-const partialDatabaseSchema = z.object({
-  provider: z.literal("postgresql").optional(),
-  connection: z.string().optional(),
-  migrations: partialMigrationsSchema.optional(),
-}).strict();
+const partialDatabaseSchema = z
+  .object({
+    provider: z.literal("postgresql").optional(),
+    connection: z.string().optional(),
+    migrations: partialMigrationsSchema.optional(),
+  })
+  .strict();
 ```
 
 This enables intuitive config authoring like `{ migrations: { auto: true } }` while maintaining type safety.
 
-### 4.2 Schema System
+### 4.3 Schema System
 
 ```typescript
 interface SchemaLoader {
@@ -171,7 +187,7 @@ Schema specifications:
 - [Page Template](templates/schemas/page.json)
 - [App Template](templates/schemas/app.json)
 
-### 4.3 Generation Pipeline
+### 4.4 Generation Pipeline
 
 ```typescript
 interface GenerationPipeline {
@@ -187,7 +203,7 @@ abstract class Generator {
 }
 ```
 
-### 4.4 Template Engine
+### 4.5 Template Engine
 
 ```typescript
 interface TemplateEngine {
@@ -214,7 +230,8 @@ export type TemplateHelper = (...args: unknown[]) => unknown;
 this.registerHelper("when", (...args: unknown[]) => {
   const condition = args[0];
   const truthyValue = args[1];
-  const falsyValue = args.length > 2 && typeof args[2] !== "object" ? args[2] : "";
+  const falsyValue =
+    args.length > 2 && typeof args[2] !== "object" ? args[2] : "";
   return condition ? truthyValue : falsyValue;
 });
 
@@ -226,31 +243,103 @@ this.registerHelper("json", (...args: unknown[]) => {
 ```
 
 **Implementation Notes:**
+
 - Handlebars passes an options object as the final argument to helpers
 - Use `SafeString` to prevent HTML entity escaping for JSON/structured output
 - Modern Handlebars (4.7+) includes TypeScript definitions
 
-## 5. Generator Architecture
+## 5. UI Component Architecture
 
-Each generator follows a consistent pattern:
+### 5.1 Component Library Structure
+
+The framework provides a comprehensive library of reusable UI components through the **@zeno/templates** package. This ensures consistency, maintainability, and accessibility compliance.
+
+**Package Features:**
+
+- Standalone UI component library built with DaisyUI + React
+- Storybook integration for component development and documentation
+- Template files for code generation (Handlebars)
+- Visual regression testing with Storybook
+- Published separately for independent use
+
+**Component Categories:**
+
+- **Forms**: FormField, Fieldset, FormActions
+- **Tables**: DataTable, TableCell, Pagination
+- **Modals**: Modal, Confirm
+- **Layout**: PageHeader, HeroSection, StatsSection, ContentSection
+- **Feedback**: Alert, Loading, EmptyState, Error
+
+### 5.2 Component Development
+
+Components are developed using Storybook:
+
+- Interactive component playground
+- Visual documentation of all props and states
+- Accessibility testing integration
+- Story files serve as both tests and examples
+- Hot reload development workflow
+
+### 5.3 Component Composition Principles
+
+Generated components import from @zeno/templates and follow strict composition patterns:
+
+1. **Forms** compose FormField components within Fieldset groups
+2. **Tables** use DataTable with column definitions
+3. **Pages** compose section components
+4. **Modals** simple composition that wraps a form
+
+### 5.4 Feature Requirements
+
+All generated interfaces must support:
+
+- **Data Tables**: Sorting, filtering, pagination, search, bulk operations, row actions
+- **Forms**: Validation integration, section grouping, field visibility, loading states
+- **Modals**: Focus management, backdrop handling, keyboard navigation
+- **Pages**: Breadcrumbs, hero sections, stats displays, content blocks
+- **Global**: Loading states, error handling, empty states, confirmations
+
+### 5.5 Accessibility Architecture
+
+Every UI component implements WCAG 2.1 AA compliance through:
+
+- Semantic HTML structure
+- Comprehensive ARIA attributes
+- Keyboard navigation support
+- Focus management and trapping
+- Live region announcements
+- Motion preference detection
+- Skip navigation links
+
+## 6. Generator Architecture
+
+Each generator follows a consistent pattern while utilising the @zeno/templates package:
 
 ```typescript
-export class ModelGenerator extends Generator {
-  name = "models";
+import { FormTemplate, TableTemplate, ModalTemplate } from "@zeno/templates";
+
+export class ComponentGenerator extends Generator {
+  name = "components";
 
   supports(schema: Schema): boolean {
-    return schema.type === "entity" || schema.type === "enum";
+    return (
+      schema.type === "entity" && (schema.generateForm || schema.generateTable)
+    );
   }
 
   async generate(context: GeneratorContext): Promise<GeneratedFile[]> {
     const files: GeneratedFile[] = [];
 
     for (const [name, entity] of context.schemas.entities) {
-      files.push(
-        await this.generateSchema(entity),
-        await this.generateTypes(entity),
-        await this.generateValidation(entity)
-      );
+      if (entity.generateForm) {
+        files.push(await this.generateForm(entity));
+      }
+      if (entity.generateTable) {
+        files.push(await this.generateTable(entity));
+      }
+      if (entity.generateForm) {
+        files.push(await this.generateModal(entity));
+      }
     }
 
     return files;
@@ -258,7 +347,15 @@ export class ModelGenerator extends Generator {
 }
 ```
 
-## 6. CLI Architecture
+**Generation Patterns:**
+
+- **Import Dependencies**: Generated files import from `@zeno/templates` package
+- **Forms**: Compose FormField components within Fieldset groups based on entity.ui.formSections
+- **Tables**: Map entity fields to ColumnDef arrays with appropriate formatters
+- **Modals**: Simple confirmation or wraps forms
+- **Pages**: Assemble section components (Hero, Stats, Content, Table) from page definitions
+
+## 7. CLI Architecture
 
 Using oclif for robust CLI features:
 
@@ -289,7 +386,7 @@ export class Generate extends Command {
 }
 ```
 
-## 7. Configuration
+## 8. Configuration
 
 [**Example zeno config file**](examples/zeno.config.ts)
 
@@ -327,7 +424,7 @@ export default defineConfig({
 });
 ```
 
-## 8. Build Configuration
+## 9. Build Configuration
 
 Using tsup for zero-config builds, in `tsup.config.ts`:
 
@@ -343,7 +440,7 @@ export default defineConfig({
 });
 ```
 
-### 9. Testing Strategy
+## 10. Testing Strategy
 
 Using Vitest for modern testing, in`vitest.config.ts`:
 
@@ -361,27 +458,15 @@ export default defineConfig({
 });
 ```
 
-Example test:
-
-```typescript
-describe("SchemaLoader", () => {
-  it("loads entity schemas", async () => {
-    const loader = new SchemaLoader();
-    const schemas = await loader.load("./test/fixtures");
-
-    expect(schemas.entities.get("users")).toBeDefined();
-    expect(schemas.enums.get("user_status")).toBeDefined();
-  });
-});
-```
-
 Test categories:
 
 - **Unit**: Schema validation, generator output correctness, template rendering, utility functions, CLI command behaviour
-- **Integration**: Full generation pipeline, file system operations
+- **Integration**: Full generation pipeline, file system operations, UI component composition
+- **Visual**: Storybook tests for @zeno/templates components
 - **E2E**: Complete project generation and build verification
+- **Accessibility**: WCAG compliance testing for all generated components
 
-## 10. Publishing & Release
+## 11. Publishing & Release
 
 Using changesets for automated releases, in `.changeset/config.json`:
 
@@ -402,7 +487,7 @@ GitHub Actions workflow handles:
 - NPM publishing on main branch
 - GitHub release creation
 
-## 11. Performance Optimisations
+## 12. Performance Optimisations
 
 ### Incremental Generation
 
@@ -424,7 +509,7 @@ GitHub Actions workflow handles:
 - HMR-style updates for generated files
 - Minimal file writes to preserve hot reload
 
-## 12. Error Handling
+## 13. Error Handling
 
 Clear, actionable error messages with source mapping:
 
@@ -442,28 +527,31 @@ Clear, actionable error messages with source mapping:
   17 │   }
 ```
 
-## 13. Developer Experience
+## 14. Developer Experience
 
-### 13.1 IDE Support
+### 14.1 IDE Support
 
 - JSON schemas for autocompletion in schema files
 - TypeScript declaration maps for debugging
 - Source maps for generated code
 
-### 13.2 CLI Features
+### 14.2 CLI Features
 
 - Interactive prompts for complex commands with @clack/prompts
 - Progress indicators for long operations
 - Coloured output with semantic meaning
 - Debug mode with verbose logging
 
-### 13.3 Documentation
+### 14.3 Documentation
 
 - Auto-generated API docs from JSDoc
 - Interactive examples in documentation
 - Migration guides between versions
+- Storybook for @zeno/templates component documentation
+- Embedded component playground
+- UI component usage guides
 
-## 14. Security Considerations
+## 15. Security Considerations
 
 - **Input Validation**: Schema sanitisation prevents injection
 - **Path Safety**: All file operations within project boundaries
