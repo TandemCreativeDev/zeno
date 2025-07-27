@@ -14,6 +14,20 @@ export interface SchemaSet {
   app: AppSchema;
 }
 
+export interface SchemaChange {
+  type: "created" | "updated" | "deleted";
+  path: string;
+  schemaType: "entity" | "enum" | "page" | "app";
+  name: string;
+}
+
+export interface FieldChange {
+  field: string;
+  type: "added" | "removed" | "modified";
+  oldValue?: unknown;
+  newValue?: unknown;
+}
+
 export interface GeneratedFile {
   path: string;
   content: string;
@@ -24,6 +38,19 @@ export interface GeneratorContext {
   outputDir: string;
   schemaDir: string;
   config: Record<string, unknown>;
+}
+
+export interface GenerationOptions {
+  generators?: string[];
+  parallel?: boolean;
+  dryRun?: boolean;
+}
+
+export interface GenerationResult {
+  files: GeneratedFile[];
+  generators: string[];
+  duration: number;
+  errors: Error[];
 }
 
 export interface ValidationResult {
@@ -44,4 +71,22 @@ export interface TemplateEngine {
   registerHelper(name: string, fn: TemplateHelper): void;
   registerPartial(name: string, template: string): void;
   render(template: string, data: unknown): string;
+}
+
+export interface WatchOptions {
+  debounceMs?: number;
+  ignoreInitial?: boolean;
+  ignored?: string[];
+}
+
+export interface DetailedSchemaChange extends SchemaChange {
+  fieldChanges?: FieldChange[];
+  previousSchema?: unknown;
+  currentSchema?: unknown;
+}
+
+export interface SchemaDiffResult {
+  changes: DetailedSchemaChange[];
+  hasBreakingChanges: boolean;
+  affectedGenerators: string[];
 }

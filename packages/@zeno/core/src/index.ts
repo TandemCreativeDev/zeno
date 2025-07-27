@@ -10,11 +10,6 @@ export function createZeno() {
   };
 }
 
-export type {
-  GenerationOptions,
-  GenerationResult,
-  SchemaChange,
-} from "./GenerationPipeline";
 export { GenerationPipeline } from "./GenerationPipeline";
 export type { SchemaType } from "./Generator";
 export { Generator } from "./Generator";

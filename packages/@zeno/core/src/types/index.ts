@@ -12,13 +12,20 @@ export type {
   ZenoConfigInput,
 } from "./config";
 export type {
+  DetailedSchemaChange,
+  FieldChange,
   GeneratedFile,
+  GenerationOptions,
+  GenerationResult,
   GeneratorContext,
+  SchemaChange,
+  SchemaDiffResult,
   SchemaSet,
   TemplateEngine,
   TemplateHelper,
   ValidationError,
   ValidationResult,
+  WatchOptions,
 } from "./core";
 export type {
   DbConstraints,

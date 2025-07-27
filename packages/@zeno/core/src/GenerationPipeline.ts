@@ -7,37 +7,15 @@
  */
 
 import type { Generator } from "./Generator";
-import type { GeneratedFile, GeneratorContext, SchemaSet } from "./types/core";
+import type {
+  GeneratedFile,
+  GenerationOptions,
+  GenerationResult,
+  GeneratorContext,
+  SchemaChange,
+  SchemaSet,
+} from "./types/core";
 import { GenerationError } from "./utils/errors";
-
-/**
- * Generation result containing all generated files and metadata
- */
-export interface GenerationResult {
-  files: GeneratedFile[];
-  generators: string[];
-  duration: number;
-  errors: Error[];
-}
-
-/**
- * Schema change information for incremental generation
- */
-export interface SchemaChange {
-  type: "created" | "updated" | "deleted";
-  path: string;
-  schemaType: "entity" | "enum" | "page" | "app";
-  name: string;
-}
-
-/**
- * Generation pipeline options
- */
-export interface GenerationOptions {
-  generators?: string[];
-  parallel?: boolean;
-  dryRun?: boolean;
-}
 
 /**
  * Core pipeline for running generators with parallel execution support

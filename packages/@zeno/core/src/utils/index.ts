@@ -20,4 +20,6 @@ export {
   safeWriteFile,
   validatePath,
 } from "./fileSystem";
+export { createSchemaDiffer, SchemaDiffer } from "./schemaDiff";
 export { createSchemaLoader, SchemaLoader } from "./schemaLoader";
+export { createWatcher, Watcher } from "./watcher";
