@@ -11,6 +11,7 @@
 - `turbo.json` with build pipeline
 - Root `package.json` with workspace scripts
 - `.gitignore`, `.npmrc`, `.editorconfig`
+
 **Dependencies**: None  
 **Acceptance Criteria**: `pnpm install` works, `pnpm build` runs successfully
 
@@ -22,19 +23,21 @@
 - `packages/@zeno/core/package.json` with tsup config
 - `tsconfig.json` and `tsup.config.ts`
 - Empty `src/index.ts` with basic export
+
 **Dependencies**: Task 1  
 **Acceptance Criteria**: Package builds with `pnpm build`, outputs ESM and CJS
 
-### [x] 3. Type Definitions Definitions
+### [x] 3. Type Definitions
 
-**Description**: Define core TypeScript interfaces and types within @zeno/core package (Ref: Architecture §4.1)
+**Description**: Define core TypeScript interfaces and types within @zeno/core package (Ref: Architecture §4.1)  
 **Deliverables**:
 
 - `src/types/` directory in @zeno/core
 - `EntitySchema`, `EnumSchema`, `PageSchema`, `AppSchema` interfaces
 - `SchemaSet`, `GeneratorContext` types
 - Export all types from main index
-**Dependencies**: Task 2
+
+**Dependencies**: Task 2  
 **Acceptance Criteria**: Types compile without errors, can import from @zeno/core
 
 ### [x] 4. Schema Validation Rules
@@ -45,17 +48,19 @@
 - Zod schemas for entity, enum, page, app configurations
 - `ValidationResult` type with error details
 - Unit tests for valid/invalid schemas
+
 **Dependencies**: Task 3  
 **Acceptance Criteria**: 100% test coverage on validation logic
 
 ### [x] 5. Schema Loader Implementation
 
-**Description**: Create SchemaLoader class to read and validate JSON files (Ref: Architecture §4.1)  
+**Description**: Create SchemaLoader class to read and validate JSON files (Ref: Architecture §4.2)  
 **Deliverables**:
 
 - `SchemaLoader` class with `load()`, `validate()` methods
 - File system operations with proper error handling
 - Integration tests with fixture files
+
 **Dependencies**: Tasks 3, 4  
 **Acceptance Criteria**: Can load example schemas from docs/examples, proper error messages
 
@@ -67,28 +72,31 @@
 - `SchemaValidationError`, `GenerationError`, `ConfigurationError` classes
 - Error context with file path and line numbers
 - Unit tests for error scenarios
+
 **Dependencies**: Task 2  
 **Acceptance Criteria**: Errors provide actionable messages with context
 
 ### [x] 7. Configuration System
 
-**Description**: Implement config loading with defaults (Ref: Architecture §7)  
+**Description**: Implement config loading with defaults (Ref: Architecture §8)  
 **Deliverables**:
 
 - `defineConfig()` helper function
 - Config validation and merging logic
 - Tests for various config scenarios
+
 **Dependencies**: Tasks 3, 4  
 **Acceptance Criteria**: Can load zeno.config.ts, applies defaults correctly
 
 ### [x] 8. Template Engine Setup
 
-**Description**: Integrate Handlebars with custom helpers (Ref: Architecture §4.3)  
+**Description**: Integrate Handlebars with custom helpers (Ref: Architecture §4.5)  
 **Deliverables**:
 
 - `TemplateEngine` class with helper registration
 - Built-in helpers: case transformers, pluralisation
 - Unit tests for template rendering
+
 **Dependencies**: Task 2  
 **Acceptance Criteria**: Can render templates with all helpers working
 
@@ -100,17 +108,19 @@
 - `Generator` abstract class with required methods
 - `GeneratedFile` interface
 - Unit tests for generator lifecycle
+
 **Dependencies**: Tasks 3, 8  
 **Acceptance Criteria**: Can extend and implement test generator
 
 ### [ ] 10. Generation Pipeline
 
-**Description**: Core pipeline for running generators (Ref: Architecture §4.2)  
+**Description**: Core pipeline for running generators (Ref: Architecture §4.4)  
 **Deliverables**:
 
 - `GenerationPipeline` class with registration and execution
 - Parallel generation support
 - Integration tests with mock generators
+
 **Dependencies**: Task 9  
 **Acceptance Criteria**: Can register and run multiple generators in sequence
 
@@ -123,6 +133,7 @@
 - Atomic file writes with backup
 - Directory creation utilities
 - Unit tests for edge cases
+
 **Dependencies**: Task 6  
 **Acceptance Criteria**: All file operations are safe and tested
 
@@ -135,6 +146,7 @@
 - Debounced change detection
 - Schema change diffing
 - Integration tests
+
 **Dependencies**: Tasks 5, 10  
 **Acceptance Criteria**: Detects changes and triggers incremental generation
 
@@ -146,6 +158,7 @@
 - `SchemaChange` type with change details
 - Dependency graph for affected files
 - Unit tests for various change scenarios
+
 **Dependencies**: Task 12  
 **Acceptance Criteria**: Only regenerates affected files on changes
 
@@ -157,6 +170,7 @@
 - Logger with debug/info/warn/error levels
 - Context-aware logging
 - Integration with CLI output
+
 **Dependencies**: Task 2  
 **Acceptance Criteria**: Logs are useful for debugging, respects verbosity settings
 
@@ -168,22 +182,39 @@
 - Test harness for full pipeline
 - Fixture projects
 - Performance benchmarks
+
 **Dependencies**: Tasks 1-14  
 **Acceptance Criteria**: Core package works end-to-end with example schemas
 
-## Phase 2: Generators (Tasks 16-30)
+## Phase 2: UI Components & Generators (Tasks 16-31)
 
-### [ ] 16. Model Generator Package
+### [ ] 16. Templates Package
+
+**Description**: Create @zeno/templates package with UI component library and Storybook (Ref: Architecture §5)  
+**Deliverables**:
+
+- Package scaffold with React, DaisyUI, React Hook Form dependencies
+- All UI components (FormField, DataTable, Modal, etc.)
+- Storybook configuration and stories for each component
+- Handlebars template files for code generation
+- Visual regression testing setup
+- Package build and publish configuration
+
+**Dependencies**: Task 15  
+**Acceptance Criteria**: Package builds, Storybook runs, components are interactive and tested
+
+### [ ] 17. Model Generator Package
 
 **Description**: Create @zeno/generators/models package (Ref: Requirements §3.1)  
 **Deliverables**:
 
 - Package scaffold with dependencies
 - Base structure for model generation
+
 **Dependencies**: Task 15  
 **Acceptance Criteria**: Package builds and exports ModelGenerator class
 
-### [ ] 17. Drizzle Schema Generation
+### [ ] 18. Drizzle Schema Generation
 
 **Description**: Generate Drizzle ORM schemas from entities (Ref: Requirements §3.1)  
 **Deliverables**:
@@ -192,10 +223,11 @@
 - Column type mapping
 - Relationship handling
 - Unit tests with fixtures
-**Dependencies**: Task 16  
+
+**Dependencies**: Task 17  
 **Acceptance Criteria**: Generates valid Drizzle schemas for all column types
 
-### [ ] 18. TypeScript Type Generation
+### [ ] 19. TypeScript Type Generation
 
 **Description**: Generate TypeScript interfaces and types (Ref: Requirements §3.1)  
 **Deliverables**:
@@ -204,10 +236,11 @@
 - Relationship typing
 - Enum type generation
 - Unit tests
-**Dependencies**: Task 16  
+
+**Dependencies**: Task 17  
 **Acceptance Criteria**: Generated types compile without errors
 
-### [ ] 19. Zod Schema Generation
+### [ ] 20. Zod Schema Generation
 
 **Description**: Generate Zod validation schemas (Ref: Requirements §3.1)  
 **Deliverables**:
@@ -216,10 +249,11 @@
 - Validation rule mapping
 - Custom error messages
 - Unit tests
-**Dependencies**: Task 16  
+
+**Dependencies**: Task 17  
 **Acceptance Criteria**: Validation works correctly for all rules
 
-### [ ] 20. Migration Generator
+### [ ] 21. Migration Generator
 
 **Description**: Auto-generate database migrations (Ref: Requirements §3.1)  
 **Deliverables**:
@@ -228,100 +262,115 @@
 - Schema diffing logic
 - Rollback support
 - Integration tests
-**Dependencies**: Task 17  
+
+**Dependencies**: Task 18  
 **Acceptance Criteria**: Can generate and apply migrations
 
-### [ ] 21. Component Generator Package
+### [ ] 22. Component Generator Package
 
-**Description**: Create @zeno/generators/components package (Ref: Requirements §3.2)  
+**Description**: Create @zeno/generators/components package using @zeno/templates (Ref: Requirements §3.2, Architecture §5)  
 **Deliverables**:
 
-- Package scaffold
-- Base component templates
-**Dependencies**: Task 15  
-**Acceptance Criteria**: Package builds and exports ComponentGenerator
+- Package scaffold with @zeno/templates dependency
+- Base generator structure
+- Template loading from @zeno/templates
+- Component composition system
 
-### [ ] 22. Form Component Generation
+**Dependencies**: Tasks 15, 16  
+**Acceptance Criteria**: Package builds, can import and use @zeno/templates
 
-**Description**: Generate accessible form components (Ref: Requirements §3.2)  
+### [ ] 23. Form Component Generation
+
+**Description**: Generate accessible form components using @zeno/templates (Ref: Requirements §3.2, Architecture §5.2)  
 **Deliverables**:
 
-- Form templates with sections
-- Field visibility logic
-- Validation integration
-- Accessibility attributes
+- Form generation using @zeno/templates components
+- Multi-section form composition based on entity.ui.formSections
+- Field visibility logic for create/edit modes
+- Import statements for @zeno/templates
 - Unit tests
-**Dependencies**: Task 21  
-**Acceptance Criteria**: Forms are WCAG 2.1 AA compliant, validation works
 
-### [ ] 23. Table Component Generation
+**Dependencies**: Task 22  
+**Acceptance Criteria**: Forms use @zeno/templates components, are WCAG compliant
 
-**Description**: Generate data table components (Ref: Requirements §3.2)  
+### [ ] 24. Table Component Generation
+
+**Description**: Generate data table components using @zeno/templates (Ref: Requirements §3.2, Architecture §5.3)  
 **Deliverables**:
 
-- Table templates with sorting/filtering
-- Pagination support
-- Bulk actions
+- Table generation using DataTable from @zeno/templates
+- Column definition mapping from entity fields
+- Configuration for all DataTable features
+- Import statements for @zeno/templates
 - Unit tests
-**Dependencies**: Task 21  
-**Acceptance Criteria**: Tables are accessible and fully functional
 
-### [ ] 24. Modal Component Generation
+**Dependencies**: Task 22  
+**Acceptance Criteria**: Tables use @zeno/templates DataTable component
 
-**Description**: Generate entity management modals (Ref: Requirements §3.2)  
+### [ ] 25. Modal Component Generation
+
+**Description**: Generate entity management modals using @zeno/templates (Ref: Requirements §3.2, Architecture §5.1)  
 **Deliverables**:
 
-- Modal templates
-- Focus management
-- Keyboard navigation
+- Modal generation using Modal components from @zeno/templates
+- Create/Edit/View modes with form integration
+- Confirm dialogs using Confirm component
+- Import statements for @zeno/templates
 - Unit tests
-**Dependencies**: Task 21  
-**Acceptance Criteria**: Modals are accessible with proper focus handling
 
-### [ ] 25. Page Generator Package
+**Dependencies**: Tasks 22, 23  
+**Acceptance Criteria**: Modals use @zeno/templates components
+
+### [ ] 26. Page Generator Package
 
 **Description**: Create @zeno/generators/pages package (Ref: Requirements §3.3)  
 **Deliverables**:
 
-- Package scaffold
+- Package scaffold with @zeno/templates dependency
 - Page template structure
+
 **Dependencies**: Task 15  
 **Acceptance Criteria**: Package builds and exports PageGenerator
 
-### [ ] 26. CRUD Page Generation
+### [ ] 27. CRUD Page Generation
 
-**Description**: Generate list/create/edit/view pages (Ref: Requirements §3.3)  
+**Description**: Generate list/create/edit/view pages using @zeno/templates (Ref: Requirements §3.3, Architecture §5)  
 **Deliverables**:
 
-- CRUD page templates
+- List pages importing PageHeader, DataTable, Modal from @zeno/templates
+- Integration of Alert, Loading, EmptyState components
+- State management for modals and data
 - Route generation
-- Layout integration
 - Unit tests
-**Dependencies**: Tasks 22-25  
-**Acceptance Criteria**: All CRUD operations work with proper routing
 
-### [ ] 27. Custom Page Generation
+**Dependencies**: Tasks 23-26  
+**Acceptance Criteria**: Pages use @zeno/templates components consistently
 
-**Description**: Generate pages from JSON definitions (Ref: Requirements §8)  
+### [ ] 28. Custom Page Generation
+
+**Description**: Generate pages from JSON definitions using @zeno/templates sections (Ref: Requirements §8, Architecture §5)  
 **Deliverables**:
 
-- Section type templates (hero, stats, table, content)
-- Dynamic composition
+- Page generation using section components from @zeno/templates
+- Dynamic composition from JSON
+- Import statements for all section types
 - Unit tests for each section type
-**Dependencies**: Task 25  
-**Acceptance Criteria**: Can generate all example pages correctly
 
-### [ ] 28. API Generator Package
+**Dependencies**: Task 26  
+**Acceptance Criteria**: Can generate pages using @zeno/templates section components
+
+### [ ] 29. API Generator Package
 
 **Description**: Create @zeno/generators/api package (Ref: Requirements §3.4)  
 **Deliverables**:
 
 - Package scaffold
 - API route templates
+
 **Dependencies**: Task 15  
 **Acceptance Criteria**: Package builds and exports ApiGenerator
 
-### [ ] 29. CRUD API Generation
+### [ ] 30. CRUD API Generation
 
 **Description**: Generate RESTful API routes (Ref: Requirements §3.4)  
 **Deliverables**:
@@ -330,10 +379,11 @@
 - Validation middleware
 - Type-safe responses
 - Unit tests
-**Dependencies**: Tasks 19, 28  
+
+**Dependencies**: Tasks 20, 29  
 **Acceptance Criteria**: APIs handle all CRUD operations with validation
 
-### [ ] 30. Authentication Integration
+### [ ] 31. Authentication Integration
 
 **Description**: Generate NextAuth configuration (Ref: Requirements §4.1)  
 **Deliverables**:
@@ -342,47 +392,52 @@
 - User table detection
 - Session type generation
 - Integration tests
-**Dependencies**: Tasks 17, 29  
+
+**Dependencies**: Tasks 18, 30  
 **Acceptance Criteria**: Authentication works with generated user tables
 
-## Phase 3: CLI Implementation (Tasks 31-40)
+## Phase 3: CLI Implementation (Tasks 32-41)
 
-### [ ] 31. CLI Package Setup
+### [ ] 32. CLI Package Setup
 
-**Description**: Create @zeno/cli with oclif (Ref: Architecture §6)  
+**Description**: Create @zeno/cli with oclif (Ref: Architecture §7)  
 **Deliverables**:
 
 - oclif project structure
 - Base command class
 - Package configuration
+
 **Dependencies**: Task 15  
 **Acceptance Criteria**: CLI runs with help command
 
-### [ ] 32. Init Command
+### [ ] 33. Init Command
 
-**Description**: Implement project initialisation (Ref: Requirements §5)  
+**Description**: Implement project initialisation with @zeno/templates (Ref: Requirements §5, Architecture §5.1)  
 **Deliverables**:
 
 - Interactive prompts with @clack/prompts
-- Project scaffolding
-- Dependency installation
+- Project scaffolding with NextJS structure
+- @zeno/templates package installation
+- Dependency installation (React Hook Form, Zod, etc.)
 - Integration tests
-**Dependencies**: Task 31  
-**Acceptance Criteria**: Can create new project and existing project setup
 
-### [ ] 33. Generate Command
+**Dependencies**: Tasks 16, 32  
+**Acceptance Criteria**: Can create new project with @zeno/templates ready to use
 
-**Description**: Implement code generation command (Ref: Architecture §6)  
+### [ ] 34. Generate Command
+
+**Description**: Implement code generation command (Ref: Architecture §7)  
 **Deliverables**:
 
 - Generate command with flags
 - Progress indicators
 - Error handling
 - Unit tests
-**Dependencies**: Tasks 30, 31  
+
+**Dependencies**: Tasks 31, 32  
 **Acceptance Criteria**: Generates all code types with proper output
 
-### [ ] 34. Validate Command
+### [ ] 35. Validate Command
 
 **Description**: Schema validation command  
 **Deliverables**:
@@ -390,10 +445,11 @@
 - Validate command implementation
 - Detailed error reporting
 - Unit tests
-**Dependencies**: Tasks 5, 31  
+
+**Dependencies**: Tasks 5, 32  
 **Acceptance Criteria**: Provides clear validation errors with line numbers
 
-### [ ] 35. Migrate Command
+### [ ] 36. Migrate Command
 
 **Description**: Database migration command  
 **Deliverables**:
@@ -402,10 +458,11 @@
 - Rollback support
 - Status reporting
 - Integration tests
-**Dependencies**: Tasks 20, 31  
+
+**Dependencies**: Tasks 21, 32  
 **Acceptance Criteria**: Can run and rollback migrations
 
-### [ ] 36. Dev Command
+### [ ] 37. Dev Command
 
 **Description**: Development mode with watching  
 **Deliverables**:
@@ -413,10 +470,11 @@
 - Combined watch and generate
 - HMR integration
 - Unit tests
-**Dependencies**: Tasks 12, 33  
+
+**Dependencies**: Tasks 12, 34  
 **Acceptance Criteria**: Watches files and regenerates on changes
 
-### [ ] 37. CLI Error Handling
+### [ ] 38. CLI Error Handling
 
 **Description**: Consistent error output  
 **Deliverables**:
@@ -424,10 +482,11 @@
 - Error formatting
 - Debug mode support
 - Help suggestions
-**Dependencies**: Tasks 6, 31  
+
+**Dependencies**: Tasks 6, 32  
 **Acceptance Criteria**: All errors are actionable and well-formatted
 
-### [ ] 38. CLI Configuration
+### [ ] 39. CLI Configuration
 
 **Description**: Config detection and loading  
 **Deliverables**:
@@ -435,10 +494,11 @@
 - Config file detection
 - Environment variable support
 - Default handling
-**Dependencies**: Tasks 7, 31  
+
+**Dependencies**: Tasks 7, 32  
 **Acceptance Criteria**: Finds and loads configuration correctly
 
-### [ ] 39. Interactive Mode
+### [ ] 40. Interactive Mode
 
 **Description**: Enhanced interactive features  
 **Deliverables**:
@@ -446,10 +506,11 @@
 - Schema selection prompts
 - Confirmation dialogs
 - Progress animations
-**Dependencies**: Task 31  
+
+**Dependencies**: Task 32  
 **Acceptance Criteria**: All interactions are smooth and intuitive
 
-### [ ] 40. CLI Integration Tests
+### [ ] 41. CLI Integration Tests
 
 **Description**: End-to-end CLI testing  
 **Deliverables**:
@@ -457,35 +518,40 @@
 - Full command flow tests
 - Output verification
 - Error scenario coverage
-**Dependencies**: Tasks 31-39  
+
+**Dependencies**: Tasks 32-40  
 **Acceptance Criteria**: All commands work in real scenarios
 
-## Phase 4: Integration & Polish (Tasks 41-50)
+## Phase 4: Integration & Polish (Tasks 42-51)
 
-### [ ] 41. Create Package
+### [ ] 42. Create Package
 
-**Description**: Implement @zeno/create for npx usage  
+**Description**: Implement @zeno/create for npx usage with @zeno/templates (Ref: Requirements §5)  
 **Deliverables**:
 
 - Standalone create package
-- Project templates
-- Quick start flow
-**Dependencies**: Task 32  
-**Acceptance Criteria**: `npx @zeno/create my-app` works smoothly
+- Project templates with @zeno/templates included
+- Quick start flow with component examples
+- Storybook setup option
 
-### [ ] 42. Navigation Generation
+**Dependencies**: Tasks 16, 33  
+**Acceptance Criteria**: `npx @zeno/create my-app` works smoothly with @zeno/templates
 
-**Description**: Auto-generate navigation components (Ref: Requirements §4.2)  
+### [ ] 43. Navigation Generation
+
+**Description**: Auto-generate navigation components with @zeno/templates (Ref: Requirements §4.2, Architecture §5.1)  
 **Deliverables**:
 
-- Navigation templates
-- Auto-detection logic
-- Mobile navigation
+- Navigation generation using PageHeader from @zeno/templates
+- Breadcrumb generation from page hierarchy
+- Auto-detection logic for page metadata
+- Mobile navigation support
 - Unit tests
-**Dependencies**: Tasks 23, 27  
-**Acceptance Criteria**: Navigation reflects page definitions correctly
 
-### [ ] 43. Email Configuration
+**Dependencies**: Tasks 22, 24, 28  
+**Acceptance Criteria**: Navigation uses @zeno/templates components
+
+### [ ] 44. Email Configuration
 
 **Description**: Email setup for authentication (Ref: Requirements §4.1)  
 **Deliverables**:
@@ -493,10 +559,11 @@
 - Nodemailer integration
 - Verification templates
 - Configuration validation
-**Dependencies**: Tasks 7, 30  
+
+**Dependencies**: Tasks 7, 31  
 **Acceptance Criteria**: Email verification works in generated apps
 
-### [ ] 44. Seed Data Implementation
+### [ ] 45. Seed Data Implementation
 
 **Description**: Database seeding functionality  
 **Deliverables**:
@@ -504,81 +571,100 @@
 - Seed command
 - Data generation from schemas
 - Relationship handling
-**Dependencies**: Tasks 17, 35  
+
+**Dependencies**: Tasks 18, 36  
 **Acceptance Criteria**: Can seed all example data correctly
 
-### [ ] 45. Performance Optimisation
+### [ ] 46. Performance Optimisation
 
-**Description**: Meet performance targets (Ref: Requirements §9)  
+**Description**: Meet performance targets through optimisation (Ref: Requirements §9)  
 **Deliverables**:
 
-- Parallel generation
-- Caching implementation
+- Parallel generation implementation
+- @zeno/templates tree-shaking for smaller bundles
+- Template caching implementation
 - Benchmark suite
-**Dependencies**: Task 40  
-**Acceptance Criteria**: Meets all performance targets
 
-### [ ] 46. Accessibility Validation
+**Dependencies**: Task 41  
+**Acceptance Criteria**: Meets all performance targets, minimal bundle size
 
-**Description**: Ensure WCAG compliance (Ref: Requirements §3.2)  
+### [ ] 47. Accessibility Validation
+
+**Description**: Ensure WCAG compliance for @zeno/templates components (Ref: Requirements §3.2, Architecture §5.5)  
 **Deliverables**:
 
-- Accessibility tests
-- Component audits
-- Documentation
-**Dependencies**: Tasks 22-24  
-**Acceptance Criteria**: All components pass accessibility checks
+- Accessibility tests in Storybook
+- ARIA attribute validation
+- Keyboard navigation testing
+- Screen reader compatibility checks
+- Component audit documentation
 
-### [ ] 47. Documentation Site
+**Dependencies**: Tasks 16, 23-25  
+**Acceptance Criteria**: All @zeno/templates components pass WCAG 2.1 AA checks
 
-**Description**: Create documentation with VitePress (Ref: Architecture §13.3)  
+### [ ] 48. Documentation Site
+
+**Description**: Create documentation with VitePress (Ref: Architecture §14.3)  
 **Deliverables**:
 
 - Documentation site setup
 - API documentation
+- @zeno/templates component reference
+- Embedded Storybook for component demos
 - Usage guides
 - Examples
-**Dependencies**: Task 40
-**Acceptance Criteria**: Comprehensive docs deployed
 
-### [ ] 48. Example Projects
+**Dependencies**: Task 41  
+**Acceptance Criteria**: Comprehensive docs with live component playground
 
-**Description**: Create example applications  
+### [ ] 49. Example Projects
+
+**Description**: Create example applications showcasing @zeno/templates  
 **Deliverables**:
 
-- Blog example
-- SaaS starter
-- E-commerce demo
-**Dependencies**: Task 40  
-**Acceptance Criteria**: Examples build and run correctly
+- Blog example with content listings
+- SaaS starter with dashboard and CRUD
+- E-commerce demo with advanced tables
+- Standalone @zeno/templates showcase
 
-### [ ] 49. Testing Coverage
+**Dependencies**: Task 41  
+**Acceptance Criteria**: Examples demonstrate all features, include Storybook
 
-**Description**: Achieve >90% test coverage (Ref: Architecture §9)  
+### [ ] 50. Testing Coverage
+
+**Description**: Achieve >90% test coverage including @zeno/templates (Ref: Architecture §10)  
 **Deliverables**:
 
-- Missing test cases
+- Missing test cases for generators
+- @zeno/templates component unit tests
+- Storybook interaction tests
+- Visual regression tests
 - Coverage reports
 - CI integration
+
 **Dependencies**: All previous tasks  
 **Acceptance Criteria**: Coverage exceeds 90% across all packages
 
-### [ ] 50. Release Preparation
+### [ ] 51. Release Preparation
 
-**Description**: Prepare for public release
+**Description**: Prepare for public release  
 **Deliverables**:
 
 - NPM organisation setup
 - CI/CD pipeline
+- @zeno/templates published separately
 - Security audit
 - Launch materials
+
 **Dependencies**: All previous tasks  
-**Acceptance Criteria**: Ready for npm publish
+**Acceptance Criteria**: Ready for npm publish, @zeno/templates available standalone
 
 ## Notes
 
 - Each task should have accompanying tests written first (TDD)
 - Tasks within phases can sometimes be worked in parallel by different developers
 - Performance benchmarks should be run after each generator implementation
-- Accessibility testing should be continuous, not just Task 46
+- Accessibility testing should be continuous, not just Task 47
 - Documentation should be updated as features are implemented
+- @zeno/templates should be developed independently with Storybook before generator integration
+- Visual regression testing should be set up early for @zeno/templates components
