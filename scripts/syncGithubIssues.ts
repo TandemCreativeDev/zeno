@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { readFile, writeFile } from "fs/promises";
+import { createHash } from "crypto";
 import { Octokit } from "@octokit/rest";
 import { config } from "dotenv";
 
@@ -23,12 +24,32 @@ if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) {
 
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
-class GitHubIssueSync {
-  constructor() {
-    this.syncState = {};
-  }
+interface Task {
+  number: number;
+  title: string;
+  description: string;
+  deliverables: string[];
+  dependencies: string;
+  definitionOfDone: string;
+  phase: string;
+  completed: boolean;
+}
 
-  async loadSyncState() {
+interface SyncStateItem {
+  issueNumber: number;
+  completed: boolean;
+  lastSync: string;
+  contentHash: string;
+}
+
+interface SyncState {
+  [key: string]: SyncStateItem;
+}
+
+class GitHubIssueSync {
+  private syncState: SyncState = {};
+
+  async loadSyncState(): Promise<void> {
     try {
       const data = await readFile(SYNC_STATE_FILE, "utf8");
       this.syncState = JSON.parse(data);
@@ -38,14 +59,14 @@ class GitHubIssueSync {
     }
   }
 
-  async saveSyncState() {
+  async saveSyncState(): Promise<void> {
     await writeFile(SYNC_STATE_FILE, JSON.stringify(this.syncState, null, 2));
   }
 
-  parsePlanFile(content) {
-    const tasks = [];
+  parsePlanFile(content: string): Task[] {
+    const tasks: Task[] = [];
     const lines = content.split("\n");
-    let currentPhase = null;
+    let currentPhase: string | null = null;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
@@ -64,7 +85,7 @@ class GitHubIssueSync {
 
         // Extract task details
         let description = "";
-        let deliverables = [];
+        let deliverables: string[] = [];
         let dependencies = "";
         let definitionOfDone = "";
 
@@ -72,8 +93,12 @@ class GitHubIssueSync {
         for (let j = i + 1; j < lines.length; j++) {
           const nextLine = lines[j];
 
-          // Stop at next task or phase
-          if (nextLine.startsWith("### [") || nextLine.startsWith("## Phase")) {
+          // Stop at next task, phase, or notes section
+          if (
+            nextLine.startsWith("### [") ||
+            nextLine.startsWith("## Phase") ||
+            nextLine.startsWith("## Notes")
+          ) {
             break;
           }
 
@@ -86,7 +111,8 @@ class GitHubIssueSync {
               if (
                 delivLine.startsWith("**") ||
                 delivLine.startsWith("### [") ||
-                delivLine.startsWith("## Phase")
+                delivLine.startsWith("## Phase") ||
+                delivLine.startsWith("## Notes")
               ) {
                 break;
               }
@@ -112,23 +138,25 @@ class GitHubIssueSync {
           }
         }
 
-        tasks.push({
-          number: parseInt(taskNumber),
-          title,
-          description,
-          deliverables,
-          dependencies,
-          definitionOfDone,
-          phase: currentPhase,
-          completed: isCompleted,
-        });
+        if (currentPhase) {
+          tasks.push({
+            number: parseInt(taskNumber),
+            title,
+            description,
+            deliverables,
+            dependencies,
+            definitionOfDone,
+            phase: currentPhase,
+            completed: isCompleted,
+          });
+        }
       }
     }
 
     return tasks;
   }
 
-  extractPhaseLabel(phaseString) {
+  extractPhaseLabel(phaseString: string): string {
     // Extract phase name from "Phase X: Name (Tasks Y-Z)" format
     const match = phaseString.match(/Phase \d+: (.+?) \(/);
     if (match) {
@@ -137,7 +165,20 @@ class GitHubIssueSync {
     return phaseString.toLowerCase();
   }
 
-  formatIssueBody(task) {
+  generateContentHash(task: Task): string {
+    // Create a hash of the task content to detect changes
+    const content = JSON.stringify({
+      title: task.title,
+      description: task.description,
+      deliverables: task.deliverables,
+      dependencies: task.dependencies,
+      definitionOfDone: task.definitionOfDone,
+      phase: task.phase,
+    });
+    return createHash("md5").update(content).digest("hex");
+  }
+
+  formatIssueBody(task: Task): string {
     // Extract phase number from "Phase X: Name (Tasks Y-Z)" format
     const phaseMatch = task.phase.match(/Phase (\d+):/);
     const phaseNumber = phaseMatch ? phaseMatch[1] : "Unknown";
@@ -182,7 +223,7 @@ class GitHubIssueSync {
     return body;
   }
 
-  async createIssue(task) {
+  async createIssue(task: Task): Promise<any> {
     const title = task.title; // Remove "Task X:" prefix
     const body = this.formatIssueBody(task);
     const phaseLabel = this.extractPhaseLabel(task.phase);
@@ -190,8 +231,8 @@ class GitHubIssueSync {
     try {
       // Create the issue first
       const response = await octokit.rest.issues.create({
-        owner: GITHUB_OWNER,
-        repo: GITHUB_REPO,
+        owner: GITHUB_OWNER!,
+        repo: GITHUB_REPO!,
         title,
         body,
         labels: ["zeno", phaseLabel],
@@ -200,8 +241,8 @@ class GitHubIssueSync {
       // If the task is completed, immediately close the issue
       if (task.completed) {
         await octokit.rest.issues.update({
-          owner: GITHUB_OWNER,
-          repo: GITHUB_REPO,
+          owner: GITHUB_OWNER!,
+          repo: GITHUB_REPO!,
           issue_number: response.data.number,
           state: "closed",
         });
@@ -216,21 +257,21 @@ class GitHubIssueSync {
     } catch (error) {
       console.error(
         `❌ Failed to create issue for task ${task.number}:`,
-        error.message
+        (error as Error).message
       );
       return null;
     }
   }
 
-  async updateIssue(issueNumber, task) {
+  async updateIssue(issueNumber: number, task: Task): Promise<void> {
     const title = task.title; // Remove "Task X:" prefix
     const body = this.formatIssueBody(task);
     const phaseLabel = this.extractPhaseLabel(task.phase);
 
     try {
       await octokit.rest.issues.update({
-        owner: GITHUB_OWNER,
-        repo: GITHUB_REPO,
+        owner: GITHUB_OWNER!,
+        repo: GITHUB_REPO!,
         issue_number: issueNumber,
         title,
         body,
@@ -247,12 +288,12 @@ class GitHubIssueSync {
     } catch (error) {
       console.error(
         `❌ Failed to update issue #${issueNumber}:`,
-        error.message
+        (error as Error).message
       );
     }
   }
 
-  async syncTasks() {
+  async syncTasks(): Promise<void> {
     console.log("🔄 Syncing tasks with GitHub issues...\n");
 
     // Load current sync state
@@ -276,17 +317,27 @@ class GitHubIssueSync {
           this.syncState[taskKey] = {
             issueNumber: issue.number,
             completed: task.completed,
+            contentHash: this.generateContentHash(task),
             lastSync: new Date().toISOString(),
           };
         }
       } else {
-        // Update existing issue if status changed
+        // Check for changes (status or content)
+        const currentContentHash = this.generateContentHash(task);
         const statusChanged = existingIssue.completed !== task.completed;
+        const contentChanged = existingIssue.contentHash !== currentContentHash;
 
-        if (statusChanged) {
+        if (statusChanged || contentChanged) {
           await this.updateIssue(existingIssue.issueNumber, task);
           this.syncState[taskKey].completed = task.completed;
+          this.syncState[taskKey].contentHash = currentContentHash;
           this.syncState[taskKey].lastSync = new Date().toISOString();
+
+          if (contentChanged && !statusChanged) {
+            console.log(
+              `📝 Updated content for issue #${existingIssue.issueNumber}: ${task.title}`
+            );
+          }
         }
       }
     }
