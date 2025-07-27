@@ -44,3 +44,18 @@ export class ConfigurationError extends Error {
     this.name = "ConfigurationError";
   }
 }
+
+/**
+ * Error thrown during file system operations
+ */
+export class FileSystemError extends Error {
+  constructor(
+    message: string,
+    public readonly filePath: string,
+    public readonly code: string,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = "FileSystemError";
+  }
+}
