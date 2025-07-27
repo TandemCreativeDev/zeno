@@ -92,7 +92,7 @@
 **Dependencies**: Task 2  
 **Acceptance Criteria**: Can render templates with all helpers working
 
-### [ ] 9. Generator Base Class
+### [x] 9. Generator Base Class
 
 **Description**: Abstract Generator class for all generators (Ref: Architecture §5)  
 **Deliverables**:
