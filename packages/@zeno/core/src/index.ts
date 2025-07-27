@@ -14,3 +14,5 @@ export * from "./types";
 export * from "./validation";
 export * from "./utils";
 export { TemplateEngine, createTemplateEngine } from "./TemplateEngine";
+export { Generator } from "./Generator";
+export type { SchemaType } from "./Generator";
