@@ -6,7 +6,7 @@ import { SchemaValidationError } from "../utils/errors";
 describe("SchemaLoader", () => {
   const loader = new SchemaLoader();
   const fixturesPath = join(__dirname, "fixtures");
-  const docsExamplesPath = join(__dirname, "../../../../../docs/examples");
+  const docsExamplesPath = join(__dirname, "../../../../../docs/examples/schemas");
 
   describe("load", () => {
     it("loads valid schemas successfully", async () => {
