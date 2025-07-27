@@ -324,6 +324,7 @@ Before submitting any code, ensure the following steps are completed:
 
 1. **Format code before commiting** - run command `pnpm format`
 2. **Commit with descriptive message**:
+  - **Use British spelling** - ie standardise not standardize
   - **Granular commits** - do not commit all in single commit, break them up for optimal traceability
   - **Informative and concise commits** - multiline is encouraged but try to keep it less than 3 lines
   - **Follow commit guidance** outlined above
