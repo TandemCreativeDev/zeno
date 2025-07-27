@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { readFile, writeFile } from "fs/promises";
-import { createHash } from "crypto";
+import { createHash } from "node:crypto";
+import { readFile, writeFile } from "node:fs/promises";
 import { Octokit } from "@octokit/rest";
 import { config } from "dotenv";
 
@@ -20,6 +20,14 @@ if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) {
   console.error("- GITHUB_OWNER: GitHub username/organization");
   console.error("- GITHUB_REPO: Repository name");
   process.exit(1);
+}
+
+// Helper function to get validated environment variables
+function getValidatedEnvVars() {
+  return {
+    owner: GITHUB_OWNER as string,
+    repo: GITHUB_REPO as string,
+  };
 }
 
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
@@ -53,7 +61,7 @@ class GitHubIssueSync {
     try {
       const data = await readFile(SYNC_STATE_FILE, "utf8");
       this.syncState = JSON.parse(data);
-    } catch (error) {
+    } catch (_error) {
       // File doesn't exist yet, start with empty state
       this.syncState = {};
     }
@@ -85,7 +93,7 @@ class GitHubIssueSync {
 
         // Extract task details
         let description = "";
-        let deliverables: string[] = [];
+        const deliverables: string[] = [];
         let dependencies = "";
         let definitionOfDone = "";
 
@@ -199,9 +207,9 @@ class GitHubIssueSync {
 
     if (task.dependencies) {
       // Convert task references to issue references
-      let formattedDeps = task.dependencies
+      const formattedDeps = task.dependencies
         // Handle "Tasks X, Y" format
-        .replace(/Tasks (\d+(?:,\s*\d+)*)/g, (match, numbers) => {
+        .replace(/Tasks (\d+(?:,\s*\d+)*)/g, (_match, numbers) => {
           const issueNumbers = numbers
             .split(",")
             .map((n) => `#${n.trim()}`)
@@ -223,16 +231,17 @@ class GitHubIssueSync {
     return body;
   }
 
-  async createIssue(task: Task): Promise<any> {
+  async createIssue(task: Task): Promise<{ number: number } | null> {
     const title = task.title; // Remove "Task X:" prefix
     const body = this.formatIssueBody(task);
     const phaseLabel = this.extractPhaseLabel(task.phase);
+    const { owner, repo } = getValidatedEnvVars();
 
     try {
       // Create the issue first
       const response = await octokit.rest.issues.create({
-        owner: GITHUB_OWNER!,
-        repo: GITHUB_REPO!,
+        owner,
+        repo,
         title,
         body,
         labels: ["zeno", phaseLabel],
@@ -241,8 +250,8 @@ class GitHubIssueSync {
       // If the task is completed, immediately close the issue
       if (task.completed) {
         await octokit.rest.issues.update({
-          owner: GITHUB_OWNER!,
-          repo: GITHUB_REPO!,
+          owner,
+          repo,
           issue_number: response.data.number,
           state: "closed",
         });
@@ -267,11 +276,12 @@ class GitHubIssueSync {
     const title = task.title; // Remove "Task X:" prefix
     const body = this.formatIssueBody(task);
     const phaseLabel = this.extractPhaseLabel(task.phase);
+    const { owner, repo } = getValidatedEnvVars();
 
     try {
       await octokit.rest.issues.update({
-        owner: GITHUB_OWNER!,
-        repo: GITHUB_REPO!,
+        owner,
+        repo,
         issue_number: issueNumber,
         title,
         body,
