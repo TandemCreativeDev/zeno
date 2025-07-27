@@ -21,28 +21,33 @@ class TestGenerator extends Generator {
   }
 
   async generate(context: GeneratorContext): Promise<GeneratedFile[]> {
-    const filtered = this.filterSupportedSchemas(context.schemas);
     const files: GeneratedFile[] = [];
 
-    for (const [name, _entity] of filtered.entities) {
-      files.push({
-        path: `${context.outputDir}/${name}.ts`,
-        content: `export const ${name} = { type: "entity" };`,
-      });
+    if (this.supports("entity")) {
+      for (const [name, _entity] of context.schemas.entities) {
+        files.push({
+          path: `${context.outputDir}/${name}.ts`,
+          content: `export const ${name} = { type: "entity" };`,
+        });
+      }
     }
 
-    for (const [name, _enumSchema] of filtered.enums) {
-      files.push({
-        path: `${context.outputDir}/${name}.ts`,
-        content: `export const ${name} = { type: "enum" };`,
-      });
+    if (this.supports("enum")) {
+      for (const [name, _enumSchema] of context.schemas.enums) {
+        files.push({
+          path: `${context.outputDir}/${name}.ts`,
+          content: `export const ${name} = { type: "enum" };`,
+        });
+      }
     }
 
-    for (const [name, _page] of filtered.pages) {
-      files.push({
-        path: `${context.outputDir}/${name}.tsx`,
-        content: `export const ${name} = { type: "page" };`,
-      });
+    if (this.supports("page")) {
+      for (const [name, _page] of context.schemas.pages) {
+        files.push({
+          path: `${context.outputDir}/${name}.tsx`,
+          content: `export const ${name} = { type: "page" };`,
+        });
+      }
     }
 
     return files;
@@ -59,12 +64,54 @@ describe("Generator", () => {
 
     mockSchemas = {
       entities: new Map([
-        ["users", { name: "users", columns: [] }],
-        ["posts", { name: "posts", columns: [] }],
+        [
+          "users",
+          {
+            tableName: "users",
+            displayName: "Users",
+            columns: {},
+          },
+        ],
+        [
+          "posts",
+          {
+            tableName: "posts",
+            displayName: "Posts",
+            columns: {},
+          },
+        ],
       ]),
-      enums: new Map([["status", { name: "status", values: [] }]]),
-      pages: new Map([["home", { name: "home", path: "/", sections: [] }]]),
-      app: { name: "TestApp", version: "1.0.0" },
+      enums: new Map([
+        [
+          "status",
+          {
+            values: {
+              ACTIVE: { label: "Active" },
+              INACTIVE: { label: "Inactive" },
+            },
+          },
+        ],
+      ]),
+      pages: new Map([
+        [
+          "home",
+          {
+            route: "/",
+            title: "Home",
+            sections: [
+              {
+                type: "hero" as const,
+                title: "Welcome",
+              },
+            ],
+          },
+        ],
+      ]),
+      app: {
+        name: "TestApp",
+        description: "Test application",
+        url: "https://example.com",
+      },
     };
 
     mockContext = {
@@ -95,61 +142,59 @@ describe("Generator", () => {
     });
   });
 
-  describe("validateContext", () => {
-    it("should pass with valid context", () => {
-      expect(() => {
-        generator.validateContext(mockContext);
-      }).not.toThrow();
+  describe("context validation through run method", () => {
+    it("should pass with valid context", async () => {
+      await expect(generator.run(mockContext)).resolves.toBeDefined();
     });
 
-    it("should throw when schemas are missing", () => {
-      const invalidContext = { ...mockContext, schemas: undefined as any };
-      expect(() => {
-        generator.validateContext(invalidContext);
-      }).toThrow("Generator test-generator: schemas are required in context");
+    it("should throw when schemas are missing", async () => {
+      const invalidContext = { ...mockContext, schemas: undefined as never };
+      await expect(generator.run(invalidContext)).rejects.toThrow(
+        "Generator test-generator: schemas are required in context"
+      );
     });
 
-    it("should throw when outputDir is missing", () => {
+    it("should throw when outputDir is missing", async () => {
       const invalidContext = { ...mockContext, outputDir: "" };
-      expect(() => {
-        generator.validateContext(invalidContext);
-      }).toThrow("Generator test-generator: outputDir is required in context");
+      await expect(generator.run(invalidContext)).rejects.toThrow(
+        "Generator test-generator: outputDir is required in context"
+      );
     });
 
-    it("should throw when schemaDir is missing", () => {
+    it("should throw when schemaDir is missing", async () => {
       const invalidContext = { ...mockContext, schemaDir: "" };
-      expect(() => {
-        generator.validateContext(invalidContext);
-      }).toThrow("Generator test-generator: schemaDir is required in context");
+      await expect(generator.run(invalidContext)).rejects.toThrow(
+        "Generator test-generator: schemaDir is required in context"
+      );
     });
   });
 
-  describe("filterSupportedSchemas", () => {
-    it("should filter only supported schema types", () => {
+  describe("schema filtering through generation", () => {
+    it("should generate only supported schema types", async () => {
       generator.setSupportedTypes(["entity"]);
-      const filtered = generator.filterSupportedSchemas(mockSchemas);
+      const files = await generator.generate(mockContext);
 
-      expect(filtered.entities.size).toBe(2);
-      expect(filtered.enums.size).toBe(0);
-      expect(filtered.pages.size).toBe(0);
+      expect(files).toHaveLength(2); // Only entities
+      expect(files.every((f) => f.path.endsWith(".ts"))).toBe(true);
+      expect(files.every((f) => f.content.includes("entity"))).toBe(true);
     });
 
-    it("should filter multiple schema types", () => {
+    it("should generate multiple schema types", async () => {
       generator.setSupportedTypes(["entity", "enum"]);
-      const filtered = generator.filterSupportedSchemas(mockSchemas);
+      const files = await generator.generate(mockContext);
 
-      expect(filtered.entities.size).toBe(2);
-      expect(filtered.enums.size).toBe(1);
-      expect(filtered.pages.size).toBe(0);
+      expect(files).toHaveLength(3); // 2 entities + 1 enum
+      const entityFiles = files.filter((f) => f.content.includes("entity"));
+      const enumFiles = files.filter((f) => f.content.includes("enum"));
+      expect(entityFiles).toHaveLength(2);
+      expect(enumFiles).toHaveLength(1);
     });
 
-    it("should return empty maps when no types are supported", () => {
+    it("should generate no files when no types are supported", async () => {
       generator.setSupportedTypes([]);
-      const filtered = generator.filterSupportedSchemas(mockSchemas);
+      const files = await generator.generate(mockContext);
 
-      expect(filtered.entities.size).toBe(0);
-      expect(filtered.enums.size).toBe(0);
-      expect(filtered.pages.size).toBe(0);
+      expect(files).toHaveLength(0);
     });
   });
 
@@ -175,7 +220,11 @@ describe("Generator", () => {
         entities: new Map(),
         enums: new Map(),
         pages: new Map(),
-        app: { name: "TestApp", version: "1.0.0" },
+        app: {
+          name: "TestApp",
+          description: "Test application",
+          url: "https://example.com",
+        },
       };
       expect(generator.hasApplicableSchemas(emptySchemas)).toBe(false);
     });
@@ -190,7 +239,7 @@ describe("Generator", () => {
     });
 
     it("should throw validation errors", async () => {
-      const invalidContext = { ...mockContext, schemas: undefined as any };
+      const invalidContext = { ...mockContext, schemas: undefined as never };
       await expect(generator.run(invalidContext)).rejects.toThrow(
         "schemas are required in context"
       );
