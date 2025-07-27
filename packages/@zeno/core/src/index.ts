@@ -10,9 +10,15 @@ export function createZeno() {
   };
 }
 
-export * from "./types";
-export * from "./validation";
-export * from "./utils";
-export { TemplateEngine, createTemplateEngine } from "./TemplateEngine";
-export { Generator } from "./Generator";
+export type {
+  GenerationOptions,
+  GenerationResult,
+  SchemaChange,
+} from "./GenerationPipeline";
+export { GenerationPipeline } from "./GenerationPipeline";
 export type { SchemaType } from "./Generator";
+export { Generator } from "./Generator";
+export { createTemplateEngine, TemplateEngine } from "./TemplateEngine";
+export * from "./types";
+export * from "./utils";
+export * from "./validation";

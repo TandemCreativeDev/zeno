@@ -112,7 +112,7 @@
 **Dependencies**: Tasks 3, 8  
 **Acceptance Criteria**: Can extend and implement test generator
 
-### [ ] 10. Generation Pipeline
+### [x] 10. Generation Pipeline
 
 **Description**: Core pipeline for running generators (Ref: Architecture §4.4)  
 **Deliverables**:
