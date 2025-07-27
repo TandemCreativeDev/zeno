@@ -294,13 +294,15 @@ Before submitting any code, ensure the following steps are completed:
 
 **IMPORTANT**: Be concise, don't repeat yourself, double check and remove duplication/reduce where possible
 
-### Commit
+### Version Control
 
-- **Format code before commiting** - run command `npx prettier path/to/file.ts`
-- **Granular commits** - do not commit all in single commit, break them up for optimal traceability
-- **Informative and concise commits** - multiline is encouraged but try to keep it less than 3 lines
-- **Follow commit guidance** outlined above
-- **You may use gh cli** - it is installed and functioning
+1. **Format code before commiting** - run command `npx prettier path/to/file.ts`
+2. **Commit with descriptive message**:
+  - **Granular commits** - do not commit all in single commit, break them up for optimal traceability
+  - **Informative and concise commits** - multiline is encouraged but try to keep it less than 3 lines
+  - **Follow commit guidance** outlined above
+  - **You may use gh cli** - it is installed and functioning
+3. **Sync with github issues** - run `pnpm sync-issues`
 
 ## Known Issues & Workarounds
 
