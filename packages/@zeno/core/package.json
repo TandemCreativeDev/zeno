@@ -22,7 +22,8 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "type-check": "tsc --noEmit",
-    "lint": "biome check src/"
+    "lint": "biome check src/",
+    "format": "biome check src/ --write"
   },
   "keywords": [
     "nextjs",
