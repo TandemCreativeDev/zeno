@@ -234,14 +234,22 @@ Coverage target: >90% with Vitest
 pnpm dev                    # Start development with watch mode
 pnpm build                  # Build all packages with Turborepo
 pnpm test                   # Run test suite with coverage
-pnpm lint                   # Run Biome linter and formatter
+pnpm lint                   # Run Biome linter (check only)
+pnpm format                 # Format code with Biome (auto-fix)
+
+# Package-specific commands (using --filter)
+pnpm --filter "@zeno/core" test              # Test specific package
+pnpm --filter "@zeno/core" test:coverage     # Test with coverage
+pnpm --filter "@zeno/core" type-check        # TypeScript compilation check
+pnpm --filter "@zeno/core" format            # Format specific package
 
 # Package management
 pnpm changeset             # Create changeset for release
 pnpm version               # Version packages with changesets
 pnpm release               # Build and publish to NPM
+pnpm sync                  # Sync with GitHub issues
 
-# CLI testing (from packages/cli)
+# CLI testing (when CLI package exists)
 pnpm start init my-app     # Test init command
 pnpm start generate        # Test generate command
 pnpm start validate        # Test schema validation
@@ -314,7 +322,7 @@ Before submitting any code, ensure the following steps are completed:
 
 ### Version Control
 
-1. **Format code before commiting** - run command `npx prettier path/to/file.ts`
+1. **Format code before commiting** - run command `pnpm format`
 2. **Commit with descriptive message**:
   - **Granular commits** - do not commit all in single commit, break them up for optimal traceability
   - **Informative and concise commits** - multiline is encouraged but try to keep it less than 3 lines
