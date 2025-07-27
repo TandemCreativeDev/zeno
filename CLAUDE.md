@@ -174,6 +174,24 @@ for (const schema of schemas.entities) {
   const content = await renderTemplate(templates.entity, schema);
   await writeFile(getOutputPath(schema), content);
 }
+
+// Error-tolerant parallel operations with Promise.allSettled
+const results = await Promise.allSettled([
+  generator1.run(context),
+  generator2.run(context),
+  generator3.run(context),
+]);
+
+const successes: GeneratedFile[] = [];
+const errors: Error[] = [];
+
+for (const result of results) {
+  if (result.status === "fulfilled") {
+    successes.push(...result.value);
+  } else {
+    errors.push(result.reason);
+  }
+}
 ```
 
 ### Comments and Documentation
