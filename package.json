@@ -11,7 +11,7 @@
     "changeset": "changeset",
     "version": "changeset version",
     "release": "turbo build && changeset publish",
-    "sync-issues": "node scripts/sync-github-issues.js"
+    "sync-issues": "node scripts/syncGithubIssues.js"
   },
   "keywords": [
     "nextjs",
