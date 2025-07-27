@@ -11,8 +11,8 @@
 - `turbo.json` with build pipeline
 - Root `package.json` with workspace scripts
 - `.gitignore`, `.npmrc`, `.editorconfig`
-  **Dependencies**: None  
-  **Acceptance Criteria**: `pnpm install` works, `pnpm build` runs successfully
+**Dependencies**: None  
+**Acceptance Criteria**: `pnpm install` works, `pnpm build` runs successfully
 
 ### [x] 2. Core Package Scaffold
 
@@ -22,8 +22,8 @@
 - `packages/@zeno/core/package.json` with tsup config
 - `tsconfig.json` and `tsup.config.ts`
 - Empty `src/index.ts` with basic export
-  **Dependencies**: Task 1  
-  **Acceptance Criteria**: Package builds with `pnpm build`, outputs ESM and CJS
+**Dependencies**: Task 1  
+**Acceptance Criteria**: Package builds with `pnpm build`, outputs ESM and CJS
 
 ### [x] 3. Type Definitions Definitions
 
@@ -34,8 +34,8 @@
 - `EntitySchema`, `EnumSchema`, `PageSchema`, `AppSchema` interfaces
 - `SchemaSet`, `GeneratorContext` types
 - Export all types from main index
-  **Dependencies**: Task 2
-  **Acceptance Criteria**: Types compile without errors, can import from @zeno/core
+**Dependencies**: Task 2
+**Acceptance Criteria**: Types compile without errors, can import from @zeno/core
 
 ### [x] 4. Schema Validation Rules
 
@@ -45,8 +45,8 @@
 - Zod schemas for entity, enum, page, app configurations
 - `ValidationResult` type with error details
 - Unit tests for valid/invalid schemas
-  **Dependencies**: Task 3  
-  **Acceptance Criteria**: 100% test coverage on validation logic
+**Dependencies**: Task 3  
+**Acceptance Criteria**: 100% test coverage on validation logic
 
 ### [x] 5. Schema Loader Implementation
 
@@ -56,8 +56,8 @@
 - `SchemaLoader` class with `load()`, `validate()` methods
 - File system operations with proper error handling
 - Integration tests with fixture files
-  **Dependencies**: Tasks 3, 4  
-  **Acceptance Criteria**: Can load example schemas from docs/examples, proper error messages
+**Dependencies**: Tasks 3, 4  
+**Acceptance Criteria**: Can load example schemas from docs/examples, proper error messages
 
 ### [x] 6. Custom Error Classes
 
@@ -67,8 +67,8 @@
 - `SchemaValidationError`, `GenerationError`, `ConfigurationError` classes
 - Error context with file path and line numbers
 - Unit tests for error scenarios
-  **Dependencies**: Task 2  
-  **Acceptance Criteria**: Errors provide actionable messages with context
+**Dependencies**: Task 2  
+**Acceptance Criteria**: Errors provide actionable messages with context
 
 ### [x] 7. Configuration System
 
@@ -78,8 +78,8 @@
 - `defineConfig()` helper function
 - Config validation and merging logic
 - Tests for various config scenarios
-  **Dependencies**: Tasks 3, 4  
-  **Acceptance Criteria**: Can load zeno.config.ts, applies defaults correctly
+**Dependencies**: Tasks 3, 4  
+**Acceptance Criteria**: Can load zeno.config.ts, applies defaults correctly
 
 ### [x] 8. Template Engine Setup
 
@@ -89,8 +89,8 @@
 - `TemplateEngine` class with helper registration
 - Built-in helpers: case transformers, pluralisation
 - Unit tests for template rendering
-  **Dependencies**: Task 2  
-  **Acceptance Criteria**: Can render templates with all helpers working
+**Dependencies**: Task 2  
+**Acceptance Criteria**: Can render templates with all helpers working
 
 ### [ ] 9. Generator Base Class
 
@@ -100,8 +100,8 @@
 - `Generator` abstract class with required methods
 - `GeneratedFile` interface
 - Unit tests for generator lifecycle
-  **Dependencies**: Tasks 3, 8  
-  **Acceptance Criteria**: Can extend and implement test generator
+**Dependencies**: Tasks 3, 8  
+**Acceptance Criteria**: Can extend and implement test generator
 
 ### [ ] 10. Generation Pipeline
 
@@ -111,8 +111,8 @@
 - `GenerationPipeline` class with registration and execution
 - Parallel generation support
 - Integration tests with mock generators
-  **Dependencies**: Task 9  
-  **Acceptance Criteria**: Can register and run multiple generators in sequence
+**Dependencies**: Task 9  
+**Acceptance Criteria**: Can register and run multiple generators in sequence
 
 ### [ ] 11. File System Utilities
 
@@ -123,8 +123,8 @@
 - Atomic file writes with backup
 - Directory creation utilities
 - Unit tests for edge cases
-  **Dependencies**: Task 6  
-  **Acceptance Criteria**: All file operations are safe and tested
+**Dependencies**: Task 6  
+**Acceptance Criteria**: All file operations are safe and tested
 
 ### [ ] 12. Watch Mode Infrastructure
 
@@ -135,8 +135,8 @@
 - Debounced change detection
 - Schema change diffing
 - Integration tests
-  **Dependencies**: Tasks 5, 10  
-  **Acceptance Criteria**: Detects changes and triggers incremental generation
+**Dependencies**: Tasks 5, 10  
+**Acceptance Criteria**: Detects changes and triggers incremental generation
 
 ### [ ] 13. Schema Change Detection
 
@@ -146,8 +146,8 @@
 - `SchemaChange` type with change details
 - Dependency graph for affected files
 - Unit tests for various change scenarios
-  **Dependencies**: Task 12  
-  **Acceptance Criteria**: Only regenerates affected files on changes
+**Dependencies**: Task 12  
+**Acceptance Criteria**: Only regenerates affected files on changes
 
 ### [ ] 14. Logging System
 
@@ -157,8 +157,8 @@
 - Logger with debug/info/warn/error levels
 - Context-aware logging
 - Integration with CLI output
-  **Dependencies**: Task 2  
-  **Acceptance Criteria**: Logs are useful for debugging, respects verbosity settings
+**Dependencies**: Task 2  
+**Acceptance Criteria**: Logs are useful for debugging, respects verbosity settings
 
 ### [ ] 15. Core Package Integration Tests
 
@@ -168,8 +168,8 @@
 - Test harness for full pipeline
 - Fixture projects
 - Performance benchmarks
-  **Dependencies**: Tasks 1-14  
-  **Acceptance Criteria**: Core package works end-to-end with example schemas
+**Dependencies**: Tasks 1-14  
+**Acceptance Criteria**: Core package works end-to-end with example schemas
 
 ## Phase 2: Generators (Tasks 16-30)
 
@@ -180,8 +180,8 @@
 
 - Package scaffold with dependencies
 - Base structure for model generation
-  **Dependencies**: Task 15  
-  **Acceptance Criteria**: Package builds and exports ModelGenerator class
+**Dependencies**: Task 15  
+**Acceptance Criteria**: Package builds and exports ModelGenerator class
 
 ### [ ] 17. Drizzle Schema Generation
 
@@ -192,8 +192,8 @@
 - Column type mapping
 - Relationship handling
 - Unit tests with fixtures
-  **Dependencies**: Task 16  
-  **Acceptance Criteria**: Generates valid Drizzle schemas for all column types
+**Dependencies**: Task 16  
+**Acceptance Criteria**: Generates valid Drizzle schemas for all column types
 
 ### [ ] 18. TypeScript Type Generation
 
@@ -204,8 +204,8 @@
 - Relationship typing
 - Enum type generation
 - Unit tests
-  **Dependencies**: Task 16  
-  **Acceptance Criteria**: Generated types compile without errors
+**Dependencies**: Task 16  
+**Acceptance Criteria**: Generated types compile without errors
 
 ### [ ] 19. Zod Schema Generation
 
@@ -216,8 +216,8 @@
 - Validation rule mapping
 - Custom error messages
 - Unit tests
-  **Dependencies**: Task 16  
-  **Acceptance Criteria**: Validation works correctly for all rules
+**Dependencies**: Task 16  
+**Acceptance Criteria**: Validation works correctly for all rules
 
 ### [ ] 20. Migration Generator
 
@@ -228,8 +228,8 @@
 - Schema diffing logic
 - Rollback support
 - Integration tests
-  **Dependencies**: Task 17  
-  **Acceptance Criteria**: Can generate and apply migrations
+**Dependencies**: Task 17  
+**Acceptance Criteria**: Can generate and apply migrations
 
 ### [ ] 21. Component Generator Package
 
@@ -238,8 +238,8 @@
 
 - Package scaffold
 - Base component templates
-  **Dependencies**: Task 15  
-  **Acceptance Criteria**: Package builds and exports ComponentGenerator
+**Dependencies**: Task 15  
+**Acceptance Criteria**: Package builds and exports ComponentGenerator
 
 ### [ ] 22. Form Component Generation
 
@@ -251,8 +251,8 @@
 - Validation integration
 - Accessibility attributes
 - Unit tests
-  **Dependencies**: Task 21  
-  **Acceptance Criteria**: Forms are WCAG 2.1 AA compliant, validation works
+**Dependencies**: Task 21  
+**Acceptance Criteria**: Forms are WCAG 2.1 AA compliant, validation works
 
 ### [ ] 23. Table Component Generation
 
@@ -263,8 +263,8 @@
 - Pagination support
 - Bulk actions
 - Unit tests
-  **Dependencies**: Task 21  
-  **Acceptance Criteria**: Tables are accessible and fully functional
+**Dependencies**: Task 21  
+**Acceptance Criteria**: Tables are accessible and fully functional
 
 ### [ ] 24. Modal Component Generation
 
@@ -275,8 +275,8 @@
 - Focus management
 - Keyboard navigation
 - Unit tests
-  **Dependencies**: Task 21  
-  **Acceptance Criteria**: Modals are accessible with proper focus handling
+**Dependencies**: Task 21  
+**Acceptance Criteria**: Modals are accessible with proper focus handling
 
 ### [ ] 25. Page Generator Package
 
@@ -285,8 +285,8 @@
 
 - Package scaffold
 - Page template structure
-  **Dependencies**: Task 15  
-  **Acceptance Criteria**: Package builds and exports PageGenerator
+**Dependencies**: Task 15  
+**Acceptance Criteria**: Package builds and exports PageGenerator
 
 ### [ ] 26. CRUD Page Generation
 
@@ -297,8 +297,8 @@
 - Route generation
 - Layout integration
 - Unit tests
-  **Dependencies**: Tasks 22-25  
-  **Acceptance Criteria**: All CRUD operations work with proper routing
+**Dependencies**: Tasks 22-25  
+**Acceptance Criteria**: All CRUD operations work with proper routing
 
 ### [ ] 27. Custom Page Generation
 
@@ -308,8 +308,8 @@
 - Section type templates (hero, stats, table, content)
 - Dynamic composition
 - Unit tests for each section type
-  **Dependencies**: Task 25  
-  **Acceptance Criteria**: Can generate all example pages correctly
+**Dependencies**: Task 25  
+**Acceptance Criteria**: Can generate all example pages correctly
 
 ### [ ] 28. API Generator Package
 
@@ -318,8 +318,8 @@
 
 - Package scaffold
 - API route templates
-  **Dependencies**: Task 15  
-  **Acceptance Criteria**: Package builds and exports ApiGenerator
+**Dependencies**: Task 15  
+**Acceptance Criteria**: Package builds and exports ApiGenerator
 
 ### [ ] 29. CRUD API Generation
 
@@ -330,8 +330,8 @@
 - Validation middleware
 - Type-safe responses
 - Unit tests
-  **Dependencies**: Tasks 19, 28  
-  **Acceptance Criteria**: APIs handle all CRUD operations with validation
+**Dependencies**: Tasks 19, 28  
+**Acceptance Criteria**: APIs handle all CRUD operations with validation
 
 ### [ ] 30. Authentication Integration
 
@@ -342,8 +342,8 @@
 - User table detection
 - Session type generation
 - Integration tests
-  **Dependencies**: Tasks 17, 29  
-  **Acceptance Criteria**: Authentication works with generated user tables
+**Dependencies**: Tasks 17, 29  
+**Acceptance Criteria**: Authentication works with generated user tables
 
 ## Phase 3: CLI Implementation (Tasks 31-40)
 
@@ -355,8 +355,8 @@
 - oclif project structure
 - Base command class
 - Package configuration
-  **Dependencies**: Task 15  
-  **Acceptance Criteria**: CLI runs with help command
+**Dependencies**: Task 15  
+**Acceptance Criteria**: CLI runs with help command
 
 ### [ ] 32. Init Command
 
@@ -367,8 +367,8 @@
 - Project scaffolding
 - Dependency installation
 - Integration tests
-  **Dependencies**: Task 31  
-  **Acceptance Criteria**: Can create new project and existing project setup
+**Dependencies**: Task 31  
+**Acceptance Criteria**: Can create new project and existing project setup
 
 ### [ ] 33. Generate Command
 
@@ -379,8 +379,8 @@
 - Progress indicators
 - Error handling
 - Unit tests
-  **Dependencies**: Tasks 30, 31  
-  **Acceptance Criteria**: Generates all code types with proper output
+**Dependencies**: Tasks 30, 31  
+**Acceptance Criteria**: Generates all code types with proper output
 
 ### [ ] 34. Validate Command
 
@@ -390,8 +390,8 @@
 - Validate command implementation
 - Detailed error reporting
 - Unit tests
-  **Dependencies**: Tasks 5, 31  
-  **Acceptance Criteria**: Provides clear validation errors with line numbers
+**Dependencies**: Tasks 5, 31  
+**Acceptance Criteria**: Provides clear validation errors with line numbers
 
 ### [ ] 35. Migrate Command
 
@@ -402,8 +402,8 @@
 - Rollback support
 - Status reporting
 - Integration tests
-  **Dependencies**: Tasks 20, 31  
-  **Acceptance Criteria**: Can run and rollback migrations
+**Dependencies**: Tasks 20, 31  
+**Acceptance Criteria**: Can run and rollback migrations
 
 ### [ ] 36. Dev Command
 
@@ -413,8 +413,8 @@
 - Combined watch and generate
 - HMR integration
 - Unit tests
-  **Dependencies**: Tasks 12, 33  
-  **Acceptance Criteria**: Watches files and regenerates on changes
+**Dependencies**: Tasks 12, 33  
+**Acceptance Criteria**: Watches files and regenerates on changes
 
 ### [ ] 37. CLI Error Handling
 
@@ -424,8 +424,8 @@
 - Error formatting
 - Debug mode support
 - Help suggestions
-  **Dependencies**: Tasks 6, 31  
-  **Acceptance Criteria**: All errors are actionable and well-formatted
+**Dependencies**: Tasks 6, 31  
+**Acceptance Criteria**: All errors are actionable and well-formatted
 
 ### [ ] 38. CLI Configuration
 
@@ -435,8 +435,8 @@
 - Config file detection
 - Environment variable support
 - Default handling
-  **Dependencies**: Tasks 7, 31  
-  **Acceptance Criteria**: Finds and loads configuration correctly
+**Dependencies**: Tasks 7, 31  
+**Acceptance Criteria**: Finds and loads configuration correctly
 
 ### [ ] 39. Interactive Mode
 
@@ -446,8 +446,8 @@
 - Schema selection prompts
 - Confirmation dialogs
 - Progress animations
-  **Dependencies**: Task 31  
-  **Acceptance Criteria**: All interactions are smooth and intuitive
+**Dependencies**: Task 31  
+**Acceptance Criteria**: All interactions are smooth and intuitive
 
 ### [ ] 40. CLI Integration Tests
 
@@ -457,8 +457,8 @@
 - Full command flow tests
 - Output verification
 - Error scenario coverage
-  **Dependencies**: Tasks 31-39  
-  **Acceptance Criteria**: All commands work in real scenarios
+**Dependencies**: Tasks 31-39  
+**Acceptance Criteria**: All commands work in real scenarios
 
 ## Phase 4: Integration & Polish (Tasks 41-50)
 
@@ -470,8 +470,8 @@
 - Standalone create package
 - Project templates
 - Quick start flow
-  **Dependencies**: Task 32  
-  **Acceptance Criteria**: `npx @zeno/create my-app` works smoothly
+**Dependencies**: Task 32  
+**Acceptance Criteria**: `npx @zeno/create my-app` works smoothly
 
 ### [ ] 42. Navigation Generation
 
@@ -482,8 +482,8 @@
 - Auto-detection logic
 - Mobile navigation
 - Unit tests
-  **Dependencies**: Tasks 23, 27  
-  **Acceptance Criteria**: Navigation reflects page definitions correctly
+**Dependencies**: Tasks 23, 27  
+**Acceptance Criteria**: Navigation reflects page definitions correctly
 
 ### [ ] 43. Email Configuration
 
@@ -493,8 +493,8 @@
 - Nodemailer integration
 - Verification templates
 - Configuration validation
-  **Dependencies**: Tasks 7, 30  
-  **Acceptance Criteria**: Email verification works in generated apps
+**Dependencies**: Tasks 7, 30  
+**Acceptance Criteria**: Email verification works in generated apps
 
 ### [ ] 44. Seed Data Implementation
 
@@ -504,8 +504,8 @@
 - Seed command
 - Data generation from schemas
 - Relationship handling
-  **Dependencies**: Tasks 17, 35  
-  **Acceptance Criteria**: Can seed all example data correctly
+**Dependencies**: Tasks 17, 35  
+**Acceptance Criteria**: Can seed all example data correctly
 
 ### [ ] 45. Performance Optimisation
 
@@ -515,8 +515,8 @@
 - Parallel generation
 - Caching implementation
 - Benchmark suite
-  **Dependencies**: Task 40  
-  **Acceptance Criteria**: Meets all performance targets
+**Dependencies**: Task 40  
+**Acceptance Criteria**: Meets all performance targets
 
 ### [ ] 46. Accessibility Validation
 
@@ -526,8 +526,8 @@
 - Accessibility tests
 - Component audits
 - Documentation
-  **Dependencies**: Tasks 22-24  
-  **Acceptance Criteria**: All components pass accessibility checks
+**Dependencies**: Tasks 22-24  
+**Acceptance Criteria**: All components pass accessibility checks
 
 ### [ ] 47. Documentation Site
 
@@ -538,8 +538,8 @@
 - API documentation
 - Usage guides
 - Examples
-  **Dependencies**: Task 40  
-  **Acceptance Criteria**: Comprehensive docs deployed
+**Dependencies**: Task 40
+**Acceptance Criteria**: Comprehensive docs deployed
 
 ### [ ] 48. Example Projects
 
@@ -549,8 +549,8 @@
 - Blog example
 - SaaS starter
 - E-commerce demo
-  **Dependencies**: Task 40  
-  **Acceptance Criteria**: Examples build and run correctly
+**Dependencies**: Task 40  
+**Acceptance Criteria**: Examples build and run correctly
 
 ### [ ] 49. Testing Coverage
 
@@ -560,8 +560,8 @@
 - Missing test cases
 - Coverage reports
 - CI integration
-  **Dependencies**: All previous tasks  
-  **Acceptance Criteria**: Coverage exceeds 90% across all packages
+**Dependencies**: All previous tasks  
+**Acceptance Criteria**: Coverage exceeds 90% across all packages
 
 ### [ ] 50. Release Preparation
 
@@ -572,8 +572,8 @@
 - CI/CD pipeline
 - Security audit
 - Launch materials
-  **Dependencies**: All previous tasks  
-  **Acceptance Criteria**: Ready for npm publish
+**Dependencies**: All previous tasks  
+**Acceptance Criteria**: Ready for npm publish
 
 ## Notes
 
