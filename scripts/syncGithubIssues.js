@@ -93,12 +93,21 @@ class GitHubIssueSync {
               if (delivLine.trim().startsWith("-")) {
                 deliverables.push(delivLine.trim().substring(1).trim());
               }
+              // Check for dependencies and acceptance criteria in the deliverables section
+              if (delivLine.includes("**Dependencies**:")) {
+                dependencies = delivLine.split("**Dependencies**:")[1].trim();
+              }
+              if (delivLine.includes("**Acceptance Criteria**:")) {
+                definitionOfDone = delivLine
+                  .split("**Acceptance Criteria**:")[1]
+                  .trim();
+              }
             }
           } else if (nextLine.startsWith("**Dependencies**:")) {
             dependencies = nextLine.replace("**Dependencies**:", "").trim();
-          } else if (nextLine.startsWith("**Definition of Done**:")) {
+          } else if (nextLine.startsWith("**Acceptance Criteria**:")) {
             definitionOfDone = nextLine
-              .replace("**Definition of Done**:", "")
+              .replace("**Acceptance Criteria**:", "")
               .trim();
           }
         }
@@ -119,8 +128,21 @@ class GitHubIssueSync {
     return tasks;
   }
 
+  extractPhaseLabel(phaseString) {
+    // Extract phase name from "Phase X: Name (Tasks Y-Z)" format
+    const match = phaseString.match(/Phase \d+: (.+?) \(/);
+    if (match) {
+      return match[1].toLowerCase();
+    }
+    return phaseString.toLowerCase();
+  }
+
   formatIssueBody(task) {
-    let body = `**Phase:** ${task.phase}\n\n`;
+    // Extract phase number from "Phase X: Name (Tasks Y-Z)" format
+    const phaseMatch = task.phase.match(/Phase (\d+):/);
+    const phaseNumber = phaseMatch ? phaseMatch[1] : "Unknown";
+
+    let body = `**Development Phase:** ${phaseNumber}\n\n`;
 
     if (task.description) {
       body += `**Description:** ${task.description}\n\n`;
@@ -135,21 +157,35 @@ class GitHubIssueSync {
     }
 
     if (task.dependencies) {
-      body += `**Dependencies:** ${task.dependencies}\n\n`;
+      // Convert task references to issue references
+      let formattedDeps = task.dependencies
+        // Handle "Tasks X, Y" format
+        .replace(/Tasks (\d+(?:,\s*\d+)*)/g, (match, numbers) => {
+          const issueNumbers = numbers
+            .split(",")
+            .map((n) => `#${n.trim()}`)
+            .join(", ");
+          return `Issues ${issueNumbers}`;
+        })
+        // Handle individual "Task X" format
+        .replace(/Task (\d+)/g, "Issue #$1");
+
+      body += `**Dependencies:** ${formattedDeps}\n\n`;
     }
 
     if (task.definitionOfDone) {
-      body += `**Definition of Done:** ${task.definitionOfDone}\n\n`;
+      body += `**Acceptance Criteria:** ${task.definitionOfDone}\n\n`;
     }
 
-    body += `---\n*This issue was automatically generated from docs/PLAN.md*`;
+    body += `---\n*This issue was automatically generated from task #${task.number} in [Zeno's implementation plan](/${GITHUB_OWNER}/${GITHUB_REPO}/blob/main/docs/PLAN.md)*`;
 
     return body;
   }
 
   async createIssue(task) {
-    const title = `Task ${task.number}: ${task.title}`;
+    const title = task.title; // Remove "Task X:" prefix
     const body = this.formatIssueBody(task);
+    const phaseLabel = this.extractPhaseLabel(task.phase);
 
     try {
       // Create the issue first
@@ -158,10 +194,7 @@ class GitHubIssueSync {
         repo: GITHUB_REPO,
         title,
         body,
-        labels: [
-          "zeno-task",
-          `phase-${task.phase.toLowerCase().replace(/\s+/g, "-")}`,
-        ],
+        labels: ["zeno", phaseLabel],
       });
 
       // If the task is completed, immediately close the issue
@@ -190,8 +223,9 @@ class GitHubIssueSync {
   }
 
   async updateIssue(issueNumber, task) {
-    const title = `Task ${task.number}: ${task.title}`;
+    const title = task.title; // Remove "Task X:" prefix
     const body = this.formatIssueBody(task);
+    const phaseLabel = this.extractPhaseLabel(task.phase);
 
     try {
       await octokit.rest.issues.update({
@@ -200,6 +234,7 @@ class GitHubIssueSync {
         issue_number: issueNumber,
         title,
         body,
+        labels: ["zeno", phaseLabel],
         state: task.completed ? "closed" : "open",
       });
 

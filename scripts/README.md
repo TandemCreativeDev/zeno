@@ -31,7 +31,17 @@ This script automatically syncs tasks from `docs/PLAN.md` with GitHub issues.
 
 ## Usage
 
-Run the sync script:
+### Initial Sync
+
+Run the sync script to create all GitHub issues:
+
+```bash
+pnpm sync-issues
+```
+
+### Regular Sync
+
+After the initial setup, just run the sync script to update issue status:
 
 ```bash
 pnpm sync-issues
@@ -42,8 +52,9 @@ pnpm sync-issues
 ### First Run
 
 - Parses all tasks from `docs/PLAN.md`
-- Creates GitHub issues for all uncompleted tasks (those marked with `[ ]`)
-- Adds labels: `zeno-task` and `phase-{phase-name}`
+- Creates GitHub issues for ALL tasks (both completed and uncompleted)
+- Immediately closes issues for completed tasks (those marked with `[x]`)
+- Adds labels: `zeno` and clean phase names (e.g., "foundation", "generators")
 - Stores sync state in `.github-sync-state.json`
 
 ### Subsequent Runs
@@ -57,10 +68,20 @@ pnpm sync-issues
 
 Each GitHub issue includes:
 
-- **Title**: `Task {number}: {title}`
-- **Body**: Formatted with phase, description, deliverables, dependencies, and definition of done
-- **Labels**: `zeno-task`, `phase-{phase-name}`
+- **Title**: Clean task title (e.g., "Generator Base Class")
+- **Body**:
+  - **Development Phase**: Just the phase number (e.g., "1", "2", "3", "4")
+  - Description, deliverables, dependencies (as issue references like "Issue #1, #3"), and acceptance criteria
+  - Footer with link to Zeno's implementation plan
+- **Labels**: `zeno`, phase name (e.g., "foundation", "generators", "cli implementation", "integration & polish")
 - **State**: Open for incomplete tasks, closed for completed tasks
+
+## Phase Label Colors
+
+- **foundation**: Blue (#0052CC)
+- **generators**: Green (#0E8A16)
+- **cli implementation**: Red (#D93F0B)
+- **integration & polish**: Purple (#5319E7)
 
 ## Sync State
 
@@ -73,22 +94,28 @@ The script maintains a `.github-sync-state.json` file (gitignored) that tracks:
 
 ## Example Output
 
+### Sync Script Output
+
 ```
 🔄 Syncing tasks with GitHub issues...
 
 📋 Found 50 tasks in plan file
 
-✅ Created issue #123: Task 9: Generator Base Class
-✅ Created issue #124: Task 10: Generation Pipeline
-✅ Closed issue #120: Task 6: Custom Error Classes
+✅ Created and closed issue #1: Monorepo Setup
+✅ Created and closed issue #2: Core Package Scaffold
+...
+✅ Created and closed issue #8: Template Engine Setup
+✅ Created issue #9: Generator Base Class
+✅ Created issue #10: Generation Pipeline
+...
 
 ✨ Sync completed!
 
 📊 Summary:
    Total tasks: 50
-   GitHub issues: 45
+   GitHub issues: 50
    Completed: 8
-   Open: 37
+   Open: 42
 ```
 
 ## Troubleshooting
