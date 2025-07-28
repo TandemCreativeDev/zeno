@@ -1,0 +1,166 @@
+"use client";
+
+import { useState } from "react";
+import { PageHeader, Alert, Loading, EmptyState } from "@zeno/templates";
+import { {{entity.name}}Table } from "../components/{{entity.name}}Table";
+import { {{entity.name}}Modal } from "../components/{{entity.name}}Modal";
+
+export interface {{entity.name}}PageProps {
+  data: {{entity.name}}[];
+  loading?: boolean;
+  error?: string;
+  onRefresh?: () => void;
+  onCreate?: (data: {{entity.name}}) => Promise<void>;
+  onUpdate?: (id: string, data: {{entity.name}}) => Promise<void>;
+  onDelete?: (id: string) => Promise<void>;
+}
+
+export function {{entity.name}}Page({
+  data,
+  loading = false,
+  error,
+  onRefresh,
+  onCreate,
+  onUpdate,
+  onDelete,
+}: {{entity.name}}PageProps) {
+  const [selectedItem, setSelectedItem] = useState<{{entity.name}} | null>(null);
+  const [modalMode, setModalMode] = useState<"create" | "edit" | "view">("create");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
+
+  const handleCreate = () => {
+    setSelectedItem(null);
+    setModalMode("create");
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (item: {{entity.name}}) => {
+    setSelectedItem(item);
+    setModalMode("edit");
+    setIsModalOpen(true);
+  };
+
+  const handleView = (item: {{entity.name}}) => {
+    setSelectedItem(item);
+    setModalMode("view");
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (item: {{entity.name}}) => {
+    if (onDelete && confirm(`Are you sure you want to delete this {{lowercase entity.name}}?`)) {
+      setActionLoading(true);
+      try {
+        await onDelete(item.id);
+        onRefresh?.();
+      } catch (error) {
+        console.error("Failed to delete {{lowercase entity.name}}:", error);
+      } finally {
+        setActionLoading(false);
+      }
+    }
+  };
+
+  const handleSubmit = async (data: {{entity.name}}) => {
+    setActionLoading(true);
+    try {
+      if (modalMode === "create" && onCreate) {
+        await onCreate(data);
+      } else if (modalMode === "edit" && onUpdate && selectedItem) {
+        await onUpdate(selectedItem.id, data);
+      }
+      setIsModalOpen(false);
+      setSelectedItem(null);
+      onRefresh?.();
+    } catch (error) {
+      console.error(`Failed to ${modalMode} {{lowercase entity.name}}:`, error);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedItem(null);
+  };
+
+  if (loading) {
+    return <Loading message="Loading {{pluralise (lowercase entity.name)}}..." />;
+  }
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        title="{{pluralise entity.name}}"
+        description="Manage your {{pluralise (lowercase entity.name)}}"
+        breadcrumbs={[
+          { label: "Dashboard", href: "/" },
+          { label: "{{pluralise entity.name}}" },
+        ]}
+      >
+        <div className="flex gap-2">
+          {onRefresh && (
+            <button
+              type="button"
+              onClick={onRefresh}
+              className="btn btn-outline btn-sm"
+              disabled={actionLoading}
+            >
+              Refresh
+            </button>
+          )}
+          {onCreate && (
+            <button
+              type="button"
+              onClick={handleCreate}
+              className="btn btn-primary btn-sm"
+              disabled={actionLoading}
+            >
+              Create {{entity.name}}
+            </button>
+          )}
+        </div>
+      </PageHeader>
+
+      {error && (
+        <Alert variant="error" dismissible onDismiss={() => {}}>
+          {error}
+        </Alert>
+      )}
+
+      {!loading && data.length === 0 ? (
+        <EmptyState
+          title="No {{pluralise (lowercase entity.name)}} found"
+          description="Get started by creating your first {{lowercase entity.name}}."
+          action={
+            onCreate && (
+              <button
+                type="button"
+                onClick={handleCreate}
+                className="btn btn-primary"
+              >
+                Create {{entity.name}}
+              </button>
+            )
+          }
+        />
+      ) : (
+        <{{entity.name}}Table
+          data={data}
+          onEdit={onUpdate ? handleEdit : undefined}
+          onDelete={onDelete ? handleDelete : undefined}
+          onView={handleView}
+        />
+      )}
+
+      <{{entity.name}}Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmit}
+        initialData={selectedItem || undefined}
+        loading={actionLoading}
+        mode={modalMode}
+      />
+    </div>
+  );
+}

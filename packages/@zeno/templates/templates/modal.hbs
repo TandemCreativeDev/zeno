@@ -1,0 +1,52 @@
+"use client";
+
+import { Modal } from "@zeno/templates";
+import { {{entity.name}}Form } from "./{{entity.name}}Form";
+
+export interface {{entity.name}}ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (data: {{entity.name}}) => void;
+  initialData?: Partial<{{entity.name}}>;
+  loading?: boolean;
+  mode?: "create" | "edit" | "view";
+}
+
+export function {{entity.name}}Modal({
+  isOpen,
+  onClose,
+  onSubmit,
+  initialData,
+  loading = false,
+  mode = "create",
+}: {{entity.name}}ModalProps) {
+  const getTitle = () => {
+    switch (mode) {
+      case "create":
+        return "Create {{entity.name}}";
+      case "edit":
+        return "Edit {{entity.name}}";
+      case "view":
+        return "View {{entity.name}}";
+      default:
+        return "{{entity.name}}";
+    }
+  };
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={getTitle()}
+      size="lg"
+    >
+      <{{entity.name}}Form
+        initialData={initialData}
+        onSubmit={onSubmit}
+        onCancel={onClose}
+        loading={loading}
+        mode={mode}
+      />
+    </Modal>
+  );
+}

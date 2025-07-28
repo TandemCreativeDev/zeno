@@ -1,0 +1,57 @@
+"use client";
+
+import { DataTable } from "@zeno/templates";
+import type { ColumnDef } from "@zeno/templates";
+
+export interface {{entity.name}}TableProps {
+  data: {{entity.name}}[];
+  loading?: boolean;
+  onEdit?: (item: {{entity.name}}) => void;
+  onDelete?: (item: {{entity.name}}) => void;
+  onView?: (item: {{entity.name}}) => void;
+  title?: string;
+  className?: string;
+}
+
+export function {{entity.name}}Table({
+  data,
+  loading = false,
+  onEdit,
+  onDelete,
+  onView,
+  title = "{{pluralise entity.name}}",
+  className,
+}: {{entity.name}}TableProps) {
+  const columns: ColumnDef<{{entity.name}}>[] = [
+    {{#each entity.ui.tableColumns}}
+    {
+      key: "{{this.field}}",
+      label: "{{this.label}}",
+      sortable: {{when this.sortable "true" "false"}},
+      {{#if this.formatter}}formatter: "{{this.formatter}}",{{/if}}
+      {{#if this.prefix}}prefix: "{{this.prefix}}",{{/if}}
+      {{#if this.suffix}}suffix: "{{this.suffix}}",{{/if}}
+    },
+    {{/each}}
+  ];
+
+  const searchFields: (keyof {{entity.name}})[] = [
+    {{#each entity.ui.searchFields}}
+    "{{this}}",
+    {{/each}}
+  ];
+
+  return (
+    <DataTable
+      data={data}
+      columns={columns}
+      searchFields={searchFields}
+      loading={loading}
+      onEdit={onEdit}
+      onDelete={onDelete}
+      onView={onView}
+      title={title}
+      className={className}
+    />
+  );
+}

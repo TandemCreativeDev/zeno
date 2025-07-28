@@ -1,0 +1,90 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+import { FormField, Fieldset, FormActions } from "@zeno/templates";
+import type { UseFormRegister, FieldErrors } from "@zeno/templates";
+
+{{#if validation}}
+import { {{entity.name}}Schema } from "../models/{{kebabCase entity.name}}";
+{{/if}}
+
+export interface {{entity.name}}FormProps {
+  initialData?: Partial<{{entity.name}}>;
+  onSubmit: (data: {{entity.name}}) => void;
+  onCancel?: () => void;
+  loading?: boolean;
+  mode?: "create" | "edit" | "view";
+}
+
+export function {{entity.name}}Form({
+  initialData,
+  onSubmit,
+  onCancel,
+  loading = false,
+  mode = "create",
+}: {{entity.name}}FormProps) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<{{entity.name}}>({
+    defaultValues: initialData,
+    {{#if validation}}
+    resolver: zodResolver({{entity.name}}Schema),
+    {{/if}}
+  });
+
+  const isReadOnly = mode === "view";
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      {{#each entity.ui.formSections}}
+      <Fieldset legend="{{this.title}}" columns={{when this.columns this.columns 1}}>
+        {{#each this.fields}}
+        {{#if (eq this.visibility "create") }}
+        {mode === "create" && (
+        {{/if}}
+        {{#if (eq this.visibility "edit") }}
+        {mode === "edit" && (
+        {{/if}}
+        {{#if (eq this.visibility "both") }}
+        {(mode === "create" || mode === "edit") && (
+        {{/if}}
+          <FormField
+            name="{{this.name}}"
+            label="{{this.label}}"
+            type="{{this.type}}"
+            {{#if this.required}}required{{/if}}
+            {{#if this.placeholder}}placeholder="{{this.placeholder}}"{{/if}}
+            {{#if this.helpText}}helpText="{{this.helpText}}"{{/if}}
+            {{#if this.options}}
+            options={[
+              {{#each this.options}}
+              { value: "{{this.value}}", label: "{{this.label}}" },
+              {{/each}}
+            ]}
+            {{/if}}
+            {{#if this.validation}}
+            validation={{json this.validation}}
+            {{/if}}
+            register={register}
+            errors={errors}
+            {{#if isReadOnly}}disabled{{/if}}
+          />
+        {{#if this.visibility}}
+        )}
+        {{/if}}
+        {{/each}}
+      </Fieldset>
+      {{/each}}
+
+      <FormActions
+        mode={mode}
+        loading={loading}
+        onCancel={onCancel}
+        onReset={() => reset()}
+      />
+    </form>
+  );
+}
