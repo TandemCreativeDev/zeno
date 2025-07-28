@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { TableCell } from "./TableCell";
 
 export interface ColumnDef<T> {
@@ -29,7 +29,7 @@ export interface DataTableProps<T> {
 }
 
 export function DataTable<
-  T extends Record<string, string | number | Date | boolean | null | undefined>
+  T extends Record<string, string | number | Date | boolean | null | undefined>,
 >({
   data,
   columns,
@@ -142,6 +142,7 @@ export function DataTable<
                 <th key={String(column.key)}>
                   {column.sortable !== false ? (
                     <button
+                      type="button"
                       className="btn btn-ghost btn-sm justify-start"
                       onClick={() => handleSort(column.key)}
                     >
@@ -162,7 +163,7 @@ export function DataTable<
           </thead>
           <tbody>
             {filteredAndSortedData.map((item, index) => (
-              <tr key={index}>
+              <tr key={item.id || index}>
                 {columns.map((column) => (
                   <TableCell
                     key={String(column.key)}
@@ -177,6 +178,7 @@ export function DataTable<
                     <div className="flex gap-2">
                       {onView && (
                         <button
+                          type="button"
                           onClick={() => onView(item)}
                           className="btn btn-ghost btn-xs"
                           title="View details"
@@ -186,6 +188,7 @@ export function DataTable<
                       )}
                       {onEdit && (
                         <button
+                          type="button"
                           onClick={() => onEdit(item)}
                           className="btn btn-primary btn-xs"
                           title="Edit item"
@@ -195,6 +198,7 @@ export function DataTable<
                       )}
                       {onDelete && (
                         <button
+                          type="button"
                           onClick={() => onDelete(item)}
                           className="btn btn-error btn-xs"
                           title="Delete item"

@@ -2,8 +2,8 @@
 
 "use client";
 
-import { HTMLInputTypeAttribute, useId } from "react";
-import {
+import { type HTMLInputTypeAttribute, useId } from "react";
+import type {
   FieldErrors,
   FieldValues,
   Path,

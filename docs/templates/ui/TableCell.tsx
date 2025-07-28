@@ -24,10 +24,11 @@ export function TableCell({
 
   const renderValue = () => {
     switch (formatter) {
-      case "currency":
+      case "currency": {
         const currencyValue =
           typeof value === "number" ? value.toLocaleString() : String(value);
         return `${prefix}${currencyValue}${suffix}`;
+      }
 
       case "date":
         try {
