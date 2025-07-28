@@ -81,3 +81,5 @@ Thumbs.db
 
 # GitHub sync state
 .github-sync-state.json
+*storybook.log
+storybook-static
