@@ -164,7 +164,13 @@ export function DataTable<
           </thead>
           <tbody>
             {filteredAndSortedData.map((item, index) => (
-              <tr key={typeof item === 'object' && item !== null && 'id' in item ? String((item as unknown as { id: string | number }).id) : index}>
+              <tr
+                key={
+                  typeof item === "object" && item !== null && "id" in item
+                    ? String((item as unknown as { id: string | number }).id)
+                    : index
+                }
+              >
                 {columns.map((column) => (
                   <TableCell
                     key={String(column.key)}

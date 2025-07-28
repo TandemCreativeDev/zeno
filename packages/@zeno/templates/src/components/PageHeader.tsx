@@ -25,7 +25,8 @@ export function PageHeader({
             <ul>
               {breadcrumbs.map((breadcrumb, index) => (
                 <li key={breadcrumb.label || breadcrumb.href || index}>
-|                  {breadcrumb.href ? (
+                  |{" "}
+                  {breadcrumb.href ? (
                     <a href={breadcrumb.href} className="link link-hover">
                       {breadcrumb.label}
                     </a>
