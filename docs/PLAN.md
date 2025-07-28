@@ -177,7 +177,7 @@
 **Dependencies**: Task 2  
 **Acceptance Criteria**: Logs are useful for debugging, respects verbosity settings
 
-### [ ] 15. Core Package Integration Tests
+### [x] 15. Core Package Integration Tests
 
 **Description**: End-to-end tests for core functionality  
 **Deliverables**:
