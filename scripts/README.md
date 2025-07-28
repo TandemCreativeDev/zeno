@@ -36,7 +36,7 @@ This script automatically syncs tasks from `docs/PLAN.md` with GitHub issues.
 Run the sync script to create all GitHub issues:
 
 ```bash
-pnpm sync-issues
+pnpm sync
 ```
 
 ### Regular Sync
@@ -44,7 +44,7 @@ pnpm sync-issues
 After the initial setup, just run the sync script to update issue status:
 
 ```bash
-pnpm sync-issues
+pnpm sync
 ```
 
 ## What it does
