@@ -1,0 +1,85 @@
+{
+  "tableName": "users",
+  "displayName": "Users",
+  "columns": {
+    "id": {
+      "dbConstraints": {
+        "type": "text",
+        "primaryKey": true
+      },
+      "validation": {
+        "required": true
+      }
+    },
+    "email": {
+      "dbConstraints": {
+        "type": "text",
+        "unique": true
+      },
+      "validation": {
+        "required": true,
+        "email": true
+      }
+    },
+    "name": {
+      "dbConstraints": {
+        "type": "text"
+      },
+      "validation": {
+        "required": true,
+        "min": 2
+      }
+    },
+    "bio": {
+      "dbConstraints": {
+        "type": "text"
+      },
+      "validation": {
+        "required": false,
+        "max": 500
+      }
+    },
+    "role": {
+      "dbConstraints": {
+        "type": "text",
+        "default": "author"
+      },
+      "validation": {
+        "required": true,
+        "enum": "userRole"
+      }
+    },
+    "status": {
+      "dbConstraints": {
+        "type": "text",
+        "default": "active"
+      },
+      "validation": {
+        "required": true,
+        "enum": "userStatus"
+      }
+    },
+    "createdAt": {
+      "dbConstraints": {
+        "type": "timestamp",
+        "default": "now()"
+      },
+      "validation": {
+        "required": false
+      }
+    },
+    "updatedAt": {
+      "dbConstraints": {
+        "type": "timestamp",
+        "default": "now()"
+      },
+      "validation": {
+        "required": false
+      }
+    }
+  },
+  "generateForm": true,
+  "generateTable": true,
+  "generateAPI": true,
+  "generatePages": true
+}

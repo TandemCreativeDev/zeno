@@ -1,0 +1,17 @@
+{
+  "description": "Post publication status",
+  "values": {
+    "DRAFT": {
+      "label": "Draft"
+    },
+    "REVIEW": {
+      "label": "Under Review"
+    },
+    "PUBLISHED": {
+      "label": "Published"
+    },
+    "ARCHIVED": {
+      "label": "Archived"
+    }
+  }
+}

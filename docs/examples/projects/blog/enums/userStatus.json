@@ -1,0 +1,17 @@
+{
+  "description": "User account status",
+  "values": {
+    "ACTIVE": {
+      "label": "Active"
+    },
+    "INACTIVE": {
+      "label": "Inactive"
+    },
+    "SUSPENDED": {
+      "label": "Suspended"
+    },
+    "PENDING": {
+      "label": "Pending"
+    }
+  }
+}

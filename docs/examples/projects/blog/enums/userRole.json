@@ -1,0 +1,17 @@
+{
+  "description": "User roles in the system",
+  "values": {
+    "ADMIN": {
+      "label": "Administrator"
+    },
+    "EDITOR": {
+      "label": "Editor"
+    },
+    "AUTHOR": {
+      "label": "Author"
+    },
+    "SUBSCRIBER": {
+      "label": "Subscriber"
+    }
+  }
+}

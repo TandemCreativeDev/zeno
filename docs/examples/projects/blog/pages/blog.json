@@ -1,0 +1,21 @@
+{
+  "route": "/blog",
+  "title": "Blog Posts",
+  "sections": [
+    {
+      "type": "hero",
+      "title": "All Posts",
+      "subtitle": "Browse through all our published articles"
+    },
+    {
+      "type": "table",
+      "title": "Blog Posts",
+      "entity": "posts"
+    }
+  ],
+  "navigation": {
+    "header": { "include": true, "order": 2 },
+    "footer": { "include": true }
+  },
+  "auth": { "required": false }
+}

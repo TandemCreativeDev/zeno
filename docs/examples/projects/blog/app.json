@@ -1,0 +1,9 @@
+{
+  "name": "My Blog",
+  "description": "A personal blog built with Zeno Framework",
+  "url": "https://myblog.example.com",
+  "features": {
+    "search": true,
+    "darkMode": true
+  }
+}

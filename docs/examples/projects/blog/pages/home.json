@@ -1,0 +1,35 @@
+{
+  "route": "/",
+  "title": "Home",
+  "sections": [
+    {
+      "type": "hero",
+      "title": "Welcome to My Blog",
+      "subtitle": "Thoughts, ideas, and experiences from a developer"
+    },
+    {
+      "type": "stats",
+      "title": "Blog Statistics",
+      "stats": [
+        {
+          "title": "Total Posts",
+          "value": "42"
+        },
+        {
+          "title": "Active Authors",
+          "value": "5"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Recent Posts",
+      "entity": "posts"
+    }
+  ],
+  "navigation": {
+    "header": { "include": true, "order": 1 },
+    "footer": { "include": true }
+  },
+  "auth": { "required": false }
+}

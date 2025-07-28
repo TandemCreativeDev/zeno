@@ -1,0 +1,105 @@
+{
+  "tableName": "posts",
+  "displayName": "Posts",
+  "columns": {
+    "id": {
+      "dbConstraints": {
+        "type": "text",
+        "primaryKey": true
+      },
+      "validation": {
+        "required": true
+      }
+    },
+    "title": {
+      "dbConstraints": {
+        "type": "text"
+      },
+      "validation": {
+        "required": true,
+        "min": 3,
+        "max": 200
+      }
+    },
+    "slug": {
+      "dbConstraints": {
+        "type": "text",
+        "unique": true
+      },
+      "validation": {
+        "required": true,
+        "pattern": "^[a-z0-9-]+$"
+      }
+    },
+    "excerpt": {
+      "dbConstraints": {
+        "type": "text"
+      },
+      "validation": {
+        "required": true,
+        "max": 300
+      }
+    },
+    "content": {
+      "dbConstraints": {
+        "type": "text"
+      },
+      "validation": {
+        "required": true,
+        "min": 10
+      }
+    },
+    "status": {
+      "dbConstraints": {
+        "type": "text",
+        "default": "draft"
+      },
+      "validation": {
+        "required": true,
+        "enum": "postStatus"
+      }
+    },
+    "authorId": {
+      "dbConstraints": {
+        "type": "text",
+        "references": {
+          "table": "users",
+          "column": "id"
+        }
+      },
+      "validation": {
+        "required": true
+      }
+    },
+    "publishedAt": {
+      "dbConstraints": {
+        "type": "timestamp"
+      },
+      "validation": {
+        "required": false
+      }
+    },
+    "createdAt": {
+      "dbConstraints": {
+        "type": "timestamp",
+        "default": "now()"
+      },
+      "validation": {
+        "required": false
+      }
+    },
+    "updatedAt": {
+      "dbConstraints": {
+        "type": "timestamp",
+        "default": "now()"
+      },
+      "validation": {
+        "required": false
+      }
+    }
+  },
+  "generateForm": true,
+  "generateTable": true,
+  "generateAPI": true,
+  "generatePages": true
+}

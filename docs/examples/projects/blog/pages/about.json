@@ -1,0 +1,20 @@
+{
+  "route": "/about",
+  "title": "About",
+  "sections": [
+    {
+      "type": "hero",
+      "title": "About This Blog",
+      "subtitle": "Learn more about our mission and team"
+    },
+    {
+      "type": "content",
+      "content": "This blog is built with the Zeno Framework, demonstrating modern web development practices and clean architecture."
+    }
+  ],
+  "navigation": {
+    "header": { "include": true, "order": 4 },
+    "footer": { "include": true }
+  },
+  "auth": { "required": false }
+}

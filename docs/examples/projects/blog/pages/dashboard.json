@@ -1,0 +1,43 @@
+{
+  "route": "/dashboard",
+  "title": "Dashboard",
+  "sections": [
+    {
+      "type": "hero",
+      "title": "Content Dashboard",
+      "subtitle": "Manage your blog content"
+    },
+    {
+      "type": "stats",
+      "title": "Content Overview",
+      "stats": [
+        {
+          "title": "Draft Posts",
+          "value": "12"
+        },
+        {
+          "title": "Published Posts",
+          "value": "30"
+        },
+        {
+          "title": "Total Users",
+          "value": "8"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "My Posts",
+      "entity": "posts"
+    },
+    {
+      "type": "table",
+      "title": "All Users",
+      "entity": "users"
+    }
+  ],
+  "navigation": {
+    "header": { "include": true, "order": 3 }
+  },
+  "auth": { "required": true, "roles": ["admin", "editor", "author"] }
+}
