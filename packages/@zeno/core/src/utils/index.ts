@@ -11,6 +11,10 @@ export {
   resolveConfig,
   validateConfig,
 } from "./config";
+export {
+  createDependencyGraph,
+  GenerationDependencyGraph,
+} from "./dependencyGraph";
 export * from "./errors";
 export {
   ensureDirectory,
