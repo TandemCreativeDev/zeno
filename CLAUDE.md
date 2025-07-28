@@ -74,6 +74,7 @@ const onSchemaChange = (changes: SchemaChange[]) => {};
 - **Main Classes/Generators:** PascalCase (`TemplateEngine.ts`, `ModelGenerator.ts`)
 - **Commands:** Simple names (`generate.ts`)
 - **Types:** Simple names (`entity.ts`, `generator.ts`)
+- **Use British spelling** - ie standardise not standardize
 
 ### TypeScript Standards
 
@@ -198,6 +199,7 @@ for (const result of results) {
 
 - **No inline comments** except for complex business logic
 - **JSDoc for all public APIs** but nothing else
+- **Use British spelling** - ie standardise not standardize
 
 ```typescript
 /**
@@ -216,6 +218,7 @@ export async function loadSchemas(schemaDir: string): Promise<SchemaSet> {
 - **Branch Strategy:** Feature branches from main
 - **Commit Messages:** Conventional commits with scope (`feat(core):`, `fix(cli):`, `docs(generators):`)
 - **Monorepo:** pnpm workspaces with Turborepo for build orchestration
+- **Use British spelling** - ie standardise not standardize
 
 ## Testing Strategy
 
@@ -270,7 +273,9 @@ pnpm start validate        # Test schema validation
 
 Before submitting any code, ensure the following steps are completed:
 
-1. **Run all validation commands:**
+1. - **Check that code, file names and comments use British spelling** - ie standardise not standardize
+
+2. **Run all validation commands:**
 
    ```bash
    npx tsc --noEmit
@@ -279,7 +284,7 @@ Before submitting any code, ensure the following steps are completed:
    pnpm test
    ```
 
-2. **Test CLI commands** if changes affect user interface:
+3. **Test CLI commands** if changes affect user interface:
 
    ```bash
    cd packages/cli
@@ -287,7 +292,7 @@ Before submitting any code, ensure the following steps are completed:
    pnpm start init test-project
    ```
 
-3. **Assess compliance:**
+4. **Assess compliance:**
    For each standard, explicitly state ✅ or ❌ and explain why:
 
    - **Import Order:** Node built-ins → External → Internal (@zeno/\*) → Relative → Types
@@ -300,7 +305,7 @@ Before submitting any code, ensure the following steps are completed:
    - **CLI Output:** @clack/prompts for consistent user experience
    - **Documentation:** JSDoc for public APIs only, no inline comments
 
-4. **Self-review checklist:**
+5. **Self-review checklist:**
    - [ ] Function declarations used for standalone utilities
    - [ ] Imports properly ordered with types last
    - [ ] No `any` types used anywhere in codebase
