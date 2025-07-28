@@ -30,6 +30,7 @@ export const ValidationRulesSchema = z
     email: z.boolean().optional(),
     url: z.boolean().optional(),
     pattern: z.string().optional(),
+    enum: z.string().optional(),
   })
   .refine(
     (data) => {
