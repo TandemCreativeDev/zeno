@@ -150,14 +150,15 @@
 **Dependencies**: Tasks 5, 10  
 **Acceptance Criteria**: Detects changes and triggers incremental generation
 
-### [ ] 13. Schema Change Detection
+### [x] 13. Schema Change Detection
 
 **Description**: Implement incremental generation logic  
 **Deliverables**:
 
-- `SchemaChange` type with change details
-- Dependency graph for affected files
-- Unit tests for various change scenarios
+- ✅ `SchemaChange` type with change details
+- ✅ Dependency graph for affected files (`GenerationDependencyGraph`)
+- ✅ Enhanced `SchemaDiffResult` with `affectedFiles` information
+- ✅ Unit tests for various change scenarios
 
 **Dependencies**: Task 12  
 **Acceptance Criteria**: Only regenerates affected files on changes
