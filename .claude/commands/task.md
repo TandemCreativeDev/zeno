@@ -15,5 +15,6 @@ As you implement, explain:
 - How the code works and why it meets our `REQUIREMENTS.md` requirements
 - How it aligns with our `ARCHITECTURE.md`
 - Why it complies with our standards in `CLAUDE.md`
+- As you progress on subtasks, systematically tick them off in `PLAN.md` and add additional ones if required
 
 **After implementing:** - follow post-implementation process outlined in `CLAUDE.md`
