@@ -63,7 +63,6 @@ export function TableCell({
           </div>
         );
 
-      case "text":
       default:
         return `${prefix}${String(value)}${suffix}`;
     }
