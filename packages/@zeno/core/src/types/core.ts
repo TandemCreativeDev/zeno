@@ -89,4 +89,18 @@ export interface SchemaDiffResult {
   changes: DetailedSchemaChange[];
   hasBreakingChanges: boolean;
   affectedGenerators: string[];
+  affectedFiles: AffectedFile[];
+}
+
+export interface AffectedFile {
+  path: string;
+  generator: string;
+  reason: string[];
+  dependencies: string[];
+}
+
+export interface DependencyGraph {
+  getAffectedFiles(changes: DetailedSchemaChange[]): AffectedFile[];
+  addDependency(from: string, to: string): void;
+  getDependents(file: string): string[];
 }

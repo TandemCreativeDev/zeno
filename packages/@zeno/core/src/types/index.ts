@@ -12,6 +12,8 @@ export type {
   ZenoConfigInput,
 } from "./config";
 export type {
+  AffectedFile,
+  DependencyGraph,
   DetailedSchemaChange,
   FieldChange,
   GeneratedFile,
