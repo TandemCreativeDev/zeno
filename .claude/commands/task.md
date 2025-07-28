@@ -1,4 +1,4 @@
-# Zeno Framework Task Implementation
+# Task Implementation
 
 **First, review @CLAUDE.md to understand our project standards and workflow.**
 Review the @docs/ARCHITECTURE.md and @docs/REQUIREMENTS.md to understand what we are building.
