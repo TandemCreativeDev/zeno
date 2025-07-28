@@ -290,8 +290,7 @@ export class GenerationDependencyGraph implements DependencyGraph {
     if (!fieldChanges || !Array.isArray(fieldChanges)) return false;
     return fieldChanges.some(
       (change) =>
-        change &&
-        change.field &&
+        change?.field &&
         (change.field === "columns" ||
           change.field === "tableName" ||
           change.field === "dbConstraints")
@@ -302,8 +301,7 @@ export class GenerationDependencyGraph implements DependencyGraph {
     if (!fieldChanges || !Array.isArray(fieldChanges)) return true; // Default to regenerating UI
     return fieldChanges.some(
       (change) =>
-        change &&
-        change.field &&
+        change?.field &&
         (change.field === "generateForm" ||
           change.field === "generateTable" ||
           change.field === "columns" ||
@@ -317,8 +315,7 @@ export class GenerationDependencyGraph implements DependencyGraph {
     if (!fieldChanges || !Array.isArray(fieldChanges)) return true; // Default to regenerating API
     return fieldChanges.some(
       (change) =>
-        change &&
-        change.field &&
+        change?.field &&
         (change.field === "generateApi" ||
           change.field === "columns" ||
           change.field === "validation")
@@ -329,8 +326,7 @@ export class GenerationDependencyGraph implements DependencyGraph {
     if (!fieldChanges || !Array.isArray(fieldChanges)) return true; // Default to regenerating pages
     return fieldChanges.some(
       (change) =>
-        change &&
-        change.field &&
+        change?.field &&
         (change.field === "generatePages" ||
           change.field === "generateForm" ||
           change.field === "generateTable" ||
@@ -342,8 +338,7 @@ export class GenerationDependencyGraph implements DependencyGraph {
     if (!fieldChanges || !Array.isArray(fieldChanges)) return false;
     return fieldChanges.some(
       (change) =>
-        change &&
-        change.field &&
+        change?.field &&
         (change.field === "navigation" || change.field === "name")
     );
   }
@@ -352,9 +347,7 @@ export class GenerationDependencyGraph implements DependencyGraph {
     if (!fieldChanges || !Array.isArray(fieldChanges)) return false;
     return fieldChanges.some(
       (change) =>
-        change &&
-        change.field &&
-        (change.field === "auth" || change.field === "email")
+        change?.field && (change.field === "auth" || change.field === "email")
     );
   }
 
