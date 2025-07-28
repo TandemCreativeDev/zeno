@@ -69,9 +69,9 @@ export class Watcher extends EventEmitter<WatcherEvents> {
     }
 
     const watchPaths = [
-      join(this.schemaDir, "entities/**/*.json"),
-      join(this.schemaDir, "enums/**/*.json"),
-      join(this.schemaDir, "pages/**/*.json"),
+      join(this.schemaDir, "entities"),
+      join(this.schemaDir, "enums"),
+      join(this.schemaDir, "pages"),
       join(this.schemaDir, "app.json"),
     ];
 
@@ -146,7 +146,7 @@ export class Watcher extends EventEmitter<WatcherEvents> {
       }
 
       this.debounceTimer = setTimeout(() => {
-        this.flushPendingChanges();
+        void this.flushPendingChanges();
       }, this.options.debounceMs ?? 300);
     }
   }

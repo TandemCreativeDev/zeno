@@ -105,9 +105,12 @@ describe("Watcher", () => {
   it("should detect file creation", async () => {
     watcher = createWatcher(tempDir, { debounceMs: 50 });
 
-    const changesPromise = new Promise<DetailedSchemaChange[]>((resolve) => {
-      watcher.once("change", resolve);
-    });
+    const changesPromise = new Promise<DetailedSchemaChange[]>(
+      (resolve, reject) => {
+        watcher.once("change", resolve);
+        watcher.once("error", reject);
+      }
+    );
 
     await watcher.start();
 
@@ -153,9 +156,12 @@ describe("Watcher", () => {
   it("should detect file modification", async () => {
     watcher = createWatcher(tempDir, { debounceMs: 50 });
 
-    const changesPromise = new Promise<DetailedSchemaChange[]>((resolve) => {
-      watcher.once("change", resolve);
-    });
+    const changesPromise = new Promise<DetailedSchemaChange[]>(
+      (resolve, reject) => {
+        watcher.once("change", resolve);
+        watcher.once("error", reject);
+      }
+    );
 
     await watcher.start();
 
@@ -195,9 +201,12 @@ describe("Watcher", () => {
   it("should detect file deletion", async () => {
     watcher = createWatcher(tempDir, { debounceMs: 50 });
 
-    const changesPromise = new Promise<DetailedSchemaChange[]>((resolve) => {
-      watcher.once("change", resolve);
-    });
+    const changesPromise = new Promise<DetailedSchemaChange[]>(
+      (resolve, reject) => {
+        watcher.once("change", resolve);
+        watcher.once("error", reject);
+      }
+    );
 
     await watcher.start();
 
