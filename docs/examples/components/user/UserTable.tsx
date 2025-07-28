@@ -2,8 +2,8 @@
 
 "use client";
 
-import { DataTable, ColumnDef } from "@/components/ui";
-import { User } from "@/models/user";
+import { type ColumnDef, DataTable } from "@/components/ui";
+import type { User } from "@/models/user";
 
 export interface UserTableProps {
   items: User[];

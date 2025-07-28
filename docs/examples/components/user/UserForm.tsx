@@ -2,11 +2,14 @@
 
 "use client";
 
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserInsert, UserUpdate } from "@/models/user";
-import { UserInsertSchema } from "@/models/user";
-import { FormField, Fieldset, FormActions } from "@/components/ui";
+import { useForm } from "react-hook-form";
+import { Fieldset, FormActions, FormField } from "@/components/ui";
+import {
+  type UserInsert,
+  UserInsertSchema,
+  type UserUpdate,
+} from "@/models/user";
 
 export interface UserFormProps {
   mode: "create" | "edit";
