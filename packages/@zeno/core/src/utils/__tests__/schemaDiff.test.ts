@@ -94,6 +94,7 @@ describe("SchemaDiffer", () => {
       expect(result.changes).toHaveLength(0);
       expect(result.hasBreakingChanges).toBe(false);
       expect(result.affectedGenerators).toHaveLength(0);
+      expect(result.affectedFiles).toHaveLength(0);
     });
 
     it("should detect entity creation", () => {
@@ -114,6 +115,10 @@ describe("SchemaDiffer", () => {
       expect(result.affectedGenerators).toContain("models");
       expect(result.affectedGenerators).toContain("components");
       expect(result.affectedGenerators).toContain("api");
+      expect(result.affectedFiles.length).toBeGreaterThan(0);
+      expect(
+        result.affectedFiles.some((f) => f.path === "src/models/users.ts")
+      ).toBe(true);
     });
 
     it("should detect entity modification", () => {
@@ -396,6 +401,43 @@ describe("SchemaDiffer", () => {
       );
 
       expect(result.changes).toHaveLength(1);
+    });
+  });
+
+  describe("dependency graph integration", () => {
+    it("should provide detailed affected files information", () => {
+      const oldSchemas = createSchemaSet();
+      const newSchemas = createSchemaSet({
+        entities: new Map([["users", mockEntityV2]]),
+      });
+
+      const result = differ.compareSchemaSet(oldSchemas, newSchemas);
+
+      expect(result.affectedFiles).toBeDefined();
+      expect(result.affectedFiles.length).toBeGreaterThan(0);
+
+      const modelFile = result.affectedFiles.find(
+        (f) => f.path === "src/models/users.ts"
+      );
+      expect(modelFile).toBeDefined();
+      expect(modelFile?.generator).toBe("models");
+      expect(modelFile?.reason).toContain("Entity users updated");
+      expect(modelFile?.dependencies).toContain("entities/users.json");
+    });
+
+    it("should identify migration files for database changes", () => {
+      const oldSchemas = createSchemaSet();
+      const newSchemas = createSchemaSet({
+        entities: new Map([["users", mockEntityV2]]),
+      });
+
+      const result = differ.compareSchemaSet(oldSchemas, newSchemas);
+
+      const migrationFile = result.affectedFiles.find((f) =>
+        f.path.includes("migrations")
+      );
+      expect(migrationFile).toBeDefined();
+      expect(migrationFile?.generator).toBe("models");
     });
   });
 });

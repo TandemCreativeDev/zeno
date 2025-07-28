@@ -15,11 +15,13 @@ import type {
 import type { EntitySchema } from "../types/entity";
 import type { EnumSchema } from "../types/enum";
 import type { PageSchema } from "../types/page";
+import { createDependencyGraph } from "./dependencyGraph";
 
 /**
- * Schema differ for detecting and analyzing changes between schema versions
+ * Schema differ for detecting and analysing changes between schema versions
  */
 export class SchemaDiffer {
+  private dependencyGraph = createDependencyGraph();
   /**
    * Compare two schema sets and return detailed changes
    *
@@ -57,10 +59,13 @@ export class SchemaDiffer {
       });
     }
 
+    const affectedFiles = this.dependencyGraph.getAffectedFiles(changes);
+
     return {
       changes,
       hasBreakingChanges: this.hasBreakingChanges(changes),
       affectedGenerators: this.getAffectedGenerators(changes),
+      affectedFiles,
     };
   }
 
