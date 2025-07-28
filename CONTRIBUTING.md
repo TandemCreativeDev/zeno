@@ -76,8 +76,8 @@ git commit -m "feat(core): add your feature description"
 
 Format: `type(scope): description`
 
-- **Types:** `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
-- **Scopes:** `core`, `cli`, `generators`, `create`
+- **Types:** `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `build`, `ops`
+- **Scopes:** `core`, `templates`, `cli`, `generators`, `create`
 
 ### 8. Push to Your Fork
 
