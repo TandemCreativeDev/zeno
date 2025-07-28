@@ -1,0 +1,48 @@
+{
+  "tableName": "users",
+  "displayName": "Users",
+  "columns": {
+    "id": {
+      "dbConstraints": {
+        "type": "text",
+        "primaryKey": true
+      },
+      "validation": {
+        "required": true
+      }
+    },
+    "email": {
+      "dbConstraints": {
+        "type": "text",
+        "unique": true
+      },
+      "validation": {
+        "required": true,
+        "email": true
+      }
+    },
+    "name": {
+      "dbConstraints": {
+        "type": "text"
+      },
+      "validation": {
+        "required": true,
+        "min": 2
+      }
+    },
+    "status": {
+      "dbConstraints": {
+        "type": "text",
+        "default": "ACTIVE"
+      },
+      "validation": {
+        "required": true,
+        "enum": "status"
+      }
+    }
+  },
+  "generateForm": true,
+  "generateTable": true,
+  "generateAPI": true,
+  "generatePages": true
+}

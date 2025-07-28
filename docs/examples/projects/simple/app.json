@@ -1,0 +1,9 @@
+{
+  "name": "Simple App",
+  "description": "A simple test application",
+  "url": "https://simple.example.com",
+  "features": {
+    "search": false,
+    "darkMode": false
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "description": "General status enumeration",
+  "values": {
+    "ACTIVE": {
+      "label": "Active"
+    },
+    "INACTIVE": {
+      "label": "Inactive"
+    },
+    "PENDING": {
+      "label": "Pending"
+    }
+  }
+}
